@@ -1,0 +1,39 @@
+name: hostbuster
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+dependencies:
+  # Python
+  - python>=3.9
+  
+  # Alignment tools
+  - minimap2>=2.24
+  - bowtie2>=2.5
+  - samtools>=1.17
+  
+  # Quality control
+  - fastp>=0.23
+  - fastqc>=0.12
+  
+  # Filtering and processing
+  - bbmap>=39.0
+  
+  # Reporting
+  - multiqc>=1.14
+  
+  # Python packages
+  - pandas
+  - matplotlib
+  - seaborn
+  - biopython
+  
+  # Utilities
+  - wget
+  - pigz
+  
+  # Development tools (optional)
+  - pytest
+  - black
+  - flake8
