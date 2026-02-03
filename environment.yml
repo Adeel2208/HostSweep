@@ -1,39 +1,25 @@
-name: hostbuster
+name: decontaminer
 channels:
-  - conda-forge
   - bioconda
+  - conda-forge
   - defaults
 
 dependencies:
   # Python
   - python>=3.9
-  
-  # Alignment tools
+  - pip
+  - setuptools
+
+  # Bioinformatics tools
+  - fastp>=0.23.0
   - minimap2>=2.24
-  - bowtie2>=2.5
+  - bowtie2>=2.5.0
   - samtools>=1.17
-  
-  # Quality control
-  - fastp>=0.23
-  - fastqc>=0.12
-  
-  # Filtering and processing
-  - bbmap>=39.0
-  
-  # Reporting
+  - bbmap>=39.01
   - multiqc>=1.14
-  
+
   # Python packages
+  - numpy
   - pandas
-  - matplotlib
-  - seaborn
-  - biopython
-  
-  # Utilities
-  - wget
-  - pigz
-  
-  # Development tools (optional)
-  - pytest
-  - black
-  - flake8
+  - scipy
+  - urllib3

@@ -1,292 +1,290 @@
-# HostBuster
+# DecontaMiner
 
-**Human DNA Decontamination Pipeline for Illumina Metagenomic Data**
+**Advanced Human DNA Decontamination Pipeline for Illumina Metagenomic Data**
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Conda](https://img.shields.io/badge/Install-Conda-green)](https://docs.conda.io/)
 
-HostBuster is a fast, efficient Python pipeline for removing human DNA contamination from Illumina paired-end metagenomic sequencing data. It produces three specialized output formats optimized for different downstream analyses.
+DecontaMiner is a fast, modular Python pipeline for removing human DNA contamination from Illumina paired-end metagenomic sequencing data. It produces three specialized output formats optimized for assembly, taxonomic profiling, and GDPR-compliant publication.
+
+> **Evolved from [HostBuster](https://github.com/Adeel2208/Host_Buster)** — refactored into a fully modular, pip-installable package with automatic database management.
 
 ---
 
 ## 🚀 Features
 
-- **Three Specialized Outputs**
-  - Assembly-ready paired-end reads (conservative filtering)
-  - Kraken2-optimized single-end reads (aggressive filtering)
-  - GDPR-compliant publication-ready reads (maximum decontamination)
-
-- **Dual-Pass Filtering**
-  - Primary: minimap2 (conservative, maintains pairs)
-  - Secondary: Bowtie2 (aggressive, removes borderline sequences)
-
-- **Comprehensive Quality Control**
-  - fastp for adapter trimming and quality filtering
-  - BBDuk for complexity and entropy filtering
-  - MultiQC for aggregated reporting
-
-- **Production Ready**
-  - Pure Python implementation (no Nextflow)
-  - Single conda environment
-  - Complete logging and statistics
-  - Fast processing (7-10 minutes for 1.8M read pairs)
+- **Three Specialized Outputs** — Assembly-ready PE reads, profiling-optimized SE reads, and GDPR-compliant reads
+- **Dual-Pass Host Removal** — minimap2 (conservative, preserves pairs) → Bowtie2 (aggressive, catches borderline hits)
+- **Automatic Database Management** — `decontaminer --build` downloads and indexes the T2T-CHM13v2.0 human reference; custom indices supported
+- **Tunable Parameters** — All QC thresholds exposed via CLI flags
+- **Modular Architecture** — 9 focused Python modules, easy to extend or reuse individual components
+- **Production Ready** — Pure Python (no Nextflow), single conda env, JSON stats, complete logging
 
 ---
 
 ## 📋 Requirements
 
-### System Requirements
-- **OS:** Linux (Ubuntu 20.04+) or macOS
-- **RAM:** Minimum 8GB, Recommended 16GB+
-- **Storage:** 50-100GB free space
-- **CPU:** Minimum 4 cores, Recommended 8+ cores
-- **Python:** 3.9+
-
-### Software Dependencies
-All dependencies are managed through conda (see Installation).
+| Resource | Minimum | Recommended |
+|----------|---------|-------------|
+| OS | Linux (Ubuntu 20.04+) or macOS | — |
+| RAM | 8 GB | 16 GB+ |
+| Storage | 50 GB free | 100 GB+ |
+| CPU cores | 4 | 8+ |
+| Python | 3.9+ | 3.10+ |
 
 ---
 
 ## 🔧 Installation
 
-### 1. Clone Repository
+### 1. Clone
+
 ```bash
-git clone https://github.com/sintetico87/hostbuster.git
-cd hostbuster
+git clone https://github.com/Adeel2208/Host_Buster.git
+cd Host_Buster
 ```
 
 ### 2. Create Conda Environment
+
 ```bash
 conda env create -f environment.yml
-conda activate hostbuster
+conda activate decontaminer
 ```
 
-### 3. Download and Index Reference Genome
+### 3. Install the `decontaminer` Command
 
-**Option A: Quick Test (Chromosome 1 only - ~250MB)**
 ```bash
-cd reference
-wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/009/914/755/GCF_009914755.1_T2T-CHM13v2.0/GCF_009914755.1_T2T-CHM13v2.0_genomic.fna.gz
-gunzip GCF_009914755.1_T2T-CHM13v2.0_genomic.fna.gz
-head -n 5000000 GCF_009914755.1_T2T-CHM13v2.0_genomic.fna > human_chr1.fasta
-cd ..
-
-# Build indices
-mkdir -p reference/indices
-minimap2 -x sr -d reference/indices/human.mmi reference/human_chr1.fasta
-bowtie2-build --threads 4 reference/human_chr1.fasta reference/indices/human_bt2
+pip install -e .
+decontaminer --version   # should print 1.0.0
 ```
 
-**Option B: Production (Full T2T-CHM13v2.0 - ~3GB)**
-```bash
-cd reference
-wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/009/914/755/GCF_009914755.1_T2T-CHM13v2.0/GCF_009914755.1_T2T-CHM13v2.0_genomic.fna.gz
-gunzip GCF_009914755.1_T2T-CHM13v2.0_genomic.fna.gz
-mv GCF_009914755.1_T2T-CHM13v2.0_genomic.fna human_T2T.fasta
-cd ..
+### 4. Build the Reference Index
 
-# Build indices (takes 20-30 minutes)
-mkdir -p reference/indices
-minimap2 -x sr -d reference/indices/human.mmi reference/human_T2T.fasta
-bowtie2-build --threads 8 reference/human_T2T.fasta reference/indices/human_bt2
+**Standard (full T2T-CHM13v2.0 — downloads ~3 GB, builds in 20-40 min):**
+
+```bash
+decontaminer --build
 ```
 
-### 4. Download Test Data (Optional)
+**Custom reference:**
+
 ```bash
-mkdir -p data
-cd data
-wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR606/009/SRR6062009/SRR6062009_1.fastq.gz -O test_R1.fastq.gz
-wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR606/009/SRR6062009/SRR6062009_2.fastq.gz -O test_R2.fastq.gz
-cd ..
+decontaminer --build --ix my_organism --ref /path/to/reference.fasta -t 8
+```
+
+**List available indices at any time:**
+
+```bash
+decontaminer --lx
 ```
 
 ---
 
 ## 📖 Usage
 
-### Basic Command
+### Basic Run
+
 ```bash
-./hostbuster.py \
-    --input-r1 sample_R1.fastq.gz \
-    --input-r2 sample_R2.fastq.gz \
-    --output-dir results/my_sample \
-    --sample-name my_sample \
-    --threads 8
+decontaminer \
+  -1 sample_R1.fastq.gz \
+  -2 sample_R2.fastq.gz \
+  -n my_sample \
+  -o results/my_sample \
+  -t 8
 ```
 
-### Quick Test Run
-```bash
-./hostbuster.py \
-    --input-r1 data/test_R1.fastq.gz \
-    --input-r2 data/test_R2.fastq.gz \
-    --output-dir results/test_run \
-    --sample-name test_sample \
-    --threads 4
-```
+### With a Custom Index
 
-### With Custom Reference Indices
 ```bash
-./hostbuster.py \
-    --input-r1 sample_R1.fastq.gz \
-    --input-r2 sample_R2.fastq.gz \
-    --output-dir results/my_sample \
-    --sample-name my_sample \
-    --minimap2-index path/to/custom.mmi \
-    --bowtie2-index path/to/custom_bt2 \
-    --threads 8
+decontaminer \
+  -1 sample_R1.fastq.gz \
+  -2 sample_R2.fastq.gz \
+  -n my_sample \
+  -o results/my_sample \
+  -i my_organism
 ```
 
 ### Keep Intermediate Files
+
 ```bash
-./hostbuster.py \
-    --input-r1 sample_R1.fastq.gz \
-    --input-r2 sample_R2.fastq.gz \
-    --output-dir results/my_sample \
-    --sample-name my_sample \
-    --threads 8 \
-    --keep-intermediates
+decontaminer -1 R1.fq.gz -2 R2.fq.gz -n sample -o out/ --keep-intermediates
 ```
+
+### All CLI Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `-1 / --r1` | R1 FASTQ (gzipped) | *required* |
+| `-2 / --r2` | R2 FASTQ (gzipped) | *required* |
+| `-n / --name` | Sample name | *required* |
+| `-o / --output` | Output directory | *required* |
+| `-i / --index` | Index name (`standard` or custom) | `standard` |
+| `-t / --threads` | CPU threads | min(CPU count, 8) |
+| `--tail` | fastp cut_tail_mean_quality | 20 |
+| `--p` | fastp qualified_quality_phred | 15 |
+| `--l` | Minimum read length | 50 |
+| `--complexity` | fastp complexity threshold | 30 |
+| `--bbe` | BBDuk entropy (complexity + norm) | 0.7 |
+| `--bbeg` | BBDuk entropy (GDPR) | 0.85 |
+| `--bblen` | BBDuk minimum length | 50 |
+| `--gdpr-minlen` | GDPR output min length | 90 |
+| `-v / --verbose` | Debug-level logging | off |
+| `--keep-intermediates` | Don't delete temp files | off |
 
 ---
 
 ## 📊 Output Files
 
-HostBuster produces three main output files in `{output-dir}/cleaned/`:
+All final outputs land in `<output_dir>/cleaned/`:
 
-### 1. Assembly-Ready Paired-End Reads
-```
-NONHUMAN_PE_ASSEMBLY_R1.fastq.gz
-NONHUMAN_PE_ASSEMBLY_R2.fastq.gz
-```
-- **Use case:** Meta-assembly, genome binning
-- **Filtering:** Conservative (preserves read pairs)
-- **Method:** minimap2 alignment only
+| File | Type | Use Case |
+|------|------|----------|
+| `<sample>_ASSEMBLY_R1.fastq.gz` | Paired-end | Meta-assembly, genome binning |
+| `<sample>_ASSEMBLY_R2.fastq.gz` | Paired-end | (mate of above) |
+| `<sample>_PROFILING.fastq.gz` | Single-end | Taxonomic profiling (Kraken2, MetaPhlAn) |
+| `<sample>_GDPR.fastq.gz` | Single-end | Public deposition (SRA, ENA) |
 
-### 2. Kraken2-Optimized Single-End Reads
-```
-NONHUMAN_SE_PROFILING.fastq.gz
-```
-- **Use case:** Taxonomic profiling (Kraken2, MetaPhlAn)
-- **Filtering:** Aggressive dual-pass
-- **Length:** 75-200bp
-- **Quality:** Entropy ≥0.8
+**QC & stats:**
 
-### 3. GDPR-Compliant Publication-Ready Reads
-```
-NONHUMAN_STRICT_GDPR.fastq.gz
-```
-- **Use case:** Public data release (SRA, ENA)
-- **Filtering:** Maximum decontamination
-- **Length:** ≥90bp
-- **Quality:** Entropy ≥0.85
-
-### Additional Outputs
-
-**Quality Reports:**
-- `trimmed/sample_fastp.html` - fastp quality report
-- `stats/sample_multiqc.html` - MultiQC aggregated report
-
-**Statistics:**
-- `stats/sample_stats.json` - Detailed processing statistics
-- `hostbuster_sample.log` - Complete processing log
+| File | Location |
+|------|----------|
+| `<sample>_fastp.html` | `qc/` |
+| `<sample>_fastp.json` | `qc/` |
+| `<sample>_stats.json` | `stats/` |
+| `decontaminer_<sample>.log` | output root |
 
 ---
 
 ## 🔍 Pipeline Steps
 
 ```
-INPUT: Paired-end FASTQ files (R1 + R2)
-   ↓
+INPUT: Paired-end FASTQ (R1 + R2)
+   │
+   ▼
 [Step 0] Input Validation
-   ↓
-[Step 1] Quality Control & Adapter Trimming (fastp)
-   ↓
-[Step 2] Primary Host Removal (minimap2)
-   ↓
-   ├──→ OUTPUT 1: Assembly-ready PE reads
-   ↓
-[Step 3] Convert to Single-End
-   ↓
-[Step 4] Complexity Filtering (BBDuk, entropy 0.7)
-   ↓
-[Step 5] Length Filtering (≥70bp)
-   ↓
-[Step 6] Secondary Host Removal (Bowtie2 aggressive)
-   ↓
-[Step 7] Post-Alignment Normalization (BBDuk, entropy 0.8)
-   ↓
-   ├──→ OUTPUT 2: Kraken2-optimized SE reads
-   ↓
-[Step 8] GDPR Strict Filtering (BBDuk, entropy 0.85)
-   ↓
-   └──→ OUTPUT 3: GDPR-compliant reads
+   │
+   ▼
+[Step 1] fastp — adapter trimming + quality filter
+   │
+   ▼
+[Step 2] minimap2 — primary host alignment → extract unmapped pairs
+   │
+   ├──► OUTPUT 1: Assembly-ready PE reads  ──────────────────────►
+   │
+   ▼
+[Step 3] PE → SE conversion  (cat R1 + R2)
+   │
+   ▼
+[Step 4] BBDuk — complexity filter  (entropy 0.7)
+   │
+   ▼
+[Step 5] BBDuk — length filter  (≥ 50 bp)
+   │
+   ▼
+[Step 6] Bowtie2 — secondary host alignment → extract unmapped
+   │
+   ▼
+[Step 7] BBDuk — normalization  (entropy 0.7)
+   │
+   ├──► OUTPUT 2: Profiling SE reads  ────────────────────────────►
+   │
+   ▼
+[Step 8] BBDuk — GDPR strict filter  (entropy 0.85, length ≥ 90)
+   │
+   └──► OUTPUT 3: GDPR-compliant reads  ─────────────────────────►
 ```
 
 ---
 
 ## 📈 Performance
 
-**Test Dataset:** SRR6062009 (1,863,630 read pairs)
+Tested on **SRR6062009** (1,863,630 read pairs, 8 threads):
 
 | Metric | Value |
 |--------|-------|
-| Runtime | 7.2 minutes (4 threads) |
-| Input | 1,863,630 pairs |
-| OUTPUT 1 | 1,812,107 pairs (97.2%) |
-| OUTPUT 2 | 3,623,334 reads |
-| OUTPUT 3 | 3,622,848 reads |
-| Memory usage | <8GB |
+| Total runtime | ~11 min |
+| OUTPUT 1 (Assembly PE) | 1,811,850 pairs (97.2% retained) |
+| OUTPUT 2 (Profiling SE) | 3,623,586 reads |
+| OUTPUT 3 (GDPR) | 3,623,327 reads |
+| Human contamination removed | 0.02% (test with full genome) |
+| Peak memory | < 8 GB |
 
-**Note:** 0% human contamination in test run because chromosome 1 reference was used. Expect 1-10% contamination with full genome reference depending on sample type.
+---
+
+## 🏗️ Architecture
+
+```
+Host_Buster/                     ← git repo root
+├── setup.py                     ← pip entry-point
+├── environment.yml              ← conda deps
+├── benchmark/                   ← performance data
+├── tests/                       ← pytest suite
+└── decontaminer/                ← installable package
+    ├── __init__.py              ← version, public API
+    ├── __main__.py              ← python -m decontaminer
+    ├── cli.py                   ← argparse CLI
+    ├── database.py              ← index download / build / list
+    ├── pipeline.py              ← 8-step orchestrator
+    ├── filters.py               ← fastp + BBDuk wrappers
+    ├── aligners.py              ← minimap2 + bowtie2 + samtools
+    ├── stats.py                 ← JSON stats collector
+    └── utils.py                 ← logging, read counting, shell exec
+```
+
+### Key improvements over HostBuster
+
+| HostBuster | DecontaMiner |
+|------------|--------------|
+| Single monolithic `hostebuster.py` | 9 focused modules |
+| Hardcoded index paths | `DatabaseManager` — auto-download, custom indices, versioning |
+| No index versioning | `db_version.json` + `--lx` listing |
+| Manual `setup.sh` | `pip install -e .` → global `decontaminer` command |
+| Fixed parameters | All thresholds tunable via CLI |
 
 ---
 
 ## 🛠️ Troubleshooting
 
-### Issue: "Minimap2 index not found"
-**Solution:** Build the minimap2 index first:
+**"Index 'standard' not found"**
+Run `decontaminer --build` to download and index T2T-CHM13v2.0.
+
+**"decontaminer: command not found"**
+Make sure you activated the env and installed the package:
 ```bash
-minimap2 -x sr -d reference/indices/human.mmi reference/your_reference.fasta
+conda activate decontaminer
+cd /path/to/Host_Buster
+pip install -e .
 ```
 
-### Issue: "Bowtie2 index not found"
-**Solution:** Build the Bowtie2 index:
+**Out of memory**
+Reduce threads (`-t 2`) or close other applications. Peak usage is < 8 GB on the test set.
+
+**OUTPUT 2 / OUTPUT 3 have 0 reads**
+Your reads may be very short. Lower `--bblen` and `--gdpr-minlen`.
+
+---
+
+## 🧪 Running Tests
+
 ```bash
-bowtie2-build reference/your_reference.fasta reference/indices/human_bt2
+conda activate decontaminer
+cd Host_Buster
+pip install pytest
+pytest tests/ -v
 ```
-
-### Issue: Out of memory
-**Solutions:**
-1. Reduce thread count: `--threads 2`
-2. Use chromosome 1 reference for testing
-3. Close other applications
-4. Upgrade to 16GB+ RAM
-
-### Issue: OUTPUT 2 or OUTPUT 3 have 0 reads
-**Cause:** BBDuk length filtering too strict
-**Solution:** Your reads may be longer than 200bp. Check read length distribution and adjust parameters in the code if needed.
-
-### Issue: MultiQC warnings
-**Note:** The fastp plot warnings in MultiQC are cosmetic and don't affect functionality.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/YourFeature`)
+3. Commit and push
+4. Open a Pull Request
 
 ---
 
 ## 📝 Citation
-
-If you use HostBuster in your research, please cite:
 
 ```
 [Citation information will be added upon publication]
@@ -296,32 +294,24 @@ If you use HostBuster in your research, please cite:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT — see [LICENSE](LICENSE)
 
 ---
 
 ## 🙏 Acknowledgments
 
 - T2T-CHM13 Consortium for the reference genome
-- Developers of minimap2, Bowtie2, fastp, BBTools, and samtools
+- Developers of minimap2, Bowtie2, fastp, BBTools, samtools
 - Inspired by [KneadData](https://github.com/biobakery/kneaddata) and [clean](https://github.com/rki-mf1/clean)
-
----
-
-## 📧 Contact
-
-- **Issues:** [GitHub Issues](https://github.com/sintetico87/hostbuster/issues)
-- **Author:** HostBuster Team
 
 ---
 
 ## 🔗 Related Projects
 
-- [KneadData](https://github.com/biobakery/kneaddata) - Quality control for metagenomics
-- [clean](https://github.com/rki-mf1/clean) - Nextflow decontamination pipeline
-- [Kraken2](https://github.com/DerrickWood/kraken2) - Taxonomic classification
-- [MetaPhlAn](https://github.com/biobakery/MetaPhlAn) - Metagenomic profiling
+- [KneadData](https://github.com/biobakery/kneaddata) — Quality control for metagenomics
+- [Kraken2](https://github.com/DerrickWood/kraken2) — Taxonomic classification
+- [MetaPhlAn](https://github.com/biobakery/MetaPhlAn) — Metagenomic profiling
 
 ---
 
-**Made with ❤️ for the metagenomics community**
+*Made with ❤️ for the metagenomics community*

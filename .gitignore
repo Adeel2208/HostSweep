@@ -2,52 +2,39 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
 *.egg-info/
 dist/
 build/
+*.egg
 
-# Results and data (don't commit large files)
+# Conda
+.conda/
+
+# Data & results (large files)
+data/
 results/
-data/*.fastq.gz
-data/*.fq.gz
+*.fastq.gz
+*.fq.gz
 *.bam
 *.sam
-*.bai
+*.mmi
+*.bt2
+*.bt2l
 
-# Reference genomes (too large for git)
-reference/*.fasta
-reference/*.fa
-reference/*.fna
-reference/indices/*.mmi
-reference/indices/*.bt2
-reference/indices/*.bt2l
-
-# Keep structure but not content
-!reference/.gitkeep
-!data/.gitkeep
+# Reference genomes (multi-GB)
+reference/
+*.fasta
+*.fna
+*.fa
 
 # Logs
 *.log
-logs/
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
-*.swo
 
 # OS
 .DS_Store
 Thumbs.db
-
-# Temporary files
-temp/
-tmp/
-*.tmp
-
-# Backup files
-*.backup
-*.backup[0-9]
-*.bak
