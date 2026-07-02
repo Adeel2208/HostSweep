@@ -1,4 +1,4 @@
-"""Entry point for python -m decontaminer"""
+"""Entry point for python -m hostsweep"""
 from .cli import main
 
 if __name__ == '__main__':

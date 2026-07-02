@@ -1,4 +1,4 @@
-"""Utility functions for DecontaMiner"""
+"""Utility functions for HostSweep"""
 import os
 import gzip
 import subprocess

@@ -1,4 +1,4 @@
-"""Main DecontaMiner pipeline class"""
+"""Main HostSweep pipeline class"""
 import os
 import sys
 import time
@@ -16,8 +16,8 @@ from .aligners import (run_minimap2, run_bowtie2, sort_bam,
                        get_alignment_stats)
 
 
-class DecontaMiner:
-    """Main pipeline orchestrator — 8-step human DNA decontamination"""
+class HostSweep:
+    """Main pipeline orchestrator — dual-pass human DNA decontamination with tiered outputs"""
 
     def __init__(self, args):
         self.args = args
@@ -30,10 +30,10 @@ class DecontaMiner:
         """Configure logging"""
         Path(self.args.output_dir).mkdir(parents=True, exist_ok=True)
         log_file = os.path.join(self.args.output_dir,
-                                f"decontaminer_{self.args.sample_name}.log")
+                                f"hostsweep_{self.args.sample_name}.log")
         level = logging.DEBUG if self.args.verbose else logging.INFO
-        self.logger = setup_logger('decontaminer', log_file, level)
-        self.logger.info(f"DecontaMiner v{__version__} started")
+        self.logger = setup_logger('hostsweep', log_file, level)
+        self.logger.info(f"HostSweep v{__version__} started")
         self.logger.info(f"Sample: {self.args.sample_name}")
         self.logger.info(f"Threads: {self.args.threads}")
 
@@ -64,7 +64,7 @@ class DecontaMiner:
             return db.get_index_paths(self.args.index_name)
         except FileNotFoundError:
             self.logger.error(f"Index '{self.args.index_name}' not found.")
-            self.logger.error("Run:  decontaminer --build")
+            self.logger.error("Run:  hostsweep --build")
             sys.exit(1)
 
     # ── Main entry ─────────────────────────────────────────

@@ -1,4 +1,4 @@
-"""Command-line interface for DecontaMiner"""
+"""Command-line interface for HostSweep"""
 import sys
 import os
 import argparse
@@ -7,28 +7,28 @@ import multiprocessing
 from pathlib import Path
 from . import __version__
 from .database import DatabaseManager
-from .pipeline import DecontaMiner
+from .pipeline import HostSweep
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description=f'DecontaMiner v{__version__} - Advanced Human DNA Decontamination Pipeline',
+        description=f'HostSweep v{__version__} - Modular dual-pass pipeline for human DNA decontamination',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Basic usage (standard index, auto-download if needed)
-  decontaminer -1 sample_R1.fq.gz -2 sample_R2.fq.gz -n my_sample -o results/
+  hostsweep -1 sample_R1.fq.gz -2 sample_R2.fq.gz -n my_sample -o results/
 
   # With custom index
-  decontaminer -1 sample_R1.fq.gz -2 sample_R2.fq.gz -n my_sample -o results/ -i custom_ref
+  hostsweep -1 sample_R1.fq.gz -2 sample_R2.fq.gz -n my_sample -o results/ -i custom_ref
 
   # Build custom index
-  decontaminer --build --ix my_custom --ref my_reference.fasta -t 32
+  hostsweep --build --ix my_custom --ref my_reference.fasta -t 32
 
   # List available indices
-  decontaminer --lx
+  hostsweep --lx
 
-For more information: https://github.com/Adeel2208/Host_Buster
+For more information: https://github.com/Adeel2208/HostSweep
         """
     )
 
@@ -97,8 +97,8 @@ For more information: https://github.com/Adeel2208/Host_Buster
         indices = db.list_indices()
         if not indices:
             print("No index databases found.")
-            print("  Build standard:  decontaminer --build")
-            print("  Build custom:    decontaminer --build --ix myname --ref ref.fa")
+            print("  Build standard:  hostsweep --build")
+            print("  Build custom:    hostsweep --build --ix myname --ref ref.fa")
         else:
             print(f"{'Name':<20} {'Minimap2':<10} {'Bowtie2':<10} {'Reference'}")
             print("-" * 60)
@@ -142,5 +142,5 @@ For more information: https://github.com/Adeel2208/Host_Buster
             sys.exit(1)
 
     # ── Launch pipeline ──────────────────────────────────
-    pipeline = DecontaMiner(args)
+    pipeline = HostSweep(args)
     pipeline.run()

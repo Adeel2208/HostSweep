@@ -20,7 +20,7 @@ class DatabaseManager:
 
     def __init__(self, env_path=None):
         self.env_path = env_path or self.get_conda_env_path()
-        self.db_base = Path(self.env_path) / "share" / "decontaminer" / "databases"
+        self.db_base = Path(self.env_path) / "share" / "hostsweep" / "databases"
         self.db_base.mkdir(parents=True, exist_ok=True)
 
         self.standard_path = self.db_base / "standard"
@@ -33,7 +33,7 @@ class DatabaseManager:
         if 'CONDA_PREFIX' in os.environ:
             return os.environ['CONDA_PREFIX']
         else:
-            return str(Path.home() / ".decontaminer")
+            return str(Path.home() / ".hostsweep")
 
     def get_db_version(self):
         if self.version_file.exists():
@@ -46,7 +46,7 @@ class DatabaseManager:
         versions = self.get_db_version()
         versions[index_name] = {
             **info,
-            "decontaminer_version": __version__,
+            "hostsweep_version": __version__,
             "created_at": datetime.now().isoformat()
         }
         with open(self.version_file, 'w') as f:
@@ -96,7 +96,7 @@ class DatabaseManager:
 
         if not base.exists():
             raise FileNotFoundError(
-                f"Index '{index_name}' not found. Run: decontaminer --build"
+                f"Index '{index_name}' not found. Run: hostsweep --build"
             )
 
         return {

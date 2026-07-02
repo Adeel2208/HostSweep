@@ -1,4 +1,4 @@
-name: decontaminer
+name: hostsweep
 channels:
   - bioconda
   - conda-forge

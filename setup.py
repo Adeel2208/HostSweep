@@ -6,20 +6,21 @@ readme_file = Path(__file__).parent / "README.md"
 long_description = readme_file.read_text() if readme_file.exists() else ""
 
 setup(
-    name='decontaminer',
+    name='hostsweep',
     version='1.0.0',
-    description='Advanced Human DNA Decontamination Pipeline',
+    description='Modular dual-pass pipeline for human DNA decontamination in Illumina metagenomic data',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author='Adeel',
-    url='https://github.com/Adeel2208/Host_Buster',
+    author='Adeel Mukhtar, Umair Tariq, Awais Abdul Khaliq',
+    author_email='umair.tariq@bcu.ac.uk',
+    url='https://github.com/Adeel2208/HostSweep',
     license='MIT',
 
     packages=find_packages(),
 
     entry_points={
         'console_scripts': [
-            'decontaminer=decontaminer.cli:main',
+            'hostsweep=hostsweep.cli:main',
         ],
     },
 
