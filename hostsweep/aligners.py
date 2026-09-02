@@ -32,7 +32,14 @@ def sort_bam(input_bam, output_bam, threads, by_name=False, logger=None, verbose
 
 
 def extract_unmapped_pairs(sorted_bam, output_r1, output_r2, threads, logger, verbose=False):
-    """Extract unmapped read pairs from BAM"""
+    """Extract unmapped read pairs from a name-sorted BAM.
+
+    samtools opens the -1/-2 paths through hts_open, which turns on gzip
+    compression when the filename ends in .gz or .bgzf. These paths therefore
+    receive genuinely compressed FASTQ, matching the .fastq.gz names the
+    pipeline gives them -- no mismatch here (verified against samtools >=1.17,
+    the floor set in environment.yml).
+    """
     cmd = f"""samtools view -@ {threads} -b -f 12 -F 256 {sorted_bam} | \
         samtools fastq -@ {threads} \
         -1 {output_r1} -2 {output_r2} \
@@ -42,13 +49,18 @@ def extract_unmapped_pairs(sorted_bam, output_r1, output_r2, threads, logger, ve
 
 
 def extract_unmapped_single(input_sam, output_fastq, threads, logger, verbose=False):
-    """Extract unmapped reads from SAM (single-end)"""
-    cmd = f"""samtools view -@ {threads} -b -f 4 {input_sam} | \
-        samtools fastq -@ {threads} -"""
+    """Extract unmapped reads from a single-end SAM into a compressed FASTQ.
 
-    # Write output to file via shell redirect
-    full_cmd = f"{cmd} > {output_fastq}"
-    run_command(full_cmd, "Extract unmapped single-end", verbose=verbose, logger=logger)
+    Unpaired records carry neither the READ1 nor the READ2 flag, so samtools
+    routes them to the -0 stream. Naming that stream directly (rather than the
+    previous `samtools fastq - > out.fastq.gz` shell redirect) lets samtools
+    apply gzip compression from the .gz suffix. The redirect wrote plain text
+    behind a .gz name, which made count_reads() and BBDuk fail on the result.
+    """
+    cmd = f"""samtools view -@ {threads} -b -f 4 {input_sam} | \
+        samtools fastq -@ {threads} -0 {output_fastq} -n -"""
+
+    run_command(cmd, "Extract unmapped single-end", verbose=verbose, logger=logger)
 
 
 def get_alignment_stats(bam_file, logger=None, verbose=False):

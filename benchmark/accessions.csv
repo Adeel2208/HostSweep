@@ -1,0 +1,17 @@
+# HostSweep real-library benchmark panel.
+#
+# INCOMPLETE: this file currently contains only the two runs cited by name in
+# the repository's own documentation. The full 30-library panel is listed in
+# Supplementary Table S1 of the manuscript; paste the verified Run accessions
+# here before publishing, keeping the column order below. Rows beginning with
+# '#' and blank lines are ignored by scripts/download_sra.sh.
+#
+# Category values used in the manuscript, with the contamination ranges
+# reported there:
+#   environmental  0.01-0.05%    gut  0.08-0.34%     oral  0.21-1.97%
+#   skin           1.12-6.40%    respiratory 4.18-15.78%
+#   urogenital     2.66-11.30%   blood 18.40-45.23%
+#
+Run,Category,BioProject,ReadPairs,HumanFractionPercent,Notes
+SRR6062009,,,1860000,,"Runtime/memory reference library cited in README; confirm category and BioProject against Supplementary Table S1"
+SRR14235678,,,,12.35,"Ablation-study library cited in README; confirm category and BioProject against Supplementary Table S1"

@@ -12,7 +12,8 @@ from .pipeline import HostSweep
 
 def main():
     parser = argparse.ArgumentParser(
-        description=f'HostSweep v{__version__} - Modular dual-pass pipeline for human DNA decontamination',
+        description=(f'HostSweep v{__version__} - Modular dual-pass workflow for '
+                     'reducing human read content in Illumina metagenomic data'),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -75,12 +76,17 @@ For more information: https://github.com/Adeel2208/HostSweep
     # ── BBDuk parameters ─────────────────────────────────
     parser.add_argument('--bbe', dest='bbduk_entropy', type=float, default=0.7,
                        help='BBDuk entropy for complexity/normalization (default: 0.7)')
-    parser.add_argument('--bbeg', dest='bbduk_gdpr_entropy', type=float, default=0.85,
-                       help='BBDuk entropy for GDPR filter (default: 0.85)')
+    parser.add_argument('--bbeg', dest='bbduk_stringent_entropy', type=float, default=0.85,
+                       help='BBDuk entropy for the high-stringency filter (default: 0.85)')
     parser.add_argument('--bblen', dest='bbduk_min_length', type=int, default=50,
                        help='BBDuk minimum length filter (default: 50)')
-    parser.add_argument('--gdpr-minlen', dest='gdpr_min_length', type=int, default=90,
-                       help='GDPR output minimum read length (default: 90)')
+    parser.add_argument('--stringent-minlen', dest='stringent_min_length', type=int, default=90,
+                       help='High-stringency output minimum read length (default: 90)')
+    # Deprecated spelling, retained so existing scripts keep working. argparse
+    # assigns a default only for the first action bound to a dest, so the
+    # default above is the one that applies.
+    parser.add_argument('--gdpr-minlen', dest='stringent_min_length', type=int,
+                       help=argparse.SUPPRESS)
 
     # ── Misc ─────────────────────────────────────────────
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -90,6 +96,10 @@ For more information: https://github.com/Adeel2208/HostSweep
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
 
     args = parser.parse_args()
+
+    if any(a == '--gdpr-minlen' or a.startswith('--gdpr-minlen=') for a in sys.argv[1:]):
+        print("Warning: --gdpr-minlen is deprecated; use --stringent-minlen instead.",
+              file=sys.stderr)
 
     # ── Handle --lx (list indices) ───────────────────────
     if args.list_index:

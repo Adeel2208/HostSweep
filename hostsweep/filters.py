@@ -1,5 +1,11 @@
 """Quality filtering functions"""
+import os
 from .utils import run_command
+
+# BBDuk runs on the JVM and will refuse to start if the requested heap exceeds
+# available memory. 8g suits the documented 16 GB recommendation; small runners
+# and constrained machines can lower it without editing the source.
+BBDUK_MEM = os.environ.get("HOSTSWEEP_BBDUK_MEM", "8g")
 
 
 def run_fastp(input_r1, input_r2, output_r1, output_r2,
@@ -27,7 +33,7 @@ def run_bbduk_complexity(input_file, output_file, entropy, threads, logger, verb
         out={output_file} \
         entropy={entropy} \
         threads={threads} \
-        -Xmx8g"""
+        -Xmx{BBDUK_MEM}"""
 
     run_command(cmd, "BBDuk complexity filtering", verbose=verbose, logger=logger)
 
@@ -39,7 +45,7 @@ def run_bbduk_length(input_file, output_file, min_length, threads, logger, verbo
         out={output_file} \
         minlen={min_length} \
         threads={threads} \
-        -Xmx8g"""
+        -Xmx{BBDUK_MEM}"""
 
     run_command(cmd, "BBDuk length filtering", verbose=verbose, logger=logger)
 
@@ -51,19 +57,19 @@ def run_bbduk_normalize(input_file, output_file, entropy, threads, logger, verbo
         out={output_file} \
         entropy={entropy} \
         threads={threads} \
-        -Xmx8g"""
+        -Xmx{BBDUK_MEM}"""
 
     run_command(cmd, "BBDuk normalization", verbose=verbose, logger=logger)
 
 
-def run_bbduk_gdpr(input_file, output_file, entropy, min_length, threads, logger, verbose=False):
-    """Run BBDuk GDPR strict filtering (entropy + length)"""
+def run_bbduk_stringent(input_file, output_file, entropy, min_length, threads, logger, verbose=False):
+    """Run the high-stringency BBDuk filter (entropy + minimum length)"""
     cmd = f"""bbduk.sh \
         in={input_file} \
         out={output_file} \
         entropy={entropy} \
         minlen={min_length} \
         threads={threads} \
-        -Xmx8g"""
+        -Xmx{BBDUK_MEM}"""
 
-    run_command(cmd, "BBDuk GDPR filtering", verbose=verbose, logger=logger)
+    run_command(cmd, "BBDuk high-stringency filtering", verbose=verbose, logger=logger)

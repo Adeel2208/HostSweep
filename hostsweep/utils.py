@@ -1,8 +1,20 @@
 """Utility functions for HostSweep"""
 import os
 import gzip
+import shutil
 import subprocess
 import logging
+
+# Every alignment/extraction step is a shell pipeline. POSIX sh reports only the
+# exit status of the last stage, so a failing samtools upstream of a succeeding
+# samtools downstream would go unnoticed and leave a valid-but-empty file.
+# bash's pipefail surfaces the first failure instead. Falls back to plain sh if
+# bash is unavailable.
+#
+# Restricted to POSIX: on Windows, shell=True builds "%COMSPEC% /c <cmd>" and
+# `executable` replaces COMSPEC, which would hand bash cmd.exe's flags. The
+# pipeline's external tools are Linux/macOS-only anyway.
+_BASH = shutil.which("bash") if os.name != "nt" else None
 
 
 def count_reads(fastq_file):
@@ -28,14 +40,19 @@ def run_command(cmd, description, capture_output=False, verbose=False, logger=No
         logger.info(f"Running: {description}")
         logger.debug(f"Command: {cmd}")
 
+    run_kwargs = {}
+    if _BASH:
+        cmd = f"set -o pipefail; {cmd}"
+        run_kwargs['executable'] = _BASH
+
     try:
         if capture_output:
             result = subprocess.run(cmd, shell=True, capture_output=True,
-                                  text=True, check=True)
+                                  text=True, check=True, **run_kwargs)
             return result.stdout
         else:
             result = subprocess.run(cmd, shell=True, capture_output=True,
-                                  text=True, check=True)
+                                  text=True, check=True, **run_kwargs)
             if verbose and result.stdout and logger:
                 logger.debug(f"stdout: {result.stdout}")
             if result.stderr and logger:
@@ -53,6 +70,12 @@ def setup_logger(name, log_file, level=logging.INFO):
     """Create and configure logger"""
     logger = logging.getLogger(name)
     logger.setLevel(level)
+
+    # Loggers are process-global, so a second HostSweep instance in the same
+    # process would otherwise stack handlers and duplicate every line.
+    for handler in list(logger.handlers):
+        logger.removeHandler(handler)
+        handler.close()
 
     # File handler
     fh = logging.FileHandler(log_file)

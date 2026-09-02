@@ -8,7 +8,8 @@ long_description = readme_file.read_text() if readme_file.exists() else ""
 setup(
     name='hostsweep',
     version='1.0.0',
-    description='Modular dual-pass pipeline for human DNA decontamination in Illumina metagenomic data',
+    description=('Modular dual-pass workflow for reducing human read content '
+                 'in Illumina metagenomic data'),
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Adeel Mukhtar, Umair Tariq, Awais Abdul Khaliq',
@@ -16,7 +17,9 @@ setup(
     url='https://github.com/Adeel2208/HostSweep',
     license='MIT',
 
-    packages=find_packages(),
+    # Explicit include: tests/ has an __init__.py, so a bare find_packages()
+    # would install a top-level `tests` package alongside `hostsweep`.
+    packages=find_packages(include=['hostsweep', 'hostsweep.*']),
 
     entry_points={
         'console_scripts': [

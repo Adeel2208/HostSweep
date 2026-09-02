@@ -74,7 +74,9 @@ class DatabaseManager:
             for item in self.custom_path.iterdir():
                 if item.is_dir():
                     indices.append({
-                        "name": f"custom/{item.name}",
+                        # Printed name must be usable verbatim as `-i`, which
+                        # get_index_paths() resolves under custom_path.
+                        "name": item.name,
                         "path": str(item),
                         "minimap2": (item / "index.mmi").exists(),
                         "bowtie2": (item / "index_bt2.1.bt2").exists(),

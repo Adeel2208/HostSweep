@@ -37,10 +37,12 @@ def test_count_reads_missing_file():
     assert count_reads("/nonexistent/path/file.fastq.gz") == 0
 
 
-def test_database_manager_init():
+def test_database_manager_init(tmp_path):
     """DatabaseManager initialises without crashing"""
     from hostsweep.database import DatabaseManager
-    db = DatabaseManager(env_path="/tmp/test_hostsweep_env")
+    # tmp_path rather than a hardcoded /tmp path: keeps the test hermetic (the
+    # empty-index assertion below fails on a re-used directory) and portable.
+    db = DatabaseManager(env_path=str(tmp_path))
     assert db.db_base.exists()
     # No indices yet
     assert db.list_indices() == []

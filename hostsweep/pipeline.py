@@ -10,7 +10,7 @@ from .utils import count_reads, setup_logger
 from .stats import StatsCollector
 from .database import DatabaseManager
 from .filters import (run_fastp, run_bbduk_complexity, run_bbduk_length,
-                      run_bbduk_normalize, run_bbduk_gdpr)
+                      run_bbduk_normalize, run_bbduk_stringent)
 from .aligners import (run_minimap2, run_bowtie2, sort_bam,
                        extract_unmapped_pairs, extract_unmapped_single,
                        get_alignment_stats)
@@ -195,20 +195,20 @@ class HostSweep:
                          f"(retained {step7['retention']:.2f}%)")
         self.logger.info(f"  >>> OUTPUT 2 (Profiling SE): {profiling_reads:,} reads")
 
-        # ── Step 8: BBDuk GDPR filter → OUTPUT 3 ─────────
-        self.logger.info("\n[Step 8] GDPR strict filter (BBDuk)")
-        gdpr_out = self._p('cleaned', f'{n}_GDPR.fastq.gz')
+        # ── Step 8: BBDuk high-stringency filter → OUTPUT 3 ─
+        self.logger.info("\n[Step 8] High-stringency filter (BBDuk)")
+        stringent_out = self._p('cleaned', f'{n}_STRINGENT.fastq.gz')
 
-        run_bbduk_gdpr(profiling_out, gdpr_out,
-                       self.args.bbduk_gdpr_entropy,
-                       self.args.gdpr_min_length, t,
-                       self.logger, self.args.verbose)
+        run_bbduk_stringent(profiling_out, stringent_out,
+                            self.args.bbduk_stringent_entropy,
+                            self.args.stringent_min_length, t,
+                            self.logger, self.args.verbose)
 
-        gdpr_reads = count_reads(gdpr_out)
-        step8 = self.stats.log_step("step8_gdpr", profiling_reads, gdpr_reads)
-        self.logger.info(f"  After GDPR filter: {gdpr_reads:,} "
+        stringent_reads = count_reads(stringent_out)
+        step8 = self.stats.log_step("step8_stringent", profiling_reads, stringent_reads)
+        self.logger.info(f"  After high-stringency filter: {stringent_reads:,} "
                          f"(retained {step8['retention']:.2f}%)")
-        self.logger.info(f"  >>> OUTPUT 3 (GDPR): {gdpr_reads:,} reads")
+        self.logger.info(f"  >>> OUTPUT 3 (High-stringency SE): {stringent_reads:,} reads")
 
         # ── Cleanup intermediates ─────────────────────────
         if not self.args.keep_intermediates:
@@ -228,7 +228,7 @@ class HostSweep:
         self.logger.info(f"  OUTPUT 1 (Assembly PE):  {assembly_r1}")
         self.logger.info(f"                           {assembly_r2}")
         self.logger.info(f"  OUTPUT 2 (Profiling SE): {profiling_out}")
-        self.logger.info(f"  OUTPUT 3 (GDPR):         {gdpr_out}")
+        self.logger.info(f"  OUTPUT 3 (High-stringency SE): {stringent_out}")
         self.logger.info("=" * 60)
 
     def _cleanup(self):
