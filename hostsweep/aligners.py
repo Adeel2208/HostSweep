@@ -49,18 +49,27 @@ def extract_unmapped_pairs(sorted_bam, output_r1, output_r2, threads, logger, ve
 
 
 def extract_unmapped_single(input_sam, output_fastq, threads, logger, verbose=False):
-    """Extract unmapped reads from a single-end SAM into a compressed FASTQ.
+    """Extract unmapped reads from a single-end SAM into a FASTQ.
 
-    Unpaired records carry neither the READ1 nor the READ2 flag, so samtools
-    routes them to the -0 stream. Naming that stream directly (rather than the
-    previous `samtools fastq - > out.fastq.gz` shell redirect) lets samtools
-    apply gzip compression from the .gz suffix. The redirect wrote plain text
+    The original `samtools fastq - > out.fastq.gz` redirect wrote plain text
     behind a .gz name, which made count_reads() and BBDuk fail on the result.
-    """
-    cmd = f"""samtools view -@ {threads} -b -f 4 {input_sam} | \
-        samtools fastq -@ {threads} -0 {output_fastq} -n -"""
+    Compression is now explicit -- an external gzip stage whenever the
+    destination ends in .gz, a plain redirect otherwise. Doing it in the shell
+    rather than leaning on samtools' filename-suffix detection keeps the
+    behaviour identical across samtools builds.
 
-    run_command(cmd, "Extract unmapped single-end", verbose=verbose, logger=logger)
+    -n keeps read names verbatim (no /1 or /2 suffix), which the benchmark's
+    origin labels depend on.
+    """
+    view  = f"samtools view -@ {threads} -b -f 4 {input_sam}"
+    fastq = f"samtools fastq -@ {threads} -n -"
+
+    if str(output_fastq).endswith('.gz'):
+        full_cmd = f"{view} | {fastq} | gzip > {output_fastq}"
+    else:
+        full_cmd = f"{view} | {fastq} > {output_fastq}"
+
+    run_command(full_cmd, "Extract unmapped single-end", verbose=verbose, logger=logger)
 
 
 def get_alignment_stats(bam_file, logger=None, verbose=False):

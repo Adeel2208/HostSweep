@@ -139,6 +139,11 @@ def test_end_to_end_produces_three_tiers(tmp_path, monkeypatch):
     ]
     for path in expected:
         assert path.exists(), "missing expected output: %s" % path
+        # Every cleaned output is named .fastq.gz, so every one must be real
+        # gzip: the PE tier gets compression from samtools' own suffix handling,
+        # the SE tiers from an explicit gzip stage and from BBDuk.
+        with open(path, "rb") as fh:
+            assert fh.read(2) == b"\x1f\x8b", "%s is not gzip-compressed" % path
 
     # No output may carry the retired GDPR name.
     assert not list(cleaned.glob("*GDPR*"))
@@ -160,7 +165,8 @@ def test_bowtie2_intermediate_is_real_gzip(tmp_path, monkeypatch):
     """Regression test for the samtools fastq / .gz mismatch.
 
     The Bowtie2 unmapped intermediate is named *.fastq.gz. It previously held
-    plain text, so count_reads() raised BadGzipFile here.
+    plain text, so count_reads() raised BadGzipFile here. This asserts on the
+    bytes actually written, so it holds however the command compresses them.
     """
     from hostsweep.utils import count_reads
 
@@ -176,12 +182,28 @@ def test_bowtie2_intermediate_is_real_gzip(tmp_path, monkeypatch):
     count_reads(intermediate)
 
 
-def test_extract_unmapped_single_writes_named_output():
+def test_extract_unmapped_single_compresses_gz_output():
     """Unit-level guard for the fix; runs without any external tools.
 
-    The command must hand the output path to samtools (which compresses based
-    on the .gz suffix) rather than shell-redirecting uncompressed stdout.
+    A .gz destination must go through an explicit gzip stage. The old command
+    shell-redirected samtools' uncompressed stdout straight into the .gz name.
     """
+    cmd = _capture_extract_single("/out/sample_bt2_unmapped.fastq.gz")
+
+    assert "samtools fastq" in cmd, cmd
+    assert cmd.rstrip().endswith("| gzip > /out/sample_bt2_unmapped.fastq.gz"), cmd
+
+
+def test_extract_unmapped_single_plain_output_is_not_gzipped():
+    """A destination without .gz must stay uncompressed."""
+    cmd = _capture_extract_single("/out/sample_bt2_unmapped.fastq")
+
+    assert "gzip" not in cmd, cmd
+    assert cmd.rstrip().endswith("> /out/sample_bt2_unmapped.fastq"), cmd
+
+
+def _capture_extract_single(output_path):
+    """Run extract_unmapped_single with run_command stubbed; return the command."""
     from hostsweep import aligners
 
     captured = {}
@@ -193,17 +215,11 @@ def test_extract_unmapped_single_writes_named_output():
     original = aligners.run_command
     aligners.run_command = fake_run_command
     try:
-        aligners.extract_unmapped_single(
-            "in.sam", "/out/sample_bt2_unmapped.fastq.gz", 4, logger=None
-        )
+        aligners.extract_unmapped_single("in.sam", output_path, 4, logger=None)
     finally:
         aligners.run_command = original
 
-    cmd = captured["cmd"]
-    assert "-0 /out/sample_bt2_unmapped.fastq.gz" in cmd, cmd
-    assert "> /out/sample_bt2_unmapped.fastq.gz" not in cmd, (
-        "output is still being shell-redirected as uncompressed text"
-    )
+    return captured["cmd"]
 
 
 def test_no_gdpr_in_cli_help(capsys):
