@@ -28,17 +28,21 @@ from pathlib import Path
 
 # Human sources for the mismatch arm, recorded so the manifest CSV carries the
 # exact assembly each library was built from.
+# All three are HPRC Year 1 f1_assembly_v2, primary/maternal haplotype,
+# hifiasm v0.14, UCSC Genomics Institute -- one assembly project and one
+# assembler version, so "reference mismatch" is not confounded with
+# "different assembler". Only the population differs (CHS / PUR / YRI).
 HUMAN_SOURCE = {
-    "SYN-NEU-01": ("HG00514", ""),
-    "SYN-NEU-02": ("HG00733", ""),
-    "SYN-NEU-03": ("NA19240", ""),
+    "SYN-IND-01": ("HG00438", "GCA_018471515.1"),   # Han Chinese South
+    "SYN-NEU-02": ("HG00733", "GCA_018506975.1"),   # Puerto Rican
+    "SYN-NEU-03": ("NA19240", "GCA_018503275.1"),   # Yoruban
 }
 
 
 def condition_of(library):
     if library.startswith("SYN-CHM13"):
         return "synthetic_matched"
-    if library.startswith("SYN-NEU"):
+    if library.startswith("SYN-NEU") or library.startswith("SYN-IND"):
         return "synthetic_mismatch"
     return "real"
 

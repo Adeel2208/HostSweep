@@ -1,0 +1,108 @@
+HPRC Year 1 f1_assembly_v2 search  (NCBI Datasets v2)
+
+======================================================================================
+SAMPLE HG00438
+  GCA_056668655.1    HG00438_haplotype1_hprc_rel2_verkko2_supp Chromosome   3016611047 bp
+      method: verkko2 v. v2.2.1                      submitter: NHGRI/NIH
+  GCA_018472595.2    HG00438_pat_hprc_f2            Chromosome   3030495477 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_018471515.3    HG00438_mat_hprc_f2            Chromosome   3029848475 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_018471515.2    HG00438_mat_hprc_f2            Chromosome   3029848475 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_056668635.1    HG00438_haplotype2_hprc_rel2_verkko2_supp Chromosome   3027643412 bp
+      method: verkko2 v. v2.2.1                      submitter: NHGRI/NIH
+  GCA_018471515.1    HG00438.pri.mat.f1_v2          Contig       3035719151 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_018472595.1    HG00438.alt.pat.f1_v2          Scaffold     3025118465 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+======================================================================================
+SAMPLE HG00733
+  GCA_056668155.1    HG00733_haplotype1_hprc_rel2_verkko2_supp Chromosome   3031897038 bp
+      method: verkko2 v. v2.2.1                      submitter: NHGRI/NIH
+  GCA_056668115.1    HG00733_haplotype2_hprc_rel2_verkko2_supp Chromosome   3018534350 bp
+      method: verkko2 v. v2.2.1                      submitter: NHGRI/NIH
+  GCA_018506955.2    HG00733_pat_hprc_f2            Chromosome   3035753094 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_056691395.1    HG00733_hap2                   Chromosome   3030498531 bp
+      method: GS De Novo Assembler v. v1.4.1         submitter: University of Pennsylvania
+  GCA_018506975.3    HG00733_mat_hprc_f2            Chromosome   3041642981 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_018506975.2    HG00733_mat_hprc_f2            Chromosome   3041642981 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_056691405.1    HG00733_hap1                   Chromosome   3074311470 bp
+      method: GS De Novo Assembler v. v1.4.1         submitter: University of Pennsylvania
+  GCA_003634875.1    HG00733_Phased_Diploid         Chromosome   2893174212 bp
+      method: FALCON-Unzip v. July-2018; FALCON-Phas submitter: Pacific Biosciences
+  GCA_018506975.1    HG00733.pri.mat.f1_v2          Scaffold     3026516595 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_018506955.1    HG00733.alt.pat.f1_v2          Scaffold     3042264782 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_012067775.1    HG00733.Unzip_primary          Contig       2893496562 bp
+      method: FALCON-Unzip v. August 13, 2018        submitter: PacBio
+  GCA_012067855.1    HG00733.phase0_contigs         Contig       2894250340 bp
+      method: FALCON-Unzip, FALCON-Phase v. 13-Aug-1 submitter: PacBio
+  GCA_012067805.1    HG00733.phase1_contigs         Contig       2894589963 bp
+      method: FALCON-Unzip, FALCON-Phase v. 13-Aug-1 submitter: PacBio
+  GCA_002208065.1    HG00733_prelim_1.0             Contig       2882001880 bp
+      method: FALCON-integrate v. 1.7.5              submitter: The Genome Institute at Washington
+  GCA_002022865.1    10x.supernova.msHG00733        Scaffold     2845973193 bp
+      method: Supernova v. 1.1-7248bed               submitter: 10x Genomics
+  GCA_964662795.1    HG00733.v1.hifiasm.ENAUpload   Contig       6439095148 bp
+      method: Verkko v2.0                            submitter: Human Genome Structural Variation 
+  GCA_012069745.1    HG00733.Unzip_haplotigs        Contig       2432727060 bp
+      method: FALCON-Unzip v. August 13, 2018        submitter: PacBio
+  GCA_003709675.1    HG00733_EEE_SV-Pop.1           Contig        819663027 bp
+      method: Celera Assembler v. 8.3rc2             submitter: University of Washington
+======================================================================================
+SAMPLE NA19240
+  GCA_056689565.1    NA19240_hap2                   Chromosome   3025577071 bp
+      method: GS De Novo Assembler v. v1.4.1         submitter: University of Pennsylvania
+  GCA_056689575.1    NA19240_hap1                   Chromosome   3080442655 bp
+      method: GS De Novo Assembler v. v1.4.1         submitter: University of Pennsylvania
+  GCA_018503265.2    NA19240_pat_hprc_f2            Chromosome   3038833213 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_018503275.3    NA19240_mat_hprc_f2            Chromosome   3024634577 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_018503275.2    NA19240_mat_hprc_f2            Chromosome   3024634577 bp
+      method: Hifiasm v. 0.19.9                      submitter: UCSC Genomics Institute
+  GCA_001524155.4    NA19240_prelim_3.0             Chromosome   3088495238 bp
+      method: Falcon v. November 2016                submitter: The Genome Institute at Washington
+  GCA_001524155.1    Hs_NA19240-1.0                 Chromosome   3078993553 bp
+      method: Falcon v. September 2015               submitter: The Genome Institute at Washington
+  GCA_018503275.1    NA19240.pri.mat.f1_v2          Scaffold     3032049516 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_001524155.3    NA19240_prelim_2.1             Contig       2874719792 bp
+      method: Falcon v. November 2016                submitter: The Genome Institute at Washington
+  GCA_001524155.2    NA19240_prelim_2.0             Contig       2874719792 bp
+      method: Falcon v. November 2016                submitter: The Genome Institute at Washington
+  GCA_018503265.1    NA19240.alt.pat.f1_v2          Scaffold     3038325696 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_002008905.1    NA19240_Illumina_1.0           Scaffold     3076446444 bp
+      method: DiscoVar v. July 2016                  submitter: The Genome Institute at Washington
+  GCA_002022975.1    10x.supernova.msNA19240        Scaffold     2849087881 bp
+      method: Supernova v. 1.1-7248bed               submitter: 10x Genomics
+  GCA_964662935.1    NA19240.v1.hifiasm.ENAUpload   Contig       7171149766 bp
+      method: Verkko v2.0                            submitter: Human Genome Structural Variation 
+  GCA_964659045.1    NA19240_hap1hap2               Contig       6073530551 bp
+      method: hifiasm                                submitter: THE JACKSON LABORATORY
+  GCA_003709685.1    NA19240_EEE_SV-Pop.1           Contig        947146763 bp
+      method: Celera Assembler v. 8.3rc2             submitter: University of Washington
+======================================================================================
+SAMPLE HG00621
+  GCA_018472605.3    HG00621_mat_hprc_f2            Chromosome   3022730155 bp
+      method: Hifiasm v. 0.19.7                      submitter: UCSC Genomics Institute
+  GCA_018472605.2    HG00621_mat_hprc_f2            Chromosome   3022730155 bp
+      method: Hifiasm v. 0.19.7                      submitter: UCSC Genomics Institute
+  GCA_018472575.2    HG00621_pat_hprc_f2            Chromosome   2916144033 bp
+      method: Hifiasm v. 0.19.7                      submitter: UCSC Genomics Institute
+  GCA_056668415.1    HG00621_mat_hprc_rel2_verkko2_supp Chromosome   3020827274 bp
+      method: verkko2 v. v2.2.1                      submitter: NHGRI/NIH
+  GCA_056668365.1    HG00621_pat_hprc_rel2_verkko2_supp Chromosome   2911417878 bp
+      method: verkko2 v. v2.2.1                      submitter: NHGRI/NIH
+  GCA_018472575.1    HG00621.alt.pat.f1_v2          Contig       2905948993 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_018472605.1    HG00621.pri.mat.f1_v2          Contig       3023009501 bp
+      method: Hifiasm v. 0.14                        submitter: UCSC Genomics Institute  <== HPRC Year 1 f1_assembly_v2
+  GCA_964035185.1    HG00621.HIFIRW.ONTUL.na.chrY   Chromosome     51066676 bp
+      method: Verkko v1.0                            submitter: THE JACKSON LABORATORY

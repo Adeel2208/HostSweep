@@ -1,0 +1,30 @@
+############ CATEGORY: urogenital ############
+query: "human urogenital metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy] AND "metagenomic"[Source]
+
+esearch returned 0 UIDs
+No runs matched. Nothing to propose.
+
+############ CATEGORY: respiratory ############
+query: "human respiratory tract metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy] AND "metagenomic"[Source]
+
+esearch returned 0 UIDs
+No runs matched. Nothing to propose.
+
+############ CATEGORY: blood ############
+query: "human blood metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy] AND "metagenomic"[Source]
+
+esearch returned 80 UIDs
+runinfo returned 80 rows
+
+RUN          BIOPROJECT     ORGANISM                                  SPOTS  INSTRUMENT
+DRR960879    PRJDB42081     human blood metagenome               49,576,253  Illumina NovaSeq X
+DRR960837    PRJDB42081     human blood metagenome               48,660,147  Illumina NovaSeq X
+DRR960867    PRJDB42081     human blood metagenome               47,760,277  Illumina NovaSeq X
+DRR960907    PRJDB42081     human blood metagenome               47,751,101  Illumina NovaSeq X
+DRR960899    PRJDB42081     human blood metagenome               47,340,177  Illumina NovaSeq X
+DRR960849    PRJDB42081     human blood metagenome               46,645,568  Illumina NovaSeq X
+DRR960872    PRJDB42081     human blood metagenome               46,333,893  Illumina NovaSeq X
+DRR960850    PRJDB42081     human blood metagenome               45,656,616  Illumina NovaSeq X
+
+80 of 80 candidates satisfy every criterion.
+

@@ -129,9 +129,9 @@ simulate_human() {
 
 say "simulating human reads"
 simulate_human chm13 "$T2T_FASTA" 42
-for spec in "HG00514:$REFS/HG00514_hap1.fna:51" \
-            "HG00733:$REFS/HG00733_hap1.fna:52" \
-            "NA19240:$REFS/NA19240_hap1.fna:53"; do
+for spec in "HG00438:$REFS/HG00438_pri_mat_f1_v2.fna:51" \
+            "HG00733:$REFS/HG00733_pri_mat_f1_v2.fna:52" \
+            "NA19240:$REFS/NA19240_pri_mat_f1_v2.fna:53"; do
     IFS=: read -r TAG FA SEED <<<"$spec"
     simulate_human "$TAG" "$FA" "$SEED" || true
 done
@@ -147,7 +147,7 @@ PANEL="42:SYN-CHM13-01:chm13:0.001
 48:SYN-CHM13-07:chm13:0.40
 49:SYN-CHM13-08:chm13:0.05
 50:SYN-CHM13-09:chm13:0.10
-51:SYN-NEU-01:HG00514:0.01
+51:SYN-IND-01:HG00438:0.01
 52:SYN-NEU-02:HG00733:0.10
 53:SYN-NEU-03:NA19240:0.20"
 

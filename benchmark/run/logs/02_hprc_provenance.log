@@ -1,0 +1,51 @@
+Provenance check on the chosen mismatch-arm assemblies
+(HPRC Year 1, f1_assembly_v2, primary/maternal haplotype)
+
+==============================================================================
+HG00438 (mismatch, replaces HG00514)  ->  GCA_018471515.1
+  assembly name    : HG00438.pri.mat.f1_v2
+  assembly level   : Contig
+  assembly method  : Hifiasm v. 0.14
+  sequencing tech  : PacBio Sequel
+  submitter        : UCSC Genomics Institute
+  release date     : 2021-05-24
+  bioproject       : PRJNA726273
+  biosample        : SAMN17861652
+  total length     : 3035719151 bp
+  contig N50       : 54936949
+  scaffold count   : 257
+  atypical flag    : None
+  biosample.population: Han Chinese South
+  biosample.isolate : HG00438
+==============================================================================
+HG00733  ->  GCA_018506975.1
+  assembly name    : HG00733.pri.mat.f1_v2
+  assembly level   : Scaffold
+  assembly method  : Hifiasm v. 0.14
+  sequencing tech  : PacBio Sequel
+  submitter        : UCSC Genomics Institute
+  release date     : 2021-05-26
+  bioproject       : PRJNA727433
+  biosample        : SAMN00006581
+  total length     : 3026516595 bp
+  contig N50       : 44647564
+  scaffold count   : 608
+  atypical flag    : None
+  biosample.population: PUR
+  biosample.isolate : HG00733
+==============================================================================
+NA19240  ->  GCA_018503275.1
+  assembly name    : NA19240.pri.mat.f1_v2
+  assembly level   : Scaffold
+  assembly method  : Hifiasm v. 0.14
+  sequencing tech  : PacBio Sequel
+  submitter        : UCSC Genomics Institute
+  release date     : 2021-05-26
+  bioproject       : PRJNA727341
+  biosample        : SAMN03838746
+  total length     : 3032049516 bp
+  contig N50       : 28898930
+  scaffold count   : 386
+  atypical flag    : None
+  biosample.population: Yoruban
+  biosample.isolate : NA19240

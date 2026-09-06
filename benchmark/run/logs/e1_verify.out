@@ -1,0 +1,12 @@
+E1 accession verification
+source file : benchmark/accessions.csv
+run count   : 2
+criteria    : Illumina / PAIRED / WGS / METAGENOMIC / >= 1,000,000 spots
+
+  FAIL  SRR6062009   Klebsiella pneumoniae                   1863630 spots  source is 'GENOMIC', not METAGENOMIC
+  FAIL  SRR14235678  soil metagenome                           91000 spots  strategy is 'AMPLICON', not WGS; 91,000 spots, below the 1,000,000 minimum
+
+PASS 0 / 2
+INCOMPLETE: the panel needs 30 runs; 2 are listed in benchmark/accessions.csv.
+
+Wrote benchmark/run/accessions_verified.csv and benchmark/run/verification_log.txt

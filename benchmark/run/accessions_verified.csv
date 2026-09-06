@@ -1,0 +1,3 @@
+run,verdict,bioproject,biosample,organism,library_strategy,library_source,layout,platform,instrument,spots,bases,notes
+SRR6062009,FAIL,PRJNA411762,SAMN07692532,Klebsiella pneumoniae,WGS,GENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 2500,1863630,562492165,"source is 'GENOMIC', not METAGENOMIC"
+SRR14235678,FAIL,PRJNA721832,SAMN17245059,soil metagenome,AMPLICON,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,91000,44221660,"strategy is 'AMPLICON', not WGS; 91,000 spots, below the 1,000,000 minimum"
