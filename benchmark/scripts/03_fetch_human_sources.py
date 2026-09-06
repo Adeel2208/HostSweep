@@ -29,7 +29,9 @@ Usage:
 """
 import argparse
 import json
+import subprocess
 import sys
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -51,10 +53,30 @@ FORBIDDEN_ASSEMBLY_SUBSTRINGS = ("han1",)
 API = "https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/{}"
 
 
+def _curl(url, dest=None, timeout=1800):
+    """Fetch via curl. Returns bytes when dest is None, else writes to dest.
+
+    Python's urllib fails with 'Network is unreachable' inside this WSL2 guest
+    while curl succeeds, so curl is the transport here rather than a fallback
+    bolted on after the fact.
+    """
+    cmd = ["curl", "-fsSL", "--retry", "3", "--max-time", str(timeout),
+           "-H", "User-Agent: HostSweep-benchmark/1.0", url]
+    if dest is not None:
+        cmd += ["-o", str(dest)]
+        subprocess.run(cmd, check=True)
+        return None
+    return subprocess.run(cmd, check=True, stdout=subprocess.PIPE).stdout
+
+
 def fetch_json(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "HostSweep-benchmark/1.0"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.load(r)
+    try:
+        req = urllib.request.Request(
+            url, headers={"User-Agent": "HostSweep-benchmark/1.0"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            return json.load(r)
+    except (urllib.error.URLError, OSError):
+        return json.loads(_curl(url, timeout=120))
 
 
 def provenance(accession):
@@ -82,31 +104,38 @@ def provenance(accession):
     }
 
 
-def download(accession, dest):
-    """Download the genomic FASTA for an accession to dest."""
-    url = (API.format(accession) +
-           "/download?include_annotation_type=GENOME_FASTA")
-    tmp_zip = dest.with_suffix(".zip")
-    print("    downloading %s ..." % accession, flush=True)
-    req = urllib.request.Request(url, headers={"User-Agent": "HostSweep-benchmark/1.0"})
-    with urllib.request.urlopen(req, timeout=1800) as r, open(tmp_zip, "wb") as fh:
-        while True:
-            chunk = r.read(1 << 20)
-            if not chunk:
-                break
-            fh.write(chunk)
-    with zipfile.ZipFile(tmp_zip) as z:
-        names = [n for n in z.namelist() if n.endswith((".fna", ".fasta", ".fa"))]
-        if not names:
-            raise SystemExit("no FASTA inside the archive for %s" % accession)
-        names.sort(key=lambda n: -z.getinfo(n).file_size)
-        with z.open(names[0]) as src, open(dest, "wb") as out:
-            while True:
-                chunk = src.read(1 << 20)
-                if not chunk:
-                    break
-                out.write(chunk)
-    tmp_zip.unlink()
+def ftp_url(accession, assembly_name):
+    """Static NCBI FTP path for an assembly's genomic FASTA.
+
+    Preferred over the Datasets download endpoint: that endpoint builds the
+    zip on the fly, does not support byte ranges, and aborted with curl exit 56
+    partway through a ~1 GB human assembly. The FTP object is static, so an
+    interrupted transfer resumes with -C - instead of restarting.
+    """
+    acc, ver = accession.split(".")[0], accession
+    prefix, digits = acc[:3], acc[4:]
+    parts = "/".join(digits[i:i + 3] for i in (0, 3, 6))
+    stem = "%s_%s" % (ver, assembly_name)
+    return ("https://ftp.ncbi.nlm.nih.gov/genomes/all/%s/%s/%s/%s_genomic.fna.gz"
+            % (prefix, parts, stem, stem))
+
+
+def download(accession, assembly_name, dest):
+    """Download and decompress the genomic FASTA for an accession."""
+    url = ftp_url(accession, assembly_name)
+    gz = dest.with_suffix(".fna.gz")
+    print("    downloading %s" % url, flush=True)
+    # -C - resumes a partial file; --retry-all-errors covers mid-transfer aborts.
+    subprocess.run(["curl", "-fsSL", "-C", "-", "--retry", "8",
+                    "--retry-delay", "5", "--retry-all-errors",
+                    "--max-time", "3600",
+                    "-H", "User-Agent: HostSweep-benchmark/1.0",
+                    url, "-o", str(gz)], check=True)
+    print("    decompressing (%.2f GB compressed)" % (gz.stat().st_size / 1e9),
+          flush=True)
+    with open(dest, "wb") as out:
+        subprocess.run(["gzip", "-dc", str(gz)], check=True, stdout=out)
+    gz.unlink()
     print("    wrote %s (%.2f GB)" % (dest.name, dest.stat().st_size / 1e9))
 
 
@@ -195,7 +224,7 @@ def main():
 
         dest = refs / ("%s_pri_mat_f1_v2.fna" % sample)
         if not dest.exists() and not args.verify_only:
-            download(acc, dest)
+            download(acc, prov["assembly_name"], dest)
 
         if dest.exists():
             print("  measuring case composition (this streams the whole FASTA)...",

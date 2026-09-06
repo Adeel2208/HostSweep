@@ -1,0 +1,22 @@
+[wsl_run] stage=e2  repo=8f021eb  threads=8
+[wsl_run] started 2026-09-06T17:43:59Z
+[E2 17:43:59] downloading background genomes listed in /home/adeel/hostsweep/HostSweep/benchmark/scripts/../genomes.tsv
+[E2 17:43:59]   have GCF_000005845.2 (Escherichia coli str. K-12 substr. MG1655)
+[E2 17:43:59]   have GCF_000009045.1 (Bacillus subtilis subsp. subtilis str. 168)
+[E2 17:43:59]   have GCF_000006945.2 (Salmonella enterica subsp. enterica serovar Typhimurium str. LT2)
+[E2 17:43:59]   have GCF_000013425.1 (Staphylococcus aureus subsp. aureus NCTC 8325)
+[E2 17:43:59]   have GCF_000008865.2 (Escherichia coli O157:H7 str. Sakai)
+[E2 17:43:59]   have GCF_000011985.1 (Lactobacillus acidophilus NCFM)
+[E2 17:43:59]   have GCF_000006765.1 (Pseudomonas aeruginosa PAO1)
+[E2 17:43:59]   have GCF_000011065.1 (Bacteroides thetaiotaomicron VPI-5482)
+[E2 17:43:59]   have GCF_000007525.1 (Bifidobacterium longum NCC2705)
+[E2 17:43:59]   have GCF_000195955.2 (Mycobacterium tuberculosis H37Rv)
+[E2 17:43:59] background reads already built
+[E2 17:44:08] background pool: 2921080 pairs (largest draw is 2000000)
+[E2 17:44:08] simulating human reads
+[E2 17:44:08]   simulating human_chm13 at 0.2x from human_T2T.fasta
+[E2 17:47:12]   SKIP human_HG00438: /home/adeel/hostsweep/bench/refs/HG00438_pri_mat_f1_v2.fna absent
+[E2 17:47:12]   SKIP human_HG00733: /home/adeel/hostsweep/bench/refs/HG00733_pri_mat_f1_v2.fna absent
+[E2 17:47:12]   SKIP human_NA19240: /home/adeel/hostsweep/bench/refs/NA19240_pri_mat_f1_v2.fna absent
+[E2 17:47:12] mixing the panel
+[E2 17:47:12]   SYN-CHM13-01 (seed 42, chm13, fraction 0.001)
