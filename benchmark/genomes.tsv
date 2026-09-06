@@ -12,38 +12,32 @@
 #     python benchmark/scripts/00_verify_genomes.py
 #
 # ---------------------------------------------------------------------------
-# UNRESOLVED: three accession/organism conflicts
+# Resolved 2026-09-06: three accessions originally specified for this panel
+# resolved at NCBI to entirely different organisms. The manuscript authors
+# ruled that the ORGANISM NAMES are authoritative, so the accessions were
+# corrected to the assemblies NCBI holds for the named strains:
 #
-# All ten accessions resolve at NCBI, but three of them are not the organism
-# the specification paired them with. Verified 2026-09-06 against the NCBI
-# Datasets v2 API; see benchmark/run/logs/00_verify_genomes.log.
+#   organism                               was              now
+#   Lactobacillus acidophilus NCFM         GCF_000009605.1  GCF_000011985.1
+#     (GCF_000009605.1 is Buchnera aphidicola str. APS, 0.66 Mb)
+#   Bacteroides thetaiotaomicron VPI-5482  GCF_000007565.2  GCF_000011065.1
+#     (GCF_000007565.2 is Pseudomonas putida KT2440)
+#   Bifidobacterium longum NCC2705         GCF_000012825.1  GCF_000007525.1
+#     (GCF_000012825.1 is Phocaeicola vulgatus ATCC 8482)
 #
-#   accession        specified organism              NCBI actually returns
-#   GCF_000009605.1  Lactobacillus acidophilus NCFM  Buchnera aphidicola APS
-#   GCF_000007565.2  Bacteroides thetaiotaomicron    Pseudomonas putida KT2440
-#   GCF_000012825.1  Bifidobacterium longum NCC2705  Phocaeicola vulgatus ATCC 8482
-#
-# The accessions for the organisms as named are (also verified):
-#   Lactobacillus acidophilus NCFM        GCF_000011985.1  1,993,560 bp
-#   Bacteroides thetaiotaomicron VPI-5482 GCF_000011065.1  6,293,399 bp
-#   Bifidobacterium longum NCC2705        GCF_000007525.1  2,260,266 bp
-#
-# Which is authoritative -- the accession or the organism name -- changes the
-# composition of the background community and the MetaQUAST reference set, so
-# it is left for the manuscript authors to decide. The rows below carry the
-# accessions exactly as specified and the organism names NCBI returns for
-# them, so nothing in this file is unverified. `conflict` marks the three.
+# Every organism name below is the name NCBI returns for the accession beside
+# it, checked by 00_verify_genomes.py; see benchmark/run/logs/.
 # ---------------------------------------------------------------------------
 #
-# Columns: accession, organism (as returned by NCBI), abundance, conflict
-accession	organism	abundance	conflict
+# Columns: accession, organism (as returned by NCBI), abundance
+accession	organism	abundance
 GCF_000005845.2	Escherichia coli str. K-12 substr. MG1655	0.25
 GCF_000009045.1	Bacillus subtilis subsp. subtilis str. 168	0.15
 GCF_000006945.2	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	0.12
 GCF_000013425.1	Staphylococcus aureus subsp. aureus NCTC 8325	0.10
 GCF_000008865.2	Escherichia coli O157:H7 str. Sakai	0.08
-GCF_000009605.1	Buchnera aphidicola str. APS	0.08	specified as Lactobacillus acidophilus NCFM (GCF_000011985.1)
+GCF_000011985.1	Lactobacillus acidophilus NCFM	0.08
 GCF_000006765.1	Pseudomonas aeruginosa PAO1	0.07
-GCF_000007565.2	Pseudomonas putida KT2440	0.06	specified as Bacteroides thetaiotaomicron VPI-5482 (GCF_000011065.1)
-GCF_000012825.1	Phocaeicola vulgatus ATCC 8482	0.05	specified as Bifidobacterium longum NCC2705 (GCF_000007525.1)
+GCF_000011065.1	Bacteroides thetaiotaomicron VPI-5482	0.06
+GCF_000007525.1	Bifidobacterium longum NCC2705	0.05
 GCF_000195955.2	Mycobacterium tuberculosis H37Rv	0.04

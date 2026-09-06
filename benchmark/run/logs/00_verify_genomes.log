@@ -5,10 +5,10 @@ Verifying 10 accessions from benchmark/genomes.tsv
   OK     GCF_000006945.2    ASM694v2     Complete Genome      4951383 bp  Salmonella enterica subsp. enterica serovar Typhimurium str. LT2 str. LT2
   OK     GCF_000013425.1    ASM1342v1    Complete Genome      2821361 bp  Staphylococcus aureus subsp. aureus NCTC 8325 str. NCTC 8325
   OK     GCF_000008865.2    ASM886v2     Complete Genome      5594605 bp  Escherichia coli O157:H7 str. Sakai str. Sakai substr. RIMD 0509952
-  OK     GCF_000009605.1    ASM960v1     Complete Genome       655725 bp  Buchnera aphidicola str. APS (Acyrthosiphon pisum) str. APS
+  OK     GCF_000011985.1    ASM1198v1    Complete Genome      1993560 bp  Lactobacillus acidophilus NCFM str. NCFM
   OK     GCF_000006765.1    ASM676v1     Complete Genome      6264404 bp  Pseudomonas aeruginosa PAO1 str. PAO1
-  OK     GCF_000007565.2    ASM756v2     Complete Genome      6181873 bp  Pseudomonas putida KT2440 str. KT2440
-  OK     GCF_000012825.1    ASM1282v1    Complete Genome      5163189 bp  Phocaeicola vulgatus ATCC 8482 str. ATCC 8482
+  OK     GCF_000011065.1    ASM1106v1    Complete Genome      6293399 bp  Bacteroides thetaiotaomicron VPI-5482 str. VPI-5482
+  OK     GCF_000007525.1    ASM752v1     Complete Genome      2260266 bp  Bifidobacterium longum NCC2705 str. NCC2705
   OK     GCF_000195955.2    ASM19595v2   Complete Genome      4411532 bp  Mycobacterium tuberculosis H37Rv str. H37Rv
 
 Abundance sum: 1.0000

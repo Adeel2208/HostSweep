@@ -9,3 +9,7 @@
 2026-09-06T10:16:50Z  wsl -d Ubuntu: nproc=8, mem=11 GB avail, df / =900G free (on C:, so ~574G real), curl to repo.anaconda.com -> HTTP 200
 2026-09-06T10:21:10Z  python benchmark/scripts/00_verify_genomes.py --out benchmark/run/genomes_verified.tsv
 2026-09-06T10:22:54Z  re-ran 00_verify_genomes.py after annotating conflicts -> exit 0, 10/10 resolve
+2026-09-06T10:31:14Z  genomes.tsv: applied organism-authoritative ruling (3 accessions corrected)
+2026-09-06T10:32:26Z  wrote benchmark/scripts/wsl_setup.sh (miniforge + hostsweep env + art/seqkit + pip -e + pytest)
+2026-09-06T10:32:37Z  START wsl_setup.sh in background (nohup, log ~/hostsweep/logs/setup.log)
+2026-09-06T10:33:20Z  RELAUNCH wsl_setup.sh (foreground inside wsl.exe, backgrounded on the Windows side)
