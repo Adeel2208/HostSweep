@@ -13,3 +13,4 @@
 2026-09-06T10:32:26Z  wrote benchmark/scripts/wsl_setup.sh (miniforge + hostsweep env + art/seqkit + pip -e + pytest)
 2026-09-06T10:32:37Z  START wsl_setup.sh in background (nohup, log ~/hostsweep/logs/setup.log)
 2026-09-06T10:33:20Z  RELAUNCH wsl_setup.sh (foreground inside wsl.exe, backgrounded on the Windows side)
+2026-09-06T10:40:54Z  conda env create stalled >14min on defaults channel; killed. Retrying with conda create --override-channels -c conda-forge -c bioconda, python pinned to 3.11

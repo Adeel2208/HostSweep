@@ -1,0 +1,54 @@
+==============================================================================
+SAMPLE HG00514
+  GCA_056691535.1    HG00514_hap1               Chromosome    3089004821 bp  N50=132721678
+      submitter: University of Pennsylvania | date: 2026-04-13
+  GCA_056691515.1    HG00514_hap2               Chromosome    3019778703 bp  N50=103859252
+      submitter: University of Pennsylvania | date: 2026-04-13
+  GCA_002180035.3    HG00514_prelim_3.0         Chromosome    3094330096 bp  N50=29396877
+      submitter: The Genome Institute at Washington University School of Medicine | date: 2018-05-22
+  GCA_002180035.2    HG00514_prelim_2.1         Contig        2870602523 bp  N50=25299251
+      submitter: The Genome Institute at Washington University School of Medicine | date: 2018-01-24
+  GCA_002180035.1    HG00514_prelim_1.0         Contig        2870602523 bp  N50=25299251
+      submitter: The Genome Institute at Washington University School of Medicine | date: 2018-01-24
+  GCA_040450895.1    ASM4045089v1               Contig        3020875243 bp  N50=21588254
+      submitter: Evan Eichler | date: 2024-07-01
+  GCA_040450915.1    ASM4045091v1               Contig        3017066594 bp  N50=20174060
+      submitter: Evan Eichler | date: 2024-07-01
+  GCA_964659605.1    HG00514-new.v2.verkko.ENAUpload Scaffold      6108006247 bp  N50=132721678
+      submitter: Human Genome Structural Variation Consortium | date: 2025-01-03
+==============================================================================
+SAMPLE HG00733
+  GCA_056668155.1    HG00733_haplotype1_hprc_rel2_verkko2_supp Chromosome    3031897038 bp  N50=136224206
+      submitter: NHGRI/NIH | date: 2026-04-10
+  GCA_056668115.1    HG00733_haplotype2_hprc_rel2_verkko2_supp Chromosome    3018534350 bp  N50=134839373
+      submitter: NHGRI/NIH | date: 2026-04-10
+  GCA_018506955.2    HG00733_pat_hprc_f2        Chromosome    3035753094 bp  N50=116107301
+      submitter: UCSC Genomics Institute | date: 2024-12-11
+  GCA_056691395.1    HG00733_hap2               Chromosome    3030498531 bp  N50=111666246
+      submitter: University of Pennsylvania | date: 2026-04-13
+  GCA_018506975.3    HG00733_mat_hprc_f2        Chromosome    3041642981 bp  N50=104580392
+      submitter: UCSC Genomics Institute | date: 2024-12-11
+  GCA_018506975.2    HG00733_mat_hprc_f2        Chromosome    3041642981 bp  N50=104580392
+      submitter: UCSC Genomics Institute | date: 2024-12-11
+  GCA_056691405.1    HG00733_hap1               Chromosome    3074311470 bp  N50=104406211
+      submitter: University of Pennsylvania | date: 2026-04-13
+  GCA_003634875.1    HG00733_Phased_Diploid     Chromosome    2893174212 bp  N50=26292878
+      submitter: Pacific Biosciences | date: 2018-10-19
+==============================================================================
+SAMPLE NA19240
+  GCA_056689565.1    NA19240_hap2               Chromosome    3025577071 bp  N50=133640805
+      submitter: University of Pennsylvania | date: 2026-04-13
+  GCA_056689575.1    NA19240_hap1               Chromosome    3080442655 bp  N50=109253404
+      submitter: University of Pennsylvania | date: 2026-04-13
+  GCA_018503265.2    NA19240_pat_hprc_f2        Chromosome    3038833213 bp  N50=98523824
+      submitter: UCSC Genomics Institute | date: 2024-12-11
+  GCA_018503275.3    NA19240_mat_hprc_f2        Chromosome    3024634577 bp  N50=92183995
+      submitter: UCSC Genomics Institute | date: 2024-12-11
+  GCA_018503275.2    NA19240_mat_hprc_f2        Chromosome    3024634577 bp  N50=92183995
+      submitter: UCSC Genomics Institute | date: 2024-12-11
+  GCA_001524155.4    NA19240_prelim_3.0         Chromosome    3088495238 bp  N50=29140631
+      submitter: The Genome Institute at Washington University School of Medicine | date: 2017-07-19
+  GCA_001524155.1    Hs_NA19240-1.0             Chromosome    3078993553 bp  N50=7249122
+      submitter: The Genome Institute at Washington University School of Medicine | date: 2016-08-22
+  GCA_018503275.1    NA19240.pri.mat.f1_v2      Scaffold      3032049516 bp  N50=28898930
+      submitter: UCSC Genomics Institute | date: 2021-05-26
