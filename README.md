@@ -28,10 +28,9 @@ custodian and their governance framework.
 
 ## Key features
 
-- **Dual-pass host removal** — minimap2 (fast approximate screening) followed by Bowtie2 (sensitive local alignment). In our benchmarks the second pass identifies roughly 2.55% additional host-derived reads beyond the first pass alone.
-- **T2T-CHM13v2.0 reference** — the complete human assembly captured 1.8–2.3 percentage points more contaminating reads than GRCh38 in our comparison.
+- **Dual-pass host removal** — minimap2 (fast approximate screening) followed by Bowtie2 (sensitive local alignment).
+- **T2T-CHM13v2.0 reference** — the complete human assembly is used for both alignment passes.
 - **Three tiered outputs** — assembly-grade paired-end reads, profiling-grade single-end reads, and a high-stringency complexity- and length-filtered single-end set, from one execution.
-- **Competitive sensitivity and runtime** — see [Benchmarks](#benchmarks); results are comparable to or better than the tools we tested, under the stated conditions.
 - **Automatic database management** — `hostsweep --build` downloads and indexes T2T-CHM13v2.0; custom references are supported.
 - **Modular architecture** — nine focused Python modules, straightforward to extend or integrate.
 - **Reproducible** — pure Python, a single conda environment, JSON statistics, complete logging, and a published benchmark harness in [`benchmark/`](benchmark/).
@@ -40,26 +39,7 @@ custodian and their governance framework.
 
 ## Benchmarks
 
-Evaluated on 42 datasets: 30 real SRA libraries and 12 synthetic controlled-truth libraries.
-
-| Metric | HostSweep | Hostile | KneadData | BMTagger | DeconSeq |
-|--------|-----------|---------|-----------|----------|----------|
-| **Sensitivity** (synthetic mean) | 99.84% | 99.41% | 96.24% | 94.87% | 91.45% |
-| **Runtime** (SRR6062009, 1.86M pairs) | 11.2 min | 13.6 min | 35.8 min | 28.4 min | 142.3 min |
-| **Peak memory** | 6.8 GB | 6.5 GB | 11.2 GB | 14.7 GB | 8.9 GB |
-| **False positive rate** | 2.76% | 2.91% | 3.82% | 5.23% | 7.41% |
-| **Tiered outputs** | Yes | No | No | No | No |
-
-> Figures correspond to the revised manuscript; the HostSweep sensitivity
-> figure is the 99.84% overall synthetic mean. All tools were run against the
-> same T2T-CHM13v2.0 reference on the same hardware. Runtime and memory depend
-> on hardware, thread count, and library composition, so these are indicative
-> rather than guaranteed. The harness that produces them is in
-> [`benchmark/`](benchmark/) — regenerate the table rather than relying on it.
-
-**Downstream effects observed:**
-- metaSPAdes assembly: 5.2% N50 improvement and a roughly 4-fold reduction in misassembly rate.
-- Kraken2 profiling: no residual human content detected, compared with 0.03% for KneadData.
+Benchmark results will be published with the revised manuscript.
 
 ---
 
@@ -255,13 +235,14 @@ INPUT: Illumina Paired-end FASTQ (R1 + R2)
 
 The two passes exploit complementary algorithmic strengths:
 
-- **minimap2 (Pass 1):** fast minimizer-based seeding detects the large majority of host reads (~97.3% in our benchmarks) and preserves paired-end structure.
-- **Bowtie2 (Pass 2):** sensitive local alignment with dynamic programming recovers a further ~2.55%, composed of:
-  - 42% divergent alignments (≥4 mismatches per seed window)
-  - 31% partial alignments (40–80 bp in 150 bp reads)
-  - 27% polymorphic or low-complexity reads
+- **minimap2 (Pass 1):** fast minimizer-based seeding detects the large
+  majority of host reads and preserves paired-end structure.
+- **Bowtie2 (Pass 2):** sensitive local alignment with dynamic programming
+  recovers divergent, partially aligning, and polymorphic or low-complexity
+  reads that minimizer seeding misses.
 
-In our runs this reached Bowtie2-level sensitivity at roughly 59% of a Bowtie2-only run's wall-clock time, and about 1.7× a minimap2-only run.
+The size of the second pass's contribution, and the runtime it costs, will be
+published with the revised manuscript.
 
 ---
 
@@ -307,40 +288,14 @@ simulation protocol and seeds.
 
 ### Benchmark datasets
 
-**Real SRA libraries (30)** spanning environmental (0.01–0.05% human),
-gut (0.08–0.34%), oral (0.21–1.97%), skin (1.12–6.40%), respiratory
-(4.18–15.78%), urogenital (2.66–11.30%) and blood (18.40–45.23%) sample types.
+**Real SRA libraries** — the panel is being rebuilt and verified against SRA; see [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md).
 
 **Synthetic controlled-truth libraries (12)** built from ART-simulated human
 reads from T2T-CHM13v2.0 over CAMI II-style microbial backgrounds, at exact
 spike-in fractions of 0.1%, 0.5%, 1%, 5%, 10%, 20% and 40%, plus libraries
 covering non-European haplotype diversity from 1000 Genomes.
 
-### Ablation results
-
-Component contributions (SRR14235678, 12.35% human content):
-
-| Configuration | Sensitivity | Runtime |
-|---------------|-------------|---------|
-| minimap2 alone | 97.34% | 8.2 min |
-| Bowtie2 alone | 98.12% | 24.1 min |
-| Dual-pass | 99.89% | 14.3 min |
-
-Reference comparison (SRR6062009): T2T-CHM13v2.0 reached 99.87% sensitivity
-against 97.91% for GRCh38, an improvement of 1.96 percentage points, of which
-1.8–2.3 points derive from CHM13-unique regions.
-
-Entropy sweep:
-
-| Entropy threshold | Retention | Residual contamination |
-|-------------------|-----------|------------------------|
-| 0.50 | 99.1% | 0.01% |
-| 0.70 (Output 2) | 97.0% | 0.001% |
-| 0.85 (Output 3) | 91.0% | 0.0001% |
-| 0.90 | 88.9% | <0.00001% |
-
-Residual figures are limits of detection under this benchmark, not a guarantee
-that no human sequence remains.
+Benchmark results will be published with the revised manuscript.
 
 ---
 
@@ -379,9 +334,8 @@ Reduce threads (`-t 2`) and lower BBDuk's heap (`export HOSTSWEEP_BBDUK_MEM=2g`)
 Your input may have short reads. Lower `--bblen` and `--stringent-minlen`.
 
 **Very low retention on high-contamination samples**
-Expected for blood and plasma samples (40%+ human content). Assembly-grade
-output retained 56.9–74.2% of reads in these cases; use the profiling-grade
-output for rare taxa.
+Expected for blood and plasma samples, where human content is high. Use the
+profiling-grade output for rare taxa.
 
 ---
 
