@@ -1,0 +1,11 @@
+2026-09-06T10:16:49Z  # session start: environment probe (Stage 0 gate)
+2026-09-06T10:16:49Z  uname -a  -> MINGW64_NT-10.0-26200 (Windows 10 Pro, msys)
+2026-09-06T10:16:49Z  NUMBER_OF_PROCESSORS -> 12 logical CPUs
+2026-09-06T10:16:49Z  Win32_ComputerSystem.TotalPhysicalMemory -> 15.6 GB total / 1.5 GB free
+2026-09-06T10:16:49Z  Win32_LogicalDisk C: -> 574.6 GB free of 953.0 GB
+2026-09-06T10:16:49Z  command -v conda mamba micromamba docker -> ABSENT (all)
+2026-09-06T10:16:49Z  command -v fastp minimap2 bowtie2 samtools bbduk.sh hostile kneaddata bmtagger srprism bmtool metaspades.py metaquast.py kraken2 checkm2 esearch efetch datasets prefetch fasterq-dump art_illumina blastn -> ABSENT (all 21)
+2026-09-06T10:16:50Z  wsl --list --verbose -> Ubuntu (WSL2, stopped), docker-desktop (stopped)
+2026-09-06T10:16:50Z  wsl -d Ubuntu: nproc=8, mem=11 GB avail, df / =900G free (on C:, so ~574G real), curl to repo.anaconda.com -> HTTP 200
+2026-09-06T10:21:10Z  python benchmark/scripts/00_verify_genomes.py --out benchmark/run/genomes_verified.tsv
+2026-09-06T10:22:54Z  re-ran 00_verify_genomes.py after annotating conflicts -> exit 0, 10/10 resolve

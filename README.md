@@ -425,14 +425,14 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 - **T2T-CHM13 Consortium** for the complete human genome reference
 - Developers of **minimap2** (Heng Li), **Bowtie2** (Langmead & Salzberg), **fastp** (Chen et al.), **BBTools** (Brian Bushnell), and **samtools** (Li et al.)
-- **KneadData** (Huttenhower Lab), **Hostile** (Constantinides & Crook), and the broader metagenomic decontamination community
+- **KneadData** (Huttenhower Lab), **Hostile** (Constantinides, Hunt & Crook), and the broader metagenomic decontamination community
 
 ---
 
 ## Related projects & tools
 
 - [KneadData](https://github.com/biobakery/kneaddata) — single-pass Bowtie2 quality control
-- [Hostile](https://github.com/bede/hostile) — single-pass minimap2 decontamination
+- [Hostile](https://github.com/bede/hostile) — single-pass short-read decontamination; defaults to Bowtie2 for paired short reads (minimap2 is its long-read path). Constantinides B, Hunt M, Crook DW (2023).
 - [Kraken2](https://github.com/DerrickWood/kraken2) — k-mer taxonomic classification
 - [MetaPhlAn](https://github.com/biobakery/MetaPhlAn) — marker-gene metagenomic profiling
 - [metaSPAdes](https://github.com/ablab/spades) — metagenome assembler
@@ -447,14 +447,3 @@ Umair Tariq — umair.tariq@bcu.ac.uk
 **Contributors:**
 - Adeel Mukhtar (University of Engineering and Technology, Pakistan)
 - Awais Abdul Khaliq (Università degli Studi di Milano, Italy)
-
----
-
-## Note on software naming
-
-The name **HostSweep** is distinct from the previously published tool
-**DecontaMiner** (Thind and Sinha, 2019), which screens assembled NGS contigs
-for cross-species and vector contamination in cancer and transcriptomic data.
-The two tools address different problems (read-level human host removal from
-metagenomes vs. contig-level contamination screening), share no source code,
-and have independent repositories.

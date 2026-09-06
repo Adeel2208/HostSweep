@@ -1,0 +1,17 @@
+Candidate accessions for the three mislabelled organisms
+(NCBI Datasets v2, reference/representative assemblies)
+
+  Lactobacillus acidophilus NCFM
+      GCA_000011985.1    ASM1198v1    Complete Genome     1993560 bp  Lactobacillus acidophilus NCFM
+      GCF_000011985.1    ASM1198v1    Complete Genome     1993560 bp  Lactobacillus acidophilus NCFM
+
+  Bacteroides thetaiotaomicron VPI-5482
+      GCA_000011065.1    ASM1106v1    Complete Genome     6293399 bp  Bacteroides thetaiotaomicron VPI-5482
+      GCF_000011065.1    ASM1106v1    Complete Genome     6293399 bp  Bacteroides thetaiotaomicron VPI-5482
+      GCA_900624795.1    81H8         Contig              6811002 bp  Bacteroides thetaiotaomicron VPI-5482
+      GCF_900624795.1    81H8         Contig              6811002 bp  Bacteroides thetaiotaomicron VPI-5482
+
+  Bifidobacterium longum NCC2705
+      GCA_000007525.1    ASM752v1     Complete Genome     2260266 bp  Bifidobacterium longum NCC2705
+      GCF_000007525.1    ASM752v1     Complete Genome     2260266 bp  Bifidobacterium longum NCC2705
+

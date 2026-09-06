@@ -1,0 +1,11 @@
+accession	returned_accession	organism	ncbi_organism	strain	assembly_name	assembly_level	total_sequence_length	abundance
+GCF_000005845.2	GCF_000005845.2	Escherichia coli str. K-12 substr. MG1655	Escherichia coli str. K-12 substr. MG1655	K-12 substr. MG1655	ASM584v2	Complete Genome	4641652	0.25
+GCF_000009045.1	GCF_000009045.1	Bacillus subtilis subsp. subtilis str. 168	Bacillus subtilis subsp. subtilis str. 168	168	ASM904v1	Complete Genome	4215606	0.15
+GCF_000006945.2	GCF_000006945.2	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	LT2	ASM694v2	Complete Genome	4951383	0.12
+GCF_000013425.1	GCF_000013425.1	Staphylococcus aureus subsp. aureus NCTC 8325	Staphylococcus aureus subsp. aureus NCTC 8325	NCTC 8325	ASM1342v1	Complete Genome	2821361	0.1
+GCF_000008865.2	GCF_000008865.2	Escherichia coli O157:H7 str. Sakai	Escherichia coli O157:H7 str. Sakai	Sakai substr. RIMD 0509952	ASM886v2	Complete Genome	5594605	0.08
+GCF_000009605.1	GCF_000009605.1	Buchnera aphidicola str. APS	Buchnera aphidicola str. APS (Acyrthosiphon pisum)	APS	ASM960v1	Complete Genome	655725	0.08
+GCF_000006765.1	GCF_000006765.1	Pseudomonas aeruginosa PAO1	Pseudomonas aeruginosa PAO1	PAO1	ASM676v1	Complete Genome	6264404	0.07
+GCF_000007565.2	GCF_000007565.2	Pseudomonas putida KT2440	Pseudomonas putida KT2440	KT2440	ASM756v2	Complete Genome	6181873	0.06
+GCF_000012825.1	GCF_000012825.1	Phocaeicola vulgatus ATCC 8482	Phocaeicola vulgatus ATCC 8482	ATCC 8482	ASM1282v1	Complete Genome	5163189	0.05
+GCF_000195955.2	GCF_000195955.2	Mycobacterium tuberculosis H37Rv	Mycobacterium tuberculosis H37Rv	H37Rv	ASM19595v2	Complete Genome	4411532	0.04

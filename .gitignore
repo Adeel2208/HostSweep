@@ -10,25 +10,52 @@ build/
 # Conda
 .conda/
 
-# Data & results (large files)
+# Bulk data: reads, alignments and indexes are regenerated from the scripts
+# in benchmark/, never committed.
 data/
-results/
 *.fastq.gz
 *.fq.gz
+*.fastq
+*.fq
 *.bam
 *.sam
+*.cram
 *.mmi
 *.bt2
 *.bt2l
+*.bitmask
+*.srprism*
+
+# Benchmark results: the bulk stays out, but the aggregated tables, the metrics
+# JSON, the GNU time records and the MetaQUAST reports are the evidence behind
+# the manuscript's numbers and are tracked. Un-ignore rules must come after the
+# broad ignores above, and a file inside an ignored *directory* cannot be
+# rescued, so results/ is not ignored wholesale.
+results/**/tmp/
+results/**/spades_*/
+!results/
+!**/results/
+!*.csv
+!*.tsv
+!*.json
+!*.time
+!**/metaquast/**
+!**/mq/**
 
 # Reference genomes (multi-GB)
 reference/
+refs/
 *.fasta
 *.fna
 *.fa
+*.fna.gz
+*.fa.gz
 
 # Logs
 *.log
+# ...except the benchmark's raw stdout/stderr and command journal, which are
+# shipped alongside the CSVs so every number can be traced to a run.
+!benchmark/run/logs/**
 
 # IDE
 .idea/

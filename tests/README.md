@@ -52,14 +52,19 @@ Expect roughly a minute; almost all of it is `bowtie2-build`.
 
 `extract_unmapped_single` used to shell-redirect uncompressed `samtools fastq`
 stdout into a `*.fastq.gz` path, so the next `count_reads()` call raised
-`BadGzipFile` and the pipeline died at Step 6. Two tests guard the fix:
+`BadGzipFile` and the pipeline died at Step 6. Three tests guard the fix:
 
-- `test_extract_unmapped_single_writes_named_output` — no external tools
-  needed; asserts the output path is passed to samtools as `-0 <path>` rather
-  than shell-redirected, so samtools applies gzip from the `.gz` suffix.
+- `test_extract_unmapped_single_compresses_gz_output` — no external tools
+  needed; asserts the command ends in `| gzip > <path>`, so compression comes
+  from an explicit gzip stage rather than from samtools' filename handling.
+- `test_extract_unmapped_single_plain_output_is_not_gzipped` — the matching
+  negative case: a destination without a `.gz` suffix gets a plain redirect
+  and no gzip stage.
 - `test_bowtie2_intermediate_is_real_gzip` — full run; asserts the
   intermediate starts with the gzip magic bytes `1f 8b` and that
-  `count_reads()` reads it without error.
+  `count_reads()` reads it without error. `test_end_to_end_produces_three_tiers`
+  makes the same magic-byte check on all four cleaned outputs, which covers the
+  paired-end tier, where compression does come from samtools' `.gz` handling.
 
 A full-scale run against the real T2T index is not automated; verify it as
 described in the repository README before a release.
