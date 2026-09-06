@@ -30,3 +30,24 @@ extracted ncbi_dataset/data/GCF_000195955.2/GCF_000195955.2_ASM19595v2_genomic.f
 [E2 10:51:47]   GCF_000011065.1 at 12.0x
 [E2 10:51:55]   GCF_000007525.1 at 10.0x
 [E2 10:51:58]   GCF_000195955.2 at 8.0x
+[E2 10:58:58] background pool: 2921080 pairs (largest draw is 2000000)
+[E2 10:58:58] simulating human reads
+[E2 10:58:58]   SKIP human_chm13: /home/adeel/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_T2T.fasta absent
+[E2 10:58:58]   SKIP human_HG00514: /home/adeel/hostsweep/bench/refs/HG00514_hap1.fna absent
+[E2 10:58:58]   SKIP human_HG00733: /home/adeel/hostsweep/bench/refs/HG00733_hap1.fna absent
+[E2 10:58:58]   SKIP human_NA19240: /home/adeel/hostsweep/bench/refs/NA19240_hap1.fna absent
+[E2 10:58:58] mixing the panel
+[E2 10:58:58]   SKIP SYN-CHM13-01: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-02: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-03: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-04: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-05: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-06: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-07: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-08: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-CHM13-09: human source 'chm13' was not simulated
+[E2 10:58:58]   SKIP SYN-NEU-01: human source 'HG00514' was not simulated
+[E2 10:58:58]   SKIP SYN-NEU-02: human source 'HG00733' was not simulated
+[E2 10:58:58]   SKIP SYN-NEU-03: human source 'NA19240' was not simulated
+[E2 10:58:58] panel: 0 built, 12 not built
+[E2 10:58:58] manifests are in /home/adeel/hostsweep/bench/synthetic/*_manifest.json -- realised fractions come from there

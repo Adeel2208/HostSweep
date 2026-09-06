@@ -17,3 +17,7 @@
 2026-09-06T10:49:15Z  toolchain verified in WSL: 11/11 pytest PASS (incl. both e2e); versions.txt + conda_explicit.txt (118 pkgs) recorded
 2026-09-06T10:49:15Z  START hostsweep --build -t 8 (T2T-CHM13v2.0 download + minimap2 + bowtie2 indices)
 2026-09-06T10:49:45Z  START 02_build_synthetic.sh (genome downloads + background ART); human/mix steps will skip until T2T exists
+2026-09-06T10:59:37Z  E2 background COMPLETE: 10/10 genomes downloaded, ART simulated at 200x
+2026-09-06T10:59:37Z  MEASURED background pool = 2,921,080 pairs (largest library draw = 2,000,000)
+2026-09-06T10:59:37Z    -> confirms the 200x decision: the specified 50x would have given ~730,270 pairs, below the 1,998,000 a 0.1%-human library needs
+2026-09-06T10:59:37Z  human/mix steps correctly skipped (T2T reference still downloading); panel 0/12 built
