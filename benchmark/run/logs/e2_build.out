@@ -1,0 +1,32 @@
+[E2 10:49:47] downloading background genomes listed in /home/adeel/hostsweep/HostSweep/benchmark/scripts/../genomes.tsv
+[E2 10:49:47]   fetching GCF_000005845.2 (Escherichia coli str. K-12 substr. MG1655)
+extracted ncbi_dataset/data/GCF_000005845.2/GCF_000005845.2_ASM584v2_genomic.fna
+[E2 10:49:53]   fetching GCF_000009045.1 (Bacillus subtilis subsp. subtilis str. 168)
+extracted ncbi_dataset/data/GCF_000009045.1/GCF_000009045.1_ASM904v1_genomic.fna
+[E2 10:49:55]   fetching GCF_000006945.2 (Salmonella enterica subsp. enterica serovar Typhimurium str. LT2)
+extracted ncbi_dataset/data/GCF_000006945.2/GCF_000006945.2_ASM694v2_genomic.fna
+[E2 10:49:57]   fetching GCF_000013425.1 (Staphylococcus aureus subsp. aureus NCTC 8325)
+extracted ncbi_dataset/data/GCF_000013425.1/GCF_000013425.1_ASM1342v1_genomic.fna
+[E2 10:49:59]   fetching GCF_000008865.2 (Escherichia coli O157:H7 str. Sakai)
+extracted ncbi_dataset/data/GCF_000008865.2/GCF_000008865.2_ASM886v2_genomic.fna
+[E2 10:50:04]   fetching GCF_000011985.1 (Lactobacillus acidophilus NCFM)
+extracted ncbi_dataset/data/GCF_000011985.1/GCF_000011985.1_ASM1198v1_genomic.fna
+[E2 10:50:05]   fetching GCF_000006765.1 (Pseudomonas aeruginosa PAO1)
+extracted ncbi_dataset/data/GCF_000006765.1/GCF_000006765.1_ASM676v1_genomic.fna
+[E2 10:50:07]   fetching GCF_000011065.1 (Bacteroides thetaiotaomicron VPI-5482)
+extracted ncbi_dataset/data/GCF_000011065.1/GCF_000011065.1_ASM1106v1_genomic.fna
+[E2 10:50:11]   fetching GCF_000007525.1 (Bifidobacterium longum NCC2705)
+extracted ncbi_dataset/data/GCF_000007525.1/GCF_000007525.1_ASM752v1_genomic.fna
+[E2 10:50:13]   fetching GCF_000195955.2 (Mycobacterium tuberculosis H37Rv)
+extracted ncbi_dataset/data/GCF_000195955.2/GCF_000195955.2_ASM19595v2_genomic.fna
+[E2 10:50:15] simulating background at 200x total community coverage
+[E2 10:50:15]   GCF_000005845.2 at 50.0x
+[E2 10:50:44]   GCF_000009045.1 at 30.0x
+[E2 10:51:00]   GCF_000006945.2 at 24.0x
+[E2 10:51:13]   GCF_000013425.1 at 20.0x
+[E2 10:51:20]   GCF_000008865.2 at 16.0x
+[E2 10:51:33]   GCF_000011985.1 at 16.0x
+[E2 10:51:36]   GCF_000006765.1 at 14.000000000000002x
+[E2 10:51:47]   GCF_000011065.1 at 12.0x
+[E2 10:51:55]   GCF_000007525.1 at 10.0x
+[E2 10:51:58]   GCF_000195955.2 at 8.0x

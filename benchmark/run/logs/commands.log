@@ -14,3 +14,6 @@
 2026-09-06T10:32:37Z  START wsl_setup.sh in background (nohup, log ~/hostsweep/logs/setup.log)
 2026-09-06T10:33:20Z  RELAUNCH wsl_setup.sh (foreground inside wsl.exe, backgrounded on the Windows side)
 2026-09-06T10:40:54Z  conda env create stalled >14min on defaults channel; killed. Retrying with conda create --override-channels -c conda-forge -c bioconda, python pinned to 3.11
+2026-09-06T10:49:15Z  toolchain verified in WSL: 11/11 pytest PASS (incl. both e2e); versions.txt + conda_explicit.txt (118 pkgs) recorded
+2026-09-06T10:49:15Z  START hostsweep --build -t 8 (T2T-CHM13v2.0 download + minimap2 + bowtie2 indices)
+2026-09-06T10:49:45Z  START 02_build_synthetic.sh (genome downloads + background ART); human/mix steps will skip until T2T exists

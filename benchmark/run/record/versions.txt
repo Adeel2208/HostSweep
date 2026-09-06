@@ -1,0 +1,21 @@
+# Tool versions recorded 2026-09-06T10:48:37Z
+# host: Linux 6.6.87.2-microsoft-standard-WSL2 x86_64  |  repo: 755d8de88440397ba6fe52c719ec7565e8b59b58
+
+hostsweep      hostsweep 1.0.0
+python         Python 3.11.16
+fastp          fastp 1.3.6
+minimap2       2.31-r1302
+bowtie2        [WARNING] Failed to launch x86-64-v3 version, staying with default
+samtools       samtools 1.24
+bbduk          java -ea  --add-modules jdk.incubator.vector -Xmx3836m -Xms3836m -cp /home/adeel/hostsweep/miniforge3/envs/hostsweep/opt/bbmap-40.02-0/current/ bbduk.BBDukS --version BBTools version 40.02 
+art                      Q Version 2.5.8 (June 6, 2016)       
+
+# Not installed in this environment (recorded as unavailable):
+  hostile  NOT INSTALLED
+  kneaddata  NOT INSTALLED
+  bmtagger  NOT INSTALLED
+  deconseq.pl  NOT INSTALLED
+  metaspades.py  NOT INSTALLED
+  metaquast.py  NOT INSTALLED
+  kraken2  NOT INSTALLED
+  checkm2  NOT INSTALLED
