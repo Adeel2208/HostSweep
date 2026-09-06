@@ -1,0 +1,15 @@
+[wsl2]
+# Host has a single 16 GB DIMM: 15.64 GiB visible to Windows. There is no
+# hidden capacity to unlock, so `memory` stays at 12 GB -- raising it further
+# starves Windows (only 3.64 GB would remain), and the instructed
+# "host RAM minus 4 GB" would be 11.64 GB, i.e. LESS than the current cap.
+memory=12GB
+processors=8
+
+# Raised 4GB -> 32GB. This is the only real headroom available: it lets a tool
+# with a short-lived peak above 12 GB complete instead of being OOM-killed.
+# It does NOT make metaSPAdes or Kraken2/Standard viable -- a 60-120 GB
+# working set paged through a disk-backed swap thrashes rather than runs.
+swap=32GB
+
+localhostForwarding=true

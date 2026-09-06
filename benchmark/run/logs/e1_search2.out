@@ -1,0 +1,40 @@
+############ human urogenital metagenome (no [Source] filter) ############
+
+esearch returned 0 UIDs
+No runs matched. Nothing to propose.
+
+############ human respiratory tract metagenome (no [Source] filter) ############
+
+esearch returned 0 UIDs
+No runs matched. Nothing to propose.
+
+############ human vaginal metagenome (no [Source] filter) ############
+
+esearch returned 80 UIDs
+runinfo returned 80 rows
+
+RUN          BIOPROJECT     ORGANISM                                  SPOTS  INSTRUMENT
+SRR40269899  PRJNA1513715   human vaginal metagenome             53,371,791  Illumina NovaSeq X Plus
+SRR40269900  PRJNA1513715   human vaginal metagenome             51,008,417  Illumina NovaSeq X Plus
+SRR40269889  PRJNA1513715   human vaginal metagenome             49,918,274  Illumina NovaSeq X Plus
+SRR40269873  PRJNA1513715   human vaginal metagenome             49,913,083  Illumina NovaSeq X Plus
+SRR40269861  PRJNA1513715   human vaginal metagenome             49,678,563  Illumina NovaSeq X Plus
+SRR40269891  PRJNA1513715   human vaginal metagenome             48,013,621  Illumina NovaSeq X Plus
+
+80 of 80 candidates satisfy every criterion.
+
+############ human lung metagenome (no [Source] filter) ############
+
+esearch returned 80 UIDs
+runinfo returned 80 rows
+
+RUN          BIOPROJECT     ORGANISM                                  SPOTS  INSTRUMENT
+ERR15977187  PRJEB96268     human lung metagenome                48,527,129  Illumina NovaSeq X
+ERR15977141  PRJEB96268     human lung metagenome                41,867,001  Illumina NovaSeq X
+ERR15966877  PRJEB96268     human lung metagenome                39,384,390  Illumina NovaSeq X
+ERR16097622  PRJEB96268     human lung metagenome                37,044,076  Illumina NovaSeq X
+ERR15988693  PRJEB96268     human lung metagenome                36,325,282  Illumina NovaSeq X
+ERR15976740  PRJEB96268     human lung metagenome                36,198,273  Illumina NovaSeq X
+
+77 of 80 candidates satisfy every criterion.
+

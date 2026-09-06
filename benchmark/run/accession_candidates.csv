@@ -1,0 +1,20 @@
+# CANDIDATE replacements for the three known-invalid runs, retrieved from SRA
+# by benchmark/scripts/01_verify_accessions.py search on 2026-09-06.
+# Raw search output: logs/e1_search.out, logs/e1_search2.out
+#
+# These are PROPOSALS, not panel members. They are not in accessions.csv and
+# no run has used them. Each satisfies Illumina / PAIRED / WGS / >=1M spots
+# and was returned by a query -- none was guessed from an adjacent number.
+#
+# NOTE: the exact organism terms "human urogenital metagenome" and "human
+# respiratory tract metagenome" return ZERO Illumina/paired/WGS runs in SRA.
+# The nearest usable terms are "human vaginal metagenome" and "human lung
+# metagenome"; the category labels below reflect that substitution.
+#
+# CAVEAT: within each category the top hits all come from a single BioProject.
+# A 30-library panel drawn from three BioProjects would confound category with
+# study. Spread across projects before adopting these.
+category,replaces,run,bioproject,organism,spots,instrument,status
+urogenital,SRR5947529 (pig WGS),SRR40269899,PRJNA1513715,human vaginal metagenome,53371791,Illumina NovaSeq X Plus,CANDIDATE
+respiratory,SRR14235720 (goat RAD-seq),ERR15977187,PRJEB96268,human lung metagenome,48527129,Illumina NovaSeq X,CANDIDATE
+blood,SRR14567890 (goat amplicon),DRR960879,PRJDB42081,human blood metagenome,49576253,Illumina NovaSeq X,CANDIDATE

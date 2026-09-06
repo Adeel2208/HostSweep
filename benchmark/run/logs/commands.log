@@ -25,3 +25,8 @@
 2026-09-06T11:22:03Z  E1 search --category urogenital
 2026-09-06T11:22:03Z  E1 search --category respiratory
 2026-09-06T11:22:03Z  E1 search --category blood
+2026-09-06T11:24:41Z  wrote benchmark/run/accession_candidates.csv (3 CANDIDATE runs, not adopted)
+2026-09-06T11:25:07Z  HOST RAM measured: Win32_PhysicalMemory = 1 x 16.00 GiB DIMM; TotalPhysicalMemory = 16791048192 B = 15.64 GiB
+2026-09-06T11:25:07Z  pre-existing .wslconfig already capped memory=12GB swap=4GB -> the 11.7GB seen was that cap, not WSL2 defaults
+2026-09-06T11:25:07Z  'host RAM minus 4GB' = 11.64GB < current 12GB, so the memory cap was NOT raised (no headroom exists)
+2026-09-06T11:25:07Z  swap raised 4GB -> 32GB; .wslconfig written but NOT applied (wsl --shutdown would kill the running T2T download at ~63%)
