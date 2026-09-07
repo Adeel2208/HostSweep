@@ -1,1 +1,23 @@
 [chain 07:31:58] waiting for the E2 lock to clear
+[chain 09:25:55] E2 finished
+[chain 09:25:55] libraries with a manifest: 12 / 12
+[chain 09:25:55] writing synthetic_manifest.csv
+wrote /home/adeel/hostsweep/out/synthetic_manifest.csv (12 rows)
+no metrics JSON under /home/adeel/hostsweep/out/results; per_library.csv not written
+[chain 09:25:55] starting E3, HostSweep only, 3 runs per library
+[E3 09:25:56] 12 libraries x 1 tools x 3 runs
+[E3 09:25:56] SYN-CHM13-01 / hostsweep / run 1
+[E3 09:44:59]   done
+[E3 09:44:59] SYN-CHM13-01 / hostsweep / run 2
+[E3 10:03:09]   done
+[E3 10:03:09] SYN-CHM13-01 / hostsweep / run 3
+[E3 10:23:17]   done
+[E3 10:23:17] SYN-CHM13-02 / hostsweep / run 1
+[E3 10:46:21]   done
+[E3 10:46:21] SYN-CHM13-02 / hostsweep / run 2
+[E3 11:03:20]   done
+[E3 11:03:20] SYN-CHM13-02 / hostsweep / run 3
+[E3 11:18:56]   done
+[E3 11:18:56] SYN-CHM13-03 / hostsweep / run 1
+[E3 11:35:50]   done
+[E3 11:35:50] SYN-CHM13-03 / hostsweep / run 2

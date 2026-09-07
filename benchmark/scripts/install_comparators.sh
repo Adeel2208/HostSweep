@@ -94,6 +94,16 @@ for tool in "${TOOLS[@]}"; do
             say "megahit -> $(head -1 "$RECORD/megahit_version.txt")"
             conda deactivate
             ;;
+        sra)
+            # E4 panel download. pigz alongside, because fasterq-dump writes
+            # uncompressed and 30 libraries of plain FASTQ is wasteful on disk.
+            create_env sra sra-tools pigz || { say "sra install FAILED"; continue; }
+            conda activate sra
+            { fasterq-dump --version 2>&1 | head -3
+              prefetch --version 2>&1 | head -3; } > "$RECORD/sra_version.txt" 2>&1
+            say "sra-tools -> $(grep -m1 -i 'version' "$RECORD/sra_version.txt" || echo '?')"
+            conda deactivate
+            ;;
         kraken2)
             # D5: Standard-8 capped database replaces Standard.
             create_env kraken2 kraken2 || { say "kraken2 install FAILED"; continue; }

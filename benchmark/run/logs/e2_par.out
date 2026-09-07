@@ -25,3 +25,23 @@
 [E2 07:21:47]   start SYN-CHM13-03 (seed 44, chm13, fraction 0.01)
 [E2 07:21:47]   done SYN-CHM13-02
 [E2 07:21:47]   start SYN-CHM13-04 (seed 45, chm13, fraction 0.05)
+[E2 07:47:33]   done SYN-CHM13-03
+[E2 07:47:33]   start SYN-CHM13-05 (seed 46, chm13, fraction 0.10)
+[E2 07:47:33]   done SYN-CHM13-04
+[E2 07:47:33]   start SYN-CHM13-06 (seed 47, chm13, fraction 0.20)
+[E2 08:12:24]   done SYN-CHM13-05
+[E2 08:12:24]   start SYN-CHM13-07 (seed 48, chm13, fraction 0.40)
+[E2 08:12:24]   done SYN-CHM13-06
+[E2 08:12:24]   start SYN-CHM13-08 (seed 49, chm13, fraction 0.05)
+[E2 08:37:09]   done SYN-CHM13-07
+[E2 08:37:09]   start SYN-CHM13-09 (seed 50, chm13, fraction 0.10)
+[E2 08:39:08]   done SYN-CHM13-08
+[E2 08:39:08]   start SYN-IND-01 (seed 51, HG00438, fraction 0.01)
+[E2 09:04:01]   done SYN-CHM13-09
+[E2 09:04:01]   start SYN-NEU-02 (seed 52, HG00733, fraction 0.10)
+[E2 09:04:31]   done SYN-IND-01
+[E2 09:04:31]   start SYN-NEU-03 (seed 53, NA19240, fraction 0.20)
+[E2 09:25:38]   done SYN-NEU-02
+[E2 09:25:55]   done SYN-NEU-03
+[E2 09:25:55] panel: 12 built, 0 not built
+[E2 09:25:55] manifests are in /home/adeel/hostsweep/bench/synthetic/*_manifest.json -- realised fractions come from there

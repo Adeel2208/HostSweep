@@ -1,0 +1,28 @@
+============================================================
+[install 08:30:23] creating env 'sra': sra-tools pigz
+
+
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+[install 08:30:56] sra-tools -> ?
+============================================================
+[install 08:30:56] environments now present:
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+base                     /home/adeel/hostsweep/miniforge3
+bmtagger                 /home/adeel/hostsweep/miniforge3/envs/bmtagger
+hostile                  /home/adeel/hostsweep/miniforge3/envs/hostile
+hostsweep                /home/adeel/hostsweep/miniforge3/envs/hostsweep
+kneaddata                /home/adeel/hostsweep/miniforge3/envs/kneaddata
+kraken2                  /home/adeel/hostsweep/miniforge3/envs/kraken2
+megahit                  /home/adeel/hostsweep/miniforge3/envs/megahit
+sra                      /home/adeel/hostsweep/miniforge3/envs/sra
+                         /home/adeel/miniconda3
+                         /home/adeel/miniconda3/envs/bio_tools
+                         /home/adeel/miniconda3/envs/decontaminer
+                         /home/adeel/miniconda3/envs/hostbuster
+
