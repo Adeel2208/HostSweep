@@ -164,8 +164,38 @@ PANEL="42:SYN-CHM13-01:chm13:0.001
 52:SYN-NEU-02:HG00733:0.10
 53:SYN-NEU-03:NA19240:0.20"
 
-say "mixing the panel"
+# Mixing is the slowest stage and is single-core, so libraries are built
+# concurrently. Each job writes its own --out-prefix, so unlike the earlier
+# duplicate-instance incident there is no shared-file hazard: two jobs never
+# touch the same path. MIX_JOBS is capped by memory, not cores -- each mixer
+# holds its reservoir in RAM (~2.9 GB measured for 2 M pairs), so 2 concurrent
+# jobs sit near 6 GB against an 11 GB ceiling.
+MIX_JOBS="${MIX_JOBS:-2}"
+
+say "mixing the panel ($MIX_JOBS concurrent)"
 BUILT=0; SKIPPED=0
+declare -a PIDS=() LABELS=()
+
+reap_one() {
+    # Wait for any running job, record its outcome. Returns 1 if none ran.
+    [ ${#PIDS[@]} -gt 0 ] || return 1
+    local pid="${PIDS[0]}" label="${LABELS[0]}"
+    PIDS=("${PIDS[@]:1}"); LABELS=("${LABELS[@]:1}")
+    if wait "$pid"; then
+        # A job that exits 0 without a manifest did not finish the library.
+        if [ -s "$SYN/${label}_manifest.json" ]; then
+            say "  done $label"; BUILT=$((BUILT+1))
+        else
+            say "  FAILED $label (no manifest; see $LOGS/mix_${label}.log)"
+            SKIPPED=$((SKIPPED+1))
+        fi
+    else
+        say "  FAILED $label (see $LOGS/mix_${label}.log)"
+        SKIPPED=$((SKIPPED+1))
+    fi
+    return 0
+}
+
 while IFS= read -r ENTRY; do
     [ -n "$ENTRY" ] || continue
     IFS=: read -r SEED LABEL SRC FRACTION <<<"$ENTRY"
@@ -178,7 +208,9 @@ while IFS= read -r ENTRY; do
         SKIPPED=$((SKIPPED+1)); continue
     fi
 
-    say "  $LABEL (seed $SEED, $SRC, fraction $FRACTION)"
+    while [ ${#PIDS[@]} -ge "$MIX_JOBS" ]; do reap_one || break; done
+
+    say "  start $LABEL (seed $SEED, $SRC, fraction $FRACTION)"
     python3 "$SCRIPT_DIR/mix_spikein.py" \
         --background-r1 "$WORK/background_R1.fastq.gz" \
         --background-r2 "$WORK/background_R2.fastq.gz" \
@@ -187,10 +219,11 @@ while IFS= read -r ENTRY; do
         --fraction "$FRACTION" \
         --total-pairs "$TOTAL_PAIRS" \
         --seed "$SEED" \
-        --out-prefix "$SYN/${LABEL}" > "$LOGS/mix_${LABEL}.log" 2>&1 \
-        && BUILT=$((BUILT+1)) \
-        || { say "  FAILED $LABEL (see $LOGS/mix_${LABEL}.log)"; SKIPPED=$((SKIPPED+1)); }
+        --out-prefix "$SYN/${LABEL}" > "$LOGS/mix_${LABEL}.log" 2>&1 &
+    PIDS+=($!); LABELS+=("$LABEL")
 done <<< "$PANEL"
+
+while reap_one; do :; done
 
 say "panel: $BUILT built, $SKIPPED not built"
 say "manifests are in $SYN/*_manifest.json -- realised fractions come from there"
