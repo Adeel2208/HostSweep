@@ -80,7 +80,14 @@ for tool in "${TOOLS[@]}"; do
             ;;
         megahit)
             # D4: MEGAHIT replaces metaSPAdes; 120 GB is not available here.
-            create_env megahit megahit quast || { say "megahit install FAILED"; continue; }
+            #
+            # python<3.12 is required, not preferred: QUAST 5.3.0 imports
+            # distutils (quast_libs/qconfig.py), which was removed from the
+            # standard library in Python 3.12. Left unpinned the solve picks
+            # 3.13 and metaquast.py dies at import with ModuleNotFoundError,
+            # which would surface only once E9 tried to score an assembly.
+            create_env megahit megahit quast "python<3.12" \
+                || { say "megahit install FAILED"; continue; }
             conda activate megahit
             { megahit --version; metaquast.py --version 2>&1 | head -2; } \
                 > "$RECORD/megahit_version.txt" 2>&1

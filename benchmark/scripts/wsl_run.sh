@@ -23,7 +23,15 @@ CONDA_SH="$ROOT/miniforge3/etc/profile.d/conda.sh"
 REPO="$ROOT/HostSweep"
 BENCH="$ROOT/bench"
 SCRIPTS="$REPO/benchmark/scripts"
-RESULTS="$REPO/benchmark/run/results"
+
+# Measurements live OUTSIDE the clone. Every stage hard-resets the clone to
+# origin/main before running, and once a results file is tracked in git that
+# reset would silently replace a freshly computed measurement with whatever
+# was last committed. Keeping outputs in $ROOT/out makes that impossible.
+# They are copied into the checkout deliberately, when they are ready to commit.
+OUT="$ROOT/out"
+RESULTS="$OUT/results"
+mkdir -p "$OUT" "$RESULTS"
 
 [ -f "$CONDA_SH" ] || { echo "conda.sh not found at $CONDA_SH" >&2; exit 1; }
 
@@ -64,17 +72,17 @@ case "$STAGE" in
         ;;
     ablation)
         bash "$SCRIPTS/run_ablation_panel.sh" "$BENCH/synthetic" \
-             "$REPO/benchmark/run/ablation_results" "${1:-3}"
+             "$OUT/ablation_results" "${1:-3}"
         ;;
     e7)
         bash "$SCRIPTS/run_e7.sh" "$BENCH/synthetic" \
-             "$REPO/benchmark/run/sweep_results" "$@"
+             "$OUT/sweep_results" "$@"
         ;;
     aggregate)
         python "$SCRIPTS/aggregate_results.py" \
             --results "$RESULTS" \
             --synthetic "$BENCH/synthetic" \
-            --out-dir "$REPO/benchmark/run"
+            --out-dir "$OUT"
         ;;
     shell)
         "$@"

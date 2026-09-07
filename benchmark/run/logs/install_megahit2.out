@@ -1,0 +1,27 @@
+============================================================
+[install 07:29:58] creating env 'megahit': megahit quast python<3.12
+WARNING conda.conda_pypi.main:notify_externally_managed_future(156): 
+  Did you know? You can install many PyPI packages with conda
+  using the conda-pypi beta. Get started:
+    https://docs.conda.io/projects/conda/en/stable/new-features.html
+
+[install 07:30:26] megahit -> MEGAHIT v1.2.9
+============================================================
+[install 07:30:27] environments now present:
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+base                     /home/adeel/hostsweep/miniforge3
+bmtagger                 /home/adeel/hostsweep/miniforge3/envs/bmtagger
+hostile                  /home/adeel/hostsweep/miniforge3/envs/hostile
+hostsweep                /home/adeel/hostsweep/miniforge3/envs/hostsweep
+kneaddata                /home/adeel/hostsweep/miniforge3/envs/kneaddata
+kraken2                  /home/adeel/hostsweep/miniforge3/envs/kraken2
+megahit                  /home/adeel/hostsweep/miniforge3/envs/megahit
+                         /home/adeel/miniconda3
+                         /home/adeel/miniconda3/envs/bio_tools
+                         /home/adeel/miniconda3/envs/decontaminer
+                         /home/adeel/miniconda3/envs/hostbuster
+

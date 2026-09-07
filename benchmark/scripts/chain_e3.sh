@@ -14,6 +14,7 @@ RUNS="${1:-3}"
 ROOT="$HOME/hostsweep"
 BENCH="$ROOT/bench"
 REPO="$ROOT/HostSweep"
+OUT="$ROOT/out"
 LOCK="$BENCH/.e2.lock"
 SYN="$BENCH/synthetic"
 EXPECTED=12
@@ -24,6 +25,7 @@ say() { echo "[chain $(date -u +%H:%M:%S)] $*"; }
 . "$ROOT/miniforge3/etc/profile.d/conda.sh"
 conda activate hostsweep || { echo "cannot activate hostsweep" >&2; exit 1; }
 
+mkdir -p "$OUT"
 say "waiting for the E2 lock to clear"
 # flock -w blocks until the builder releases the lock, then we drop it again.
 exec 9>"$LOCK"
@@ -46,18 +48,27 @@ fi
 
 say "writing synthetic_manifest.csv"
 python "$REPO/benchmark/scripts/aggregate_results.py" \
-    --results "$REPO/benchmark/run/results" \
+    --results "$OUT/results" \
     --synthetic "$SYN" \
-    --out-dir "$REPO/benchmark/run" || say "aggregate failed (continuing)"
+    --out-dir "$OUT" || say "aggregate failed (continuing)"
+
+# Single-instance lock on E3 itself. Two chains would each launch run_e3.sh
+# against the same metrics paths, which is the same class of corruption that
+# hit the mixing stage. fd 8, because fd 9 held the E2 lock above.
+exec 8>"$OUT/.e3.lock"
+if ! flock -n 8; then
+    say "another E3 run holds $OUT/.e3.lock; exiting without starting a second"
+    exit 0
+fi
 
 say "starting E3, HostSweep only, $RUNS runs per library"
 bash "$REPO/benchmark/scripts/run_e3.sh" \
-     "$SYN" "$REPO/benchmark/run/results" "$RUNS" hostsweep
+     "$SYN" "$OUT/results" "$RUNS" hostsweep
 
 say "E3 finished; rebuilding per_library.csv"
 python "$REPO/benchmark/scripts/aggregate_results.py" \
-    --results "$REPO/benchmark/run/results" \
+    --results "$OUT/results" \
     --synthetic "$SYN" \
-    --out-dir "$REPO/benchmark/run"
+    --out-dir "$OUT"
 
 say "done"
