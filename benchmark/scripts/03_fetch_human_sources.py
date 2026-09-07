@@ -139,6 +139,13 @@ def download(accession, assembly_name, dest):
     print("    wrote %s (%.2f GB)" % (dest.name, dest.stat().st_size / 1e9))
 
 
+# Byte class table: uppercase letters -> 'U', lowercase -> 'L', anything else
+# -> 'O'. Counting with bytes.translate + bytes.count runs in C, where the
+# obvious per-byte Python loop takes hours on a 3 GB assembly.
+_CLASS = bytes((76 if 97 <= i <= 122 else (85 if 65 <= i <= 90 else 79))
+               for i in range(256))
+
+
 def composition(path):
     """Stream the FASTA and count case and N content."""
     upper = lower = n_upper = n_lower = other = 0
@@ -146,19 +153,18 @@ def composition(path):
         for line in fh:
             if line.startswith(b">"):
                 continue
-            for byte in line.rstrip():
-                if 65 <= byte <= 90:          # A-Z
-                    if byte == 78:
-                        n_upper += 1
-                    else:
-                        upper += 1
-                elif 97 <= byte <= 122:       # a-z
-                    if byte == 110:
-                        n_lower += 1
-                    else:
-                        lower += 1
-                else:
-                    other += 1
+            line = line.rstrip()
+            klass = line.translate(_CLASS)
+            u = klass.count(b"U")
+            low = klass.count(b"L")
+            other += klass.count(b"O")
+            nu = line.count(b"N")
+            nl = line.count(b"n")
+            # N/n are letters, so remove them from the plain-base tallies.
+            upper += u - nu
+            lower += low - nl
+            n_upper += nu
+            n_lower += nl
     total = upper + lower + n_upper + n_lower
     return {
         "bases_upper": upper, "bases_lower": lower,
