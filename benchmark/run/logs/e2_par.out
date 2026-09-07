@@ -18,3 +18,10 @@
 [E2 06:41:03]   simulating human_HG00438 at 0.2x from HG00438_pri_mat_f1_v2.fna
 [E2 06:45:04]   simulating human_HG00733 at 0.2x from HG00733_pri_mat_f1_v2.fna
 [E2 06:51:46]   simulating human_NA19240 at 0.2x from NA19240_pri_mat_f1_v2.fna
+[E2 06:57:23] mixing the panel (2 concurrent)
+[E2 06:57:23]   start SYN-CHM13-01 (seed 42, chm13, fraction 0.001)
+[E2 06:57:23]   start SYN-CHM13-02 (seed 43, chm13, fraction 0.005)
+[E2 07:21:47]   done SYN-CHM13-01
+[E2 07:21:47]   start SYN-CHM13-03 (seed 44, chm13, fraction 0.01)
+[E2 07:21:47]   done SYN-CHM13-02
+[E2 07:21:47]   start SYN-CHM13-04 (seed 45, chm13, fraction 0.05)

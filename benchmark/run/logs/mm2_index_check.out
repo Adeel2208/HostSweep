@@ -6,3 +6,10 @@ ref   : /home/adeel/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/database
 minimap2 version: 2.31-r1302
 default -I     : -I NUM       split index for every ~NUM input bases [8G]
 
+--- minimap2 index-load messages ---
+[M::main::410.999*0.93] loaded/built the index for 24 target sequence(s)
+[M::main] Real time: 847.574 sec; CPU: 580.348 sec; Peak RSS: 10.523 GB
+
+index batches loaded: 1
+RESULT: PASS -- single-batch index; the whole reference is searched in one pass.
+[wsl_run] finished 2026-09-07T07:00:48Z rc=0
