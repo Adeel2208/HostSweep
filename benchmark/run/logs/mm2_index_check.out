@@ -1,0 +1,8 @@
+[wsl_run] stage=shell  repo=ca3e3a0  threads=8
+[wsl_run] started 2026-09-07T06:46:40Z
+index : /home/adeel/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human.mmi (8.4G)
+ref   : /home/adeel/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_T2T.fasta (3.0G)
+
+minimap2 version: 2.31-r1302
+default -I     : -I NUM       split index for every ~NUM input bases [8G]
+

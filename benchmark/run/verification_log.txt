@@ -33,3 +33,32 @@ criteria    : Illumina / PAIRED / WGS / METAGENOMIC / >= 1,000,000 spots
   PASS  DRR960880    human blood metagenome                 23443252 spots  
 
 PASS 28 / 28
+
+Per-category composition:
+  blood          n=2, 1 study/studies: PRJDB42081   <-- SINGLE STUDY: category confounded with study; describe, do not average
+  environmental  n=4, 4 study/studies: PRJEB123261, PRJEB123320, PRJNA1519923, PRJNA1524324
+  gut            n=6, 3 study/studies: ERP203501, PRJNA1522491, PRJNA1522603
+  oral           n=4, 3 study/studies: PRJDB15796, PRJDB18431, PRJEB84038
+  respiratory    n=4, 4 study/studies: PRJEB103799, PRJEB96268, PRJNA1455986, PRJNA1457641
+  skin           n=4, 1 study/studies: PRJEB85994   <-- SINGLE STUDY: category confounded with study; describe, do not average
+  urogenital     n=4, 2 study/studies: PRJEB122097, PRJNA801448
+
+======================================================================
+SHORTFALL AND CONFOUND EVIDENCE
+(verbatim from the panel construction log: benchmark/run/logs/panel_queries.log)
+======================================================================
+
+CATEGORY skin (target 4)
+  query: "human skin metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 120 UIDs
+    runinfo -> 120 rows, 59 meet the criteria
+  59 acceptable runs across 1 BioProjects
+  NOTE: only 1 BioProject available for this category -- category is confounded with study
+
+CATEGORY blood (target 4)
+  query: "human blood metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 120 UIDs
+    runinfo -> 120 rows, 2 meet the criteria
+  2 acceptable runs across 1 BioProjects
+  NOTE: only 1 BioProject available for this category -- category is confounded with study
+  SHORTFALL: 2 of 4

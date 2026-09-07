@@ -1,0 +1,9 @@
+category,taxon_used,run,bioproject,biosample,organism,library_strategy,library_source,layout,platform,instrument,spots,notes
+skin,human skin metagenome,SRR37938678,PRJNA1449169,SAMN57111989,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 2500,4650018,
+skin,human skin metagenome,ERR17782559,PRJEB85994,SAMEA123401128,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,4482121,
+skin,human skin metagenome,SRR37938898,PRJNA1449169,SAMN57112022,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 2500,6740798,
+skin,human skin metagenome,ERR17782568,PRJEB85994,SAMEA123401137,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,5684576,
+blood,human blood metagenome,SRR36045879,PRJNA1338211,SAMN52398083,human blood metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,5670993,
+blood,human blood metagenome,SRR36642854,PRJNA874475,SAMN54371451,human blood metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 550,2828980,
+blood,human blood metagenome,SRR31641567,PRJNA1195412,SAMN45220257,human blood metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina MiSeq,1267429,
+blood,human blood metagenome,DRR960856,PRJDB42081,SAMD01900582,human blood metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq X,22743798,

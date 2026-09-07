@@ -1,1 +1,34 @@
 ============================================================
+[install 06:42:26] creating env 'megahit': megahit quast
+CondaVerificationError: The package for quast located at /home/adeel/hostsweep/miniforge3/pkgs/quast-5.3.0-py313pl5321h5ca1c30_2
+appears to be corrupted. The path 'opt/quast-5.3.0/quast_libs'
+specified in the package manifest cannot be found.
+
+
+[install 06:44:31] megahit install FAILED
+============================================================
+[install 06:44:34] creating env 'kraken2': kraken2
+WARNING conda.conda_pypi.main:notify_externally_managed_future(156): 
+  Did you know? You can install many PyPI packages with conda
+  using the conda-pypi beta. Get started:
+    https://docs.conda.io/projects/conda/en/stable/new-features.html
+
+[install 06:45:09] kraken2 -> Kraken version 2.17.1
+============================================================
+[install 06:45:10] environments now present:
+
+# conda environments:
+#
+# * -> active
+# + -> frozen
+base                     /home/adeel/hostsweep/miniforge3
+bmtagger                 /home/adeel/hostsweep/miniforge3/envs/bmtagger
+hostile                  /home/adeel/hostsweep/miniforge3/envs/hostile
+hostsweep                /home/adeel/hostsweep/miniforge3/envs/hostsweep
+kneaddata                /home/adeel/hostsweep/miniforge3/envs/kneaddata
+kraken2                  /home/adeel/hostsweep/miniforge3/envs/kraken2
+                         /home/adeel/miniconda3
+                         /home/adeel/miniconda3/envs/bio_tools
+                         /home/adeel/miniconda3/envs/decontaminer
+                         /home/adeel/miniconda3/envs/hostbuster
+

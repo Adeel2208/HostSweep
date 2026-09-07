@@ -363,10 +363,18 @@ pipeline; the bacterial control at 0.0000% confirms it is repeat-driven rather
 than a blanket transformation. A 0.01% threshold would reject every human
 assembly ever distributed by NCBI, including the decontamination reference.
 
-There is also no similarity-based substitute: every human genome is ~99.9%
-identical to CHM13, so "sequence that resembles CHM13" is indistinguishable
-from ordinary human sequence. The Han1 contamination is knowable only because
-its authors documented it.
+**No sequence-composition test can establish reference independence.** Every
+human assembly is ~99.9% identical to T2T-CHM13v2.0, so sequence that
+originated from CHM13 is indistinguishable, by composition or by similarity,
+from sequence assembled de novo from the same locus in another individual.
+Han1-style reference contamination is therefore detectable only from an
+assembly's documentation — its assembly method, its release notes, and the
+submitter's own description of how gaps were filled — and never from the
+FASTA alone. This applies to the lowercase test specifically and to any
+substitute for it.
+
+The threshold is dropped entirely; lowercase is retained as descriptive
+metadata only.
 
 **What is checked instead**, per assembly, before use:
 - assembly method is `Hifiasm v. 0.14` — de novo from HiFi reads, no reference input;

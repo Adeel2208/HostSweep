@@ -155,7 +155,11 @@ def to_record(row, verdict, reasons):
     return {
         "run": row.get("Run", ""),
         "verdict": verdict,
-        "bioproject": row.get("BioProject", ""),
+        # ENA runs often return an empty BioProject while carrying the
+        # study in SRAStudy; an empty field would read as a distinct
+        # project and inflate per-category study counts.
+        "bioproject": (row.get("BioProject") or "").strip()
+                      or (row.get("SRAStudy") or "").strip(),
         "biosample": row.get("BioSample", ""),
         "organism": row.get("ScientificName", ""),
         "library_strategy": row.get("LibraryStrategy", ""),
@@ -183,6 +187,61 @@ def read_panel(csv_path):
             if first:
                 runs.append(first)
     return runs
+
+
+def _panel_metadata(csv_path):
+    """Map run -> its row in accessions.csv, for category and notes."""
+    out = {}
+    try:
+        with open(csv_path, encoding="utf-8") as fh:
+            body = [ln for ln in fh if not ln.lstrip().startswith("#")]
+        for row in csv.DictReader(body):
+            if row.get("run"):
+                out[row["run"]] = row
+    except (OSError, csv.Error):
+        pass
+    return out
+
+
+def _shortfall_evidence(queries_log):
+    """Extract the queries and UID counts behind each shortfall.
+
+    The panel builder logs every query it ran, including the ones that returned
+    nothing. Reproducing those lines here means verification_log.txt carries
+    its own evidence: a reader can re-run the exact query string and see the
+    same counts, rather than taking a shortfall claim on trust.
+    """
+    lines = ["", "=" * 70,
+             "SHORTFALL AND CONFOUND EVIDENCE",
+             "(verbatim from the panel construction log: %s)" % queries_log,
+             "=" * 70]
+    try:
+        with open(queries_log, encoding="utf-8") as fh:
+            text = fh.read().splitlines()
+    except OSError:
+        lines.append("  panel query log not found; no evidence to reproduce.")
+        return lines
+
+    current, keep = None, {}
+    for ln in text:
+        if ln.startswith("CATEGORY "):
+            current = ln.split()[1]
+            keep.setdefault(current, []).append(ln)
+        elif current and (ln.startswith("  query:") or ln.startswith("    esearch")
+                          or ln.startswith("    runinfo") or ln.startswith("    EMPTY")
+                          or ln.startswith("  NOTE:") or ln.startswith("  SHORTFALL:")
+                          or ln.startswith("  ") and "acceptable runs" in ln):
+            keep[current].append(ln)
+
+    flagged = [c for c, ls in keep.items()
+               if any("SHORTFALL" in x or "NOTE:" in x for x in ls)]
+    if not flagged:
+        lines.append("  No category reported a shortfall or a single-study confound.")
+        return lines
+    for cat in flagged:
+        lines.append("")
+        lines.extend(keep[cat])
+    return lines
 
 
 def cmd_verify(args):
@@ -241,6 +300,32 @@ def cmd_verify(args):
         log.append("INCOMPLETE: the panel needs %d runs; %d are listed in %s."
                    % (args.expect, len(records), args.csv))
 
+    # Per-category study counts, so single-study confounds are visible in the
+    # log itself and not only in the CSV's notes column.
+    by_cat = {}
+    panel_rows = _panel_metadata(args.csv)
+    for rec in records:
+        cat = panel_rows.get(rec["run"], {}).get("category", "")
+        if cat:
+            by_cat.setdefault(cat, []).append(rec)
+    if by_cat:
+        log.append("")
+        log.append("Per-category composition:")
+        for cat in sorted(by_cat):
+            studies = {r["bioproject"] for r in by_cat[cat] if r["bioproject"]}
+            flag = ""
+            if len(studies) == 1:
+                flag = "   <-- SINGLE STUDY: category confounded with study; " \
+                       "describe, do not average"
+            log.append("  %-14s n=%d, %d study/studies: %s%s"
+                       % (cat, len(by_cat[cat]), len(studies),
+                          ", ".join(sorted(studies)), flag))
+
+    # Shortfall evidence: the exact query and UID counts behind any category
+    # that could not be filled. Reviewers are entitled to see the query, not a
+    # claim about it.
+    log.extend(_shortfall_evidence(args.queries_log))
+
     cols = list(records[0].keys())
     with open(args.out, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=cols)
@@ -294,6 +379,9 @@ def main():
     v.add_argument("--out", default="benchmark/run/accessions_verified.csv")
     v.add_argument("--log", default="benchmark/run/verification_log.txt")
     v.add_argument("--expect", type=int, default=30)
+    v.add_argument("--queries-log",
+                   default="benchmark/run/logs/panel_queries.log",
+                   help="panel construction log, for shortfall evidence")
     v.set_defaults(func=cmd_verify)
 
     s = sub.add_parser("search")

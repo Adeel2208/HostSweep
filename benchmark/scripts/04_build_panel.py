@@ -120,6 +120,21 @@ def runinfo_for_ids(uids):
     return out
 
 
+def study_of(row):
+    """Study identifier, preferring BioProject.
+
+    ENA-submitted runs (ERR*) frequently come back with an empty BioProject in
+    NCBI's runinfo while carrying their study in SRAStudy (e.g. ERP203501). An
+    empty field would silently read as 'another distinct project' and inflate
+    the per-category BioProject count, which is exactly the confound this panel
+    is trying to measure.
+    """
+    bp = (row.get("BioProject") or "").strip()
+    if bp:
+        return bp
+    return (row.get("SRAStudy") or "").strip() or "UNKNOWN_STUDY"
+
+
 def acceptable(row):
     """Hard criteria. LibrarySource must be METAGENOMIC: several 'human
     urinary tract metagenome' and 'human blood metagenome' runs are submitted
@@ -179,7 +194,7 @@ def choose(category, accepted, want):
     """Pick `want` runs, spreading across BioProjects (>=2 where possible)."""
     by_project = defaultdict(list)
     for row in accepted:
-        by_project[row.get("BioProject") or "NA"].append(row)
+        by_project[study_of(row)].append(row)
     for rows in by_project.values():
         rows.sort(key=lambda r: rank(r["_spots"]))
 
@@ -198,7 +213,7 @@ def choose(category, accepted, want):
         if not progressed:
             break
 
-    projects = {c.get("BioProject") for c in chosen}
+    projects = {study_of(c) for c in chosen}
     note = ""
     if len(projects) < 2:
         note = ("only %d BioProject available for this category -- category is "
@@ -215,6 +230,10 @@ def main():
     ap.add_argument("--retmax", type=int, default=120)
     ap.add_argument("--max-spots", type=int, default=MAX_SPOTS,
                     help="practical download ceiling (default %d)" % MAX_SPOTS)
+    ap.add_argument("--categories", nargs="+", choices=sorted(CATEGORIES),
+                    help="restrict to these categories (default: all). Use to "
+                         "re-probe a shortfall at higher --retmax without "
+                         "re-querying the whole panel.")
     args = ap.parse_args()
     MAX_SPOTS = args.max_spots
 
@@ -225,13 +244,16 @@ def main():
     log("")
 
     panel, shortfalls = [], []
+    wanted = set(args.categories) if args.categories else set(CATEGORIES)
     for category, taxa in CATEGORIES.items():
+        if category not in wanted:
+            continue
         want = TARGET[category]
         log("=" * 74)
         log("CATEGORY %s (target %d)" % (category, want))
         accepted = collect(category, taxa, args.retmax)
         log("  %d acceptable runs across %d BioProjects"
-            % (len(accepted), len({r.get('BioProject') for r in accepted})))
+            % (len(accepted), len({study_of(r) for r in accepted})))
         if not accepted:
             shortfalls.append((category, want, 0,
                                "no taxon for this category returned any qualifying run"))
@@ -247,7 +269,7 @@ def main():
                 "category": category,
                 "taxon_used": row["_taxon"],
                 "run": row["Run"],
-                "bioproject": row.get("BioProject", ""),
+                "bioproject": study_of(row),
                 "biosample": row.get("BioSample", ""),
                 "organism": row.get("ScientificName", ""),
                 "library_strategy": row.get("LibraryStrategy", ""),

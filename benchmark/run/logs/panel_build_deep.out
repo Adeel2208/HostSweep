@@ -1,0 +1,13 @@
+A: real-library panel construction
+criteria: Illumina / PAIRED / WGS / >= 1,000,000 spots; prefer 2,000,000-8,000,000
+target: 30 libraries across 7 categories
+
+==========================================================================
+CATEGORY gut (target 6)
+  query: "human gut metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 536 meet the criteria
+  query: "human faecal metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 0 UIDs
+    EMPTY: this taxon returns no Illumina/paired/WGS runs
+  query: "human feces metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]

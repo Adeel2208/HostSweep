@@ -1,8 +1,8 @@
 category,taxon_used,run,bioproject,biosample,organism,library_strategy,library_source,layout,platform,instrument,spots,notes
-gut,human feces metagenome,ERR17748752,,SAMEA123369417,human feces metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,5446927,
+gut,human feces metagenome,ERR17748752,ERP203501,SAMEA123369417,human feces metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,5446927,
 gut,human gut metagenome,SRR40495528,PRJNA1522603,SAMN62900907,human gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 3000,8083536,
 gut,gut metagenome,SRR40504199,PRJNA1522491,SAMN62893431,gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,9599087,
-gut,human feces metagenome,ERR17748821,,SAMEA123369503,human feces metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,3780374,
+gut,human feces metagenome,ERR17748821,ERP203501,SAMEA123369503,human feces metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,3780374,
 gut,human gut metagenome,SRR40495461,PRJNA1522603,SAMN62900942,human gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 3000,9402895,
 gut,gut metagenome,SRR40503994,PRJNA1522491,SAMN62893556,gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,11287155,
 oral,human saliva metagenome,DRR1069109,PRJDB18431,SAMD00799761,human saliva metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,5082346,

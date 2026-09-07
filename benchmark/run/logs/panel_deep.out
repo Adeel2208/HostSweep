@@ -1,0 +1,28 @@
+A: real-library panel construction
+criteria: Illumina / PAIRED / WGS / >= 1,000,000 spots; prefer 2,000,000-8,000,000
+target: 30 libraries across 7 categories
+
+==========================================================================
+CATEGORY skin (target 4)
+  query: "human skin metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 390 meet the criteria
+  390 acceptable runs across 2 BioProjects
+==========================================================================
+CATEGORY blood (target 4)
+  query: "human blood metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 55 meet the criteria
+  55 acceptable runs across 4 BioProjects
+==========================================================================
+PANEL: 8 of 30
+  gut            0 libraries, 0 BioProject(s)
+  oral           0 libraries, 0 BioProject(s)
+  skin           4 libraries, 2 BioProject(s)
+  respiratory    0 libraries, 0 BioProject(s)
+  urogenital     0 libraries, 0 BioProject(s)
+  blood          4 libraries, 4 BioProject(s)
+  environmental  0 libraries, 0 BioProject(s)
+
+Wrote C:\Users\HP\Documents\hotsweep\HostSweep\benchmark\run\panel_deep_probe.csv
+Wrote C:\Users\HP\Documents\hotsweep\HostSweep\benchmark\run\logs\panel_deep_probe.log
