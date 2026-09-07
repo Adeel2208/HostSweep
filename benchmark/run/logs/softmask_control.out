@@ -1,2 +1,7 @@
 [wsl_run] stage=shell  repo=6c72d4a  threads=8
 [wsl_run] started 2026-09-07T06:33:22Z
+file                                              total bases  lowercase        N
+human_T2T.fasta                                    3117275501   40.2743%  0.0000%
+GCF_000005845.2.fna                                   4641652    0.0000%  0.0000%
+HG00438_pri_mat_f1_v2.fna                          3035735720   39.5468%  0.0000%
+[wsl_run] finished 2026-09-07T06:35:27Z rc=0

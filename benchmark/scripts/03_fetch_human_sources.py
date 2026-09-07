@@ -15,13 +15,29 @@ therefore does two things:
      released at contig or scaffold level. Chromosome-level releases imply
      reference-guided scaffolding and are rejected here.
 
-  2. Measures soft-masked (lowercase) content directly from the downloaded
-     FASTA. hifiasm emits uppercase sequence throughout, so a pure assembly is
-     ~0% lowercase. Han1-style reference gap-fill shows up as a non-trivial
-     lowercase fraction. This is an empirical check on the actual bytes, not a
-     restatement of the metadata.
+  2. Measures soft-masked (lowercase) and N content directly from the
+     downloaded FASTA. This is INFORMATIONAL, not a gate -- see below.
 
-Also reports N content (scaffold gaps) for completeness.
+Why lowercase content is not a CHM13-gap-fill test
+--------------------------------------------------
+It was written as one, on the theory that Han1's reference-derived gap-fill is
+lowercase. A control run (check_softmask_control.py) refuted that:
+
+    T2T-CHM13v2.0 itself      40.27% lowercase
+    HG00438 (HPRC year 1)     39.55% lowercase
+    E. coli GCF_000005845.2    0.0000% lowercase
+
+CHM13 cannot contain CHM13-derived sequence -- it *is* CHM13 -- yet it carries
+more lowercase than the HPRC assembly. Lowercase in NCBI's distributed
+eukaryotic FASTA is repeat soft-masking and says nothing about reference
+contamination.
+
+Nor is a similarity test available: every human genome is ~99.9% identical to
+CHM13, so "sequence resembling CHM13" cannot be distinguished from ordinary
+human sequence. The Han1 case is knowable only because its authors documented
+it. **Provenance is the only sound gate**, so that is what this script
+enforces: de novo assembler, no reference-guided scaffolding, correct
+submitter, and an explicit exclusion list for the affected sample.
 
 Usage:
     python 03_fetch_human_sources.py --refs <workdir>/refs
@@ -240,15 +256,33 @@ def main():
                   % (comp["lowercase_pct"], comp["bases_lower"] + comp["n_lower"]))
             print("  N content:       %.6f %%" % comp["n_pct"])
             print("  total bases:     %d" % comp["total"])
-            # hifiasm emits uppercase throughout. Anything beyond a rounding
-            # trace of lowercase means soft-masked or reference-derived bases.
-            if comp["lowercase_pct"] > 0.01:
-                problems.append("%s: %.4f%% of bases are lowercase -- possible "
-                                "reference-derived (Han1-style) gap-fill"
+            # Lowercase content is INFORMATIONAL ONLY. It was originally a
+            # rejection criterion on the theory that Han1-style CHM13 gap-fill
+            # is written in lowercase, but a control run
+            # (check_softmask_control.py) showed the test cannot do that job:
+            #
+            #   T2T-CHM13v2.0 itself   40.27% lowercase
+            #   HG00438 (HPRC)         39.55% lowercase
+            #   E. coli GCF_000005845  0.0000% lowercase
+            #
+            # CHM13 cannot contain CHM13-derived gap-fill, yet it carries MORE
+            # lowercase than the HPRC assembly. Lowercase in NCBI's distributed
+            # eukaryotic FASTA is repeat soft-masking, and it carries no
+            # information about reference contamination.
+            #
+            # There is also no similarity-based test available: every human
+            # genome is ~99.9% identical to CHM13, so "sequence that looks like
+            # CHM13" is indistinguishable from ordinary human sequence. The
+            # Han1 case is knowable only because its authors documented it.
+            # Provenance is therefore the gate, and it is checked above.
+            if comp["lowercase_pct"] > 45.0:
+                problems.append("%s: %.4f%% lowercase, unusually high even for "
+                                "repeat masking -- inspect provenance"
                                 % (sample, comp["lowercase_pct"]))
-                print("  REJECTED: lowercase content above threshold")
+                print("  FLAG: lowercase above the repeat-masking range")
             else:
-                print("  OK: no meaningful soft-masked content")
+                print("  lowercase consistent with NCBI repeat soft-masking "
+                      "(CHM13 itself is 40.27%); not evidence of gap-fill")
             prov.update(comp)
         else:
             print("  (not downloaded; composition check pending)")

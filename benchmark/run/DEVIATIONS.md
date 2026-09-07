@@ -337,6 +337,56 @@ not as omissions.
 
 ---
 
+### D16. The requested Han1 soft-mask test does not work; provenance used instead
+
+**Specified.** "Verify that the HG00733 and NA19240 assemblies you're using are
+pure de novo with no CHM13-derived sequence... stream each of the three HPRC
+FASTAs and reject anything above 0.01% soft-masked."
+
+**Done.** The measurement was taken and is reported, but it is **not** used as
+a rejection criterion. The gate is provenance instead.
+
+**Why.** The premise — that Han1-style CHM13 gap-fill shows up as lowercase and
+a clean assembly does not — does not survive a control. Measured with
+`check_softmask_control.py`:
+
+| FASTA | Total bases | Lowercase |
+|---|---|---|
+| **T2T-CHM13v2.0 itself** | 3,117,275,501 | **40.2743%** |
+| HG00438 HPRC year 1 | 3,035,735,720 | **39.5468%** |
+| *E. coli* GCF_000005845.2 | 4,641,652 | **0.0000%** |
+
+T2T-CHM13v2.0 cannot contain CHM13-derived gap-fill — it *is* CHM13 — yet it
+carries **more** lowercase than the HPRC assembly. Lowercase in NCBI's
+distributed eukaryotic FASTA is repeat soft-masking, applied by NCBI's own
+pipeline; the bacterial control at 0.0000% confirms it is repeat-driven rather
+than a blanket transformation. A 0.01% threshold would reject every human
+assembly ever distributed by NCBI, including the decontamination reference.
+
+There is also no similarity-based substitute: every human genome is ~99.9%
+identical to CHM13, so "sequence that resembles CHM13" is indistinguishable
+from ordinary human sequence. The Han1 contamination is knowable only because
+its authors documented it.
+
+**What is checked instead**, per assembly, before use:
+- assembly method is `Hifiasm v. 0.14` — de novo from HiFi reads, no reference input;
+- assembly level is Contig or Scaffold, never Chromosome — chromosome-level
+  release would imply reference-guided scaffolding, and is rejected;
+- submitter is UCSC Genomics Institute (HPRC), not JHU;
+- sample is not HG00621, which is on an explicit exclusion list, and the
+  assembly name is checked against the Han1 pattern.
+
+All three sources pass all four. Lowercase percentages are recorded in
+`human_sources_provenance.json` as descriptive metadata.
+
+**Interpretation cost.** The assurance against reference contamination rests on
+documented provenance rather than on a sequence measurement. That is weaker in
+form but it is the strongest claim the data can support, and it is stated
+plainly rather than dressed up as an empirical test that in fact measures
+repeat content.
+
+---
+
 ## Category 5 — Incidents affecting data integrity
 
 ### I1. Concurrent writers corrupted one synthetic library (detected, discarded)
