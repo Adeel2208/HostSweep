@@ -52,6 +52,19 @@ SYN="$WORK/synthetic"
 LOGS="$WORK/logs"
 mkdir -p "$REFS" "$SYN" "$LOGS"
 
+# Single-instance lock. Two concurrent runs write the same *_R1.fastq.gz and
+# *_labels.tsv.gz through the same out-prefix, interleaving records and
+# producing a library whose truth labels no longer match its reads -- corrupt
+# but not obviously so, and it would silently poison every metric downstream.
+# This happened once on this host when a suspended wsl.exe reconnected and
+# re-ran its command alongside a fresh launch.
+LOCK="$WORK/.e2.lock"
+exec 9>"$LOCK"
+if ! flock -n 9; then
+    echo "[E2] another instance holds $LOCK; exiting without touching anything" >&2
+    exit 0
+fi
+
 say()  { echo "[E2 $(date -u +%H:%M:%S)] $*"; }
 fail() { echo "[E2 FAILED] $*" >&2; exit 1; }
 

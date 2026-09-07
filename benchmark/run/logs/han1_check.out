@@ -1,15 +1,13 @@
-[wsl_run] stage=shell  repo=8f021eb  threads=8
-[wsl_run] started 2026-09-06T17:52:08Z
-==============================================================================
-HG00438  GCA_018471515.1  (Han Chinese South (CHS))
-  assembly_name:   HG00438.pri.mat.f1_v2
-  assembly_level:  Contig
-  assembly_method: Hifiasm v. 0.14
-  sequencing_tech: PacBio Sequel
-  submitter:       UCSC Genomics Institute
-  release_date:    2021-05-24
-  bioproject:      PRJNA726273
-  biosample:       SAMN17861652
-  population:      Han Chinese South
-  total_length:    3035719151
-    downloading https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/471/515/GCA_018471515.1_HG00438.pri.mat.f1_v2/GCA_018471515.1_HG00438.pri.mat.f1_v2_genomic.fna.gz
+Traceback (most recent call last):
+  File "/home/adeel/hostsweep/HostSweep/benchmark/scripts/03_fetch_human_sources.py", line 252, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/adeel/hostsweep/HostSweep/benchmark/scripts/03_fetch_human_sources.py", line 198, in main
+    download(acc, dest)
+  File "/home/adeel/hostsweep/HostSweep/benchmark/scripts/03_fetch_human_sources.py", line 98, in download
+    with zipfile.ZipFile(tmp_zip) as z:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adeel/hostsweep/miniforge3/envs/hostsweep/lib/python3.11/zipfile.py", line 1312, in __init__
+    self.fp = io.open(file, filemode)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/adeel/hostsweep/bench/refs/HG00438_pri_mat_f1_v2.zip'

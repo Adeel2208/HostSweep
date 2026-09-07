@@ -335,6 +335,41 @@ not as omissions.
 
 ---
 
+---
+
+## Category 5 — Incidents affecting data integrity
+
+### I1. Concurrent writers corrupted one synthetic library (detected, discarded)
+
+**What happened.** Two `mix_spikein.py` processes were found running
+simultaneously against the same `--out-prefix`
+(`.../synthetic/SYN-CHM13-01`), PIDs 497 and 925. Both were writing
+`SYN-CHM13-01_R1.fastq.gz`, `_R2.fastq.gz` and `_labels.tsv.gz` at once. The
+cause was a suspended `wsl.exe` invocation reconnecting after the WSL2 guest
+restarted and re-running its command alongside a freshly launched one.
+
+**Why it matters.** Interleaved writes from two processes produce a library
+whose reads and truth labels no longer correspond. It would not have looked
+broken — the files are valid gzip and roughly the right size — but every
+sensitivity and false-positive-rate number computed from it would have been
+meaningless. This is precisely the failure mode that is invisible in a summary
+table.
+
+**Action.** Both processes were killed, all three output files were deleted
+unread, and the library was rebuilt from scratch. **No measurement was taken
+from the corrupt files, and none entered any results file.**
+
+**Prevention.** `02_build_synthetic.sh` now takes an exclusive `flock` on
+`<workdir>/.e2.lock` and exits without touching anything if another instance
+holds it. The lock semantics were tested directly (a second instance correctly
+declines).
+
+**Interpretation cost.** None, provided the rebuild is clean. It is recorded
+because the reader is entitled to know that the pipeline's outputs were
+checked for this class of corruption rather than assumed free of it.
+
+---
+
 *No entry in this file describes a number that was estimated, interpolated or
 carried over. Where a measurement does not exist, the corresponding cell is
 absent or `FAILED`.*

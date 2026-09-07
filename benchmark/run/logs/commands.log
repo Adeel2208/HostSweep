@@ -30,3 +30,8 @@
 2026-09-06T11:25:07Z  pre-existing .wslconfig already capped memory=12GB swap=4GB -> the 11.7GB seen was that cap, not WSL2 defaults
 2026-09-06T11:25:07Z  'host RAM minus 4GB' = 11.64GB < current 12GB, so the memory cap was NOT raised (no headroom exists)
 2026-09-06T11:25:07Z  swap raised 4GB -> 32GB; .wslconfig written but NOT applied (wsl --shutdown would kill the running T2T download at ~63%)
+2026-09-07T06:19:03Z  START 04_build_panel.py (A: rebuild 30-library panel from live SRA queries)
+2026-09-07T06:19:04Z  START 03_fetch_human_sources.py (download 3 HPRC assemblies + Han1 soft-mask check)
+2026-09-07T06:19:05Z  T2T INDEX COMPLETE: minimap2 human.mmi 8.4G; bowtie2 6 files; fwd 28:05 + mirror 27:15
+2026-09-07T06:19:05Z  .wslconfig applied via wsl --shutdown -> new ceiling 11 GB RAM + 32 GB swap
+2026-09-07T06:19:05Z  START 02_build_synthetic.sh (human chm13 ART + 9 matched mixes)
