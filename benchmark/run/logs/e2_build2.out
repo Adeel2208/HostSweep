@@ -19,3 +19,6 @@ Terminated
 [E2 06:19:16]   SKIP human_NA19240: /home/adeel/hostsweep/bench/refs/NA19240_pri_mat_f1_v2.fna absent
 [E2 06:19:16] mixing the panel
 [E2 06:19:16]   SYN-CHM13-01 (seed 42, chm13, fraction 0.001)
+[E2 06:21:51]   FAILED SYN-CHM13-01 (see /home/adeel/hostsweep/bench/logs/mix_SYN-CHM13-01.log)
+[E2 06:21[E2 06:21:51]   FAILED SYN-CHM13-01 (see /home/adeel/hostsweep/bench/logs/mix_SYN-CHM13-01.log)
+[E2 06:21:51]   SYN-CHM13-02 (seed 43, chm13, fraction 0.005)

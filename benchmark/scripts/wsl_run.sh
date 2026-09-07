@@ -26,6 +26,17 @@ SCRIPTS="$REPO/benchmark/scripts"
 RESULTS="$REPO/benchmark/run/results"
 
 [ -f "$CONDA_SH" ] || { echo "conda.sh not found at $CONDA_SH" >&2; exit 1; }
+
+# Stages run the WSL clone's copy of each script, not /mnt/c, because the 9p
+# mount is far slower for read-heavy work. That means the clone must be current
+# before anything runs: a stale clone once executed a version of
+# 02_build_synthetic.sh that predated its single-instance lock, and three
+# concurrent builders corrupted a library. Refresh first, always.
+if [ -d "$REPO/.git" ]; then
+    git -C "$REPO" fetch -q origin 2>/dev/null \
+        && git -C "$REPO" reset -q --hard origin/main 2>/dev/null \
+        || echo "[wsl_run] WARNING: could not refresh $REPO; running what is on disk" >&2
+fi
 # shellcheck disable=SC1090
 . "$CONDA_SH"
 conda activate hostsweep || { echo "cannot activate hostsweep env" >&2; exit 1; }

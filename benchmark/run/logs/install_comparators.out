@@ -1,1 +1,27 @@
 ============================================================
+[install 06:20:49] creating env 'hostile': hostile
+WARNING conda.conda_pypi.main:notify_externally_managed_future(156): 
+  Did you know? You can install many PyPI packages with conda
+  using the conda-pypi beta. Get started:
+    https://docs.conda.io/projects/conda/en/stable/new-features.html
+
+[install 06:21:29] hostile --version -> 2.0.2
+[install 06:21:29] OK: hostile is 2.x
+============================================================
+[install 06:21:31] creating env 'kneaddata': kneaddata
+WARNING conda.conda_pypi.main:notify_externally_managed_future(156): 
+  Did you know? You can install many PyPI packages with conda
+  using the conda-pypi beta. Get started:
+    https://docs.conda.io/projects/conda/en/stable/new-features.html
+
+[install 06:23:24] kneaddata -> kneaddata v0.12.4
+============================================================
+[install 06:23:32] creating env 'bmtagger': bmtagger srprism
+
+
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+[install 06:23:55] bmtagger binaries: /home/adeel/hostsweep/miniforge3/envs/bmtagger/bin/bmtagger.sh /home/adeel/hostsweep/miniforge3/envs/bmtagger/bin/bmtool /home/adeel/hostsweep/miniforge3/envs/bmtagger/bin/srprism 
+============================================================
+[install 06:23:58] creating env 'megahit': megahit quast

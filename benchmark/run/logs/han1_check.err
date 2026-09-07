@@ -1,0 +1,3 @@
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (18) transfer closed with 806076337 bytes remaining to read
