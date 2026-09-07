@@ -11,3 +11,87 @@ CATEGORY gut (target 6)
     esearch -> 0 UIDs
     EMPTY: this taxon returns no Illumina/paired/WGS runs
   query: "human feces metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 106 meet the criteria
+  query: "gut metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 476 meet the criteria
+  1118 acceptable runs across 10 BioProjects
+==========================================================================
+CATEGORY oral (target 4)
+  query: "human oral metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 206 meet the criteria
+  query: "human saliva metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 219 meet the criteria
+  query: "human subgingival plaque metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 0 UIDs
+    EMPTY: this taxon returns no Illumina/paired/WGS runs
+  425 acceptable runs across 12 BioProjects
+==========================================================================
+CATEGORY skin (target 4)
+  query: "human skin metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 390 meet the criteria
+  390 acceptable runs across 2 BioProjects
+==========================================================================
+CATEGORY respiratory (target 4)
+  query: "human lung metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 107 meet the criteria
+  query: "human nasopharyngeal metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 345 meet the criteria
+  query: "human respiratory tract metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 0 UIDs
+    EMPTY: this taxon returns no Illumina/paired/WGS runs
+  query: "human sputum metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 233 meet the criteria
+  685 acceptable runs across 17 BioProjects
+==========================================================================
+CATEGORY urogenital (target 4)
+  query: "human vaginal metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 196 meet the criteria
+  query: "human urinary tract metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 97 meet the criteria
+  query: "human semen metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 0 UIDs
+    EMPTY: this taxon returns no Illumina/paired/WGS runs
+  query: "human urogenital metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 0 UIDs
+    EMPTY: this taxon returns no Illumina/paired/WGS runs
+  293 acceptable runs across 7 BioProjects
+==========================================================================
+CATEGORY blood (target 4)
+  query: "human blood metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 55 meet the criteria
+  55 acceptable runs across 4 BioProjects
+==========================================================================
+CATEGORY environmental (target 4)
+  query: "soil metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 163 meet the criteria
+  query: "wastewater metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 169 meet the criteria
+  query: "freshwater metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
+    esearch -> 600 UIDs
+    runinfo -> 600 rows, 117 meet the criteria
+  449 acceptable runs across 28 BioProjects
+==========================================================================
+PANEL: 30 of 30
+  gut            6 libraries, 6 BioProject(s)
+  oral           4 libraries, 4 BioProject(s)
+  skin           4 libraries, 2 BioProject(s)
+  respiratory    4 libraries, 4 BioProject(s)
+  urogenital     4 libraries, 4 BioProject(s)
+  blood          4 libraries, 4 BioProject(s)
+  environmental  4 libraries, 4 BioProject(s)
+
+Wrote C:\Users\HP\Documents\hotsweep\HostSweep\benchmark\run\panel_proposed_deep.csv
+Wrote C:\Users\HP\Documents\hotsweep\HostSweep\benchmark\run\logs\panel_queries_deep.log

@@ -1,64 +1,52 @@
 E1 accession verification
 source file : benchmark/accessions.csv
-run count   : 28
+run count   : 30
 criteria    : Illumina / PAIRED / WGS / METAGENOMIC / >= 1,000,000 spots
 
+  PASS  ERR17336437  freshwater metagenome                   4988509 spots  
   PASS  ERR17677614  wastewater metagenome                   4918816 spots  
-  PASS  ERR17686861  freshwater metagenome                   3795919 spots  
-  PASS  SRR40377959  wastewater metagenome                  11280629 spots  
-  PASS  SRR40540089  soil metagenome                        21338286 spots  
+  PASS  SRR38455354  wastewater metagenome                   5186053 spots  
+  PASS  SRR39037539  wastewater metagenome                   5135827 spots  
+  PASS  ERR17585876  human gut metagenome                    4985685 spots  
   PASS  ERR17748752  human feces metagenome                  5446927 spots  
-  PASS  ERR17748821  human feces metagenome                  3780374 spots  
-  PASS  SRR40495461  human gut metagenome                    9402895 spots  
-  PASS  SRR40495528  human gut metagenome                    8083536 spots  
-  PASS  SRR40503994  gut metagenome                         11287155 spots  
-  PASS  SRR40504199  gut metagenome                          9599087 spots  
-  PASS  DRR1069101   human saliva metagenome                 5340077 spots  
-  PASS  DRR1069109   human saliva metagenome                 5082346 spots  
-  PASS  DRR464416    human oral metagenome                   4013524 spots  
-  PASS  ERR14111904  human oral metagenome                   6760114 spots  
-  PASS  ERR17782539  human skin metagenome                   4158011 spots  
+  PASS  SRR34685905  human feces metagenome                  7994743 spots  
+  PASS  SRR40486826  gut metagenome                          4963974 spots  
+  PASS  SRR40495631  human gut metagenome                    6535777 spots  
+  PASS  SRR40504164  gut metagenome                          9090390 spots  
+  PASS  DRR1076765   human oral metagenome                   5059832 spots  
+  PASS  DRR1080602   human oral metagenome                   4977378 spots  
+  PASS  ERR14111908  human oral metagenome                   4964485 spots  
+  PASS  SRR35056885  human saliva metagenome                 5006689 spots  
   PASS  ERR17782559  human skin metagenome                   4482121 spots  
-  PASS  ERR17782565  human skin metagenome                   4194661 spots  
   PASS  ERR17782568  human skin metagenome                   5684576 spots  
+  PASS  SRR37938678  human skin metagenome                   4650018 spots  
+  PASS  SRR37938898  human skin metagenome                   6740798 spots  
+  PASS  DRR319909    human lung metagenome                   4992355 spots  
   PASS  ERR15898346  human sputum metagenome                 4742327 spots  
-  PASS  ERR15957391  human lung metagenome                   5394620 spots  
-  PASS  SRR38212459  human nasopharyngeal metagenome         4953501 spots  
+  PASS  SRR38212227  human nasopharyngeal metagenome         5006485 spots  
   PASS  SRR38270435  human nasopharyngeal metagenome         4859121 spots  
-  PASS  ERR17613315  human vaginal metagenome               11058423 spots  
-  PASS  ERR17620124  human vaginal metagenome               10196075 spots  
-  PASS  SRR33649456  human urinary tract metagenome          6345512 spots  
-  PASS  SRR33649457  human urinary tract metagenome          6417987 spots  
+  PASS  SRR17798721  human urinary tract metagenome          5044401 spots  
+  PASS  SRR26038964  human urinary tract metagenome          5020779 spots  
+  PASS  SRR38402605  human vaginal metagenome                4998422 spots  
+  PASS  SRR38746241  human vaginal metagenome                4812828 spots  
   PASS  DRR960856    human blood metagenome                 22743798 spots  
-  PASS  DRR960880    human blood metagenome                 23443252 spots  
+  PASS  SRR31641567  human blood metagenome                  1267429 spots  
+  PASS  SRR36045879  human blood metagenome                  5670993 spots  
+  PASS  SRR36642854  human blood metagenome                  2828980 spots  
 
-PASS 28 / 28
+PASS 30 / 30
 
 Per-category composition:
-  blood          n=2, 1 study/studies: PRJDB42081   <-- SINGLE STUDY: category confounded with study; describe, do not average
-  environmental  n=4, 4 study/studies: PRJEB123261, PRJEB123320, PRJNA1519923, PRJNA1524324
-  gut            n=6, 3 study/studies: ERP203501, PRJNA1522491, PRJNA1522603
-  oral           n=4, 3 study/studies: PRJDB15796, PRJDB18431, PRJEB84038
-  respiratory    n=4, 4 study/studies: PRJEB103799, PRJEB96268, PRJNA1455986, PRJNA1457641
-  skin           n=4, 1 study/studies: PRJEB85994   <-- SINGLE STUDY: category confounded with study; describe, do not average
-  urogenital     n=4, 2 study/studies: PRJEB122097, PRJNA801448
+  blood          n=4, 4 study/studies: PRJDB42081, PRJNA1195412, PRJNA1338211, PRJNA874475
+  environmental  n=4, 4 study/studies: PRJEB113311, PRJEB123261, PRJNA1463769, PRJNA1475805
+  gut            n=6, 6 study/studies: ERP203501, PRJEB115441, PRJNA1293883, PRJNA1522489, PRJNA1522491, PRJNA1522603
+  oral           n=4, 4 study/studies: PRJDB42762, PRJDB42895, PRJEB84038, PRJNA1140720
+  respiratory    n=4, 4 study/studies: PRJDB12371, PRJEB103799, PRJNA1455986, PRJNA1457641
+  skin           n=4, 2 study/studies: PRJEB85994, PRJNA1449169
+  urogenital     n=4, 4 study/studies: PRJNA1460779, PRJNA1468137, PRJNA798061, PRJNA801448
 
 ======================================================================
 SHORTFALL AND CONFOUND EVIDENCE
 (verbatim from the panel construction log: benchmark/run/logs/panel_queries.log)
 ======================================================================
-
-CATEGORY skin (target 4)
-  query: "human skin metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
-    esearch -> 120 UIDs
-    runinfo -> 120 rows, 59 meet the criteria
-  59 acceptable runs across 1 BioProjects
-  NOTE: only 1 BioProject available for this category -- category is confounded with study
-
-CATEGORY blood (target 4)
-  query: "human blood metagenome"[Organism] AND "illumina"[Platform] AND "paired"[Layout] AND "wgs"[Strategy]
-    esearch -> 120 UIDs
-    runinfo -> 120 rows, 2 meet the criteria
-  2 acceptable runs across 1 BioProjects
-  NOTE: only 1 BioProject available for this category -- category is confounded with study
-  SHORTFALL: 2 of 4
+  No category reported a shortfall or a single-study confound.
