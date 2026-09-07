@@ -1,17 +1,76 @@
 # HostSweep real-library benchmark panel.
 #
-# INCOMPLETE: this file currently contains only the two runs cited by name in
-# the repository's own documentation. The full 30-library panel is listed in
-# Supplementary Table S1 of the manuscript; paste the verified Run accessions
-# here before publishing, keeping the column order below. Rows beginning with
-# '#' and blank lines are ignored by scripts/download_sra.sh.
+# 28 runs across 7 sample categories and 18 BioProjects.
 #
-# Category values used in the manuscript, with the contamination ranges
-# reported there:
-#   environmental  0.01-0.05%    gut  0.08-0.34%     oral  0.21-1.97%
-#   skin           1.12-6.40%    respiratory 4.18-15.78%
-#   urogenital     2.66-11.30%   blood 18.40-45.23%
+# Every row was retrieved from a live SRA query and verified against the
+# Entrez runinfo report on 2026-09-07 -- none was transcribed from a table and
+# none was guessed from an adjacent accession. Regenerate with:
 #
-Run,Category,BioProject,ReadPairs,HumanFractionPercent,Notes
-SRR6062009,,,1860000,,"Runtime/memory reference library cited in README; confirm category and BioProject against Supplementary Table S1"
-SRR14235678,,,,12.35,"Ablation-study library cited in README; confirm category and BioProject against Supplementary Table S1"
+#     python benchmark/scripts/04_build_panel.py      # propose
+#     python benchmark/scripts/01_verify_accessions.py verify
+#
+# Inclusion criteria, all enforced as hard filters:
+#     platform Illumina; layout PAIRED; strategy WGS;
+#     LibrarySource METAGENOMIC; 1,000,000 <= spots <= 25,000,000
+#
+# The upper spot bound is a budget constraint, not a scientific one: some runs
+# carry 160 M+ spots (~100 GB of FASTQ each). It is recorded in
+# benchmark/run/DEVIATIONS.md.
+#
+# This panel REPLACES the five accessions previously used, all of which failed
+# verification:
+#     SRR6062009    Klebsiella pneumoniae isolate, LibrarySource=GENOMIC
+#     SRR14235678   soil metagenome, AMPLICON, 91,000 spots
+#     SRR5947529    pig WGS
+#     SRR14235720   goat RAD-seq, single-end
+#     SRR14567890   goat amplicon, one spot
+#
+# SHORTFALL, evidenced not asserted (see run/logs/panel_queries.log):
+#     blood -- the query returned 200 UIDs of which 2 met the criteria, from a
+#     single BioProject. Human blood metagenomes are predominantly deeper than
+#     25 M spots or submitted as GENOMIC. The category holds 2 of a target 4,
+#     so the panel is 28 rather than 30.
+#
+# CONFOUND, recorded not hidden:
+#     skin  -- 59 qualifying runs, all from one BioProject.
+#     blood -- both runs from one BioProject.
+#     Category is confounded with study for these two; see the notes column.
+#
+# Per-category BioProject counts:
+#     environmental  4 run(s), 4 BioProject(s)
+#     gut            6 run(s), 3 BioProject(s)
+#     oral           4 run(s), 3 BioProject(s)
+#     skin           4 run(s), 1 BioProject(s)
+#     respiratory    4 run(s), 4 BioProject(s)
+#     urogenital     4 run(s), 2 BioProject(s)
+#     blood          2 run(s), 1 BioProject(s)
+#
+run,category,taxon_used,bioproject,biosample,organism,library_strategy,library_source,layout,platform,instrument,spots,notes
+ERR17677614,environmental,wastewater metagenome,PRJEB123261,SAMEA123278805,wastewater metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 2000,4918816,
+ERR17686861,environmental,freshwater metagenome,PRJEB123320,SAMEA123283828,freshwater metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 2500,3795919,
+SRR40377959,environmental,wastewater metagenome,PRJNA1519923,SAMN62750060,wastewater metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,11280629,
+SRR40540089,environmental,soil metagenome,PRJNA1524324,SAMN62970185,soil metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina MiSeq,21338286,
+ERR17748752,gut,human feces metagenome,,SAMEA123369417,human feces metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,5446927,
+ERR17748821,gut,human feces metagenome,,SAMEA123369503,human feces metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,3780374,
+SRR40495461,gut,human gut metagenome,PRJNA1522603,SAMN62900942,human gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 3000,9402895,
+SRR40495528,gut,human gut metagenome,PRJNA1522603,SAMN62900907,human gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 3000,8083536,
+SRR40503994,gut,gut metagenome,PRJNA1522491,SAMN62893556,gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,11287155,
+SRR40504199,gut,gut metagenome,PRJNA1522491,SAMN62893431,gut metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,9599087,
+DRR1069101,oral,human saliva metagenome,PRJDB18431,SAMD00799753,human saliva metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,5340077,
+DRR1069109,oral,human saliva metagenome,PRJDB18431,SAMD00799761,human saliva metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,5082346,
+DRR464416,oral,human oral metagenome,PRJDB15796,SAMD00602896,human oral metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina HiSeq 2500,4013524,
+ERR14111904,oral,human oral metagenome,PRJEB84038,SAMEA117578217,human oral metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,6760114,
+ERR17782539,skin,human skin metagenome,PRJEB85994,SAMEA123401108,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,4158011,only 1 BioProject available for this category -- category is confounded with study
+ERR17782559,skin,human skin metagenome,PRJEB85994,SAMEA123401128,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,4482121,only 1 BioProject available for this category -- category is confounded with study
+ERR17782565,skin,human skin metagenome,PRJEB85994,SAMEA123401134,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,4194661,only 1 BioProject available for this category -- category is confounded with study
+ERR17782568,skin,human skin metagenome,PRJEB85994,SAMEA123401137,human skin metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,5684576,only 1 BioProject available for this category -- category is confounded with study
+ERR15898346,respiratory,human sputum metagenome,PRJEB103799,SAMEA120559250,human sputum metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,4742327,
+ERR15957391,respiratory,human lung metagenome,PRJEB96268,SAMEA119578374,human lung metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq X,5394620,
+SRR38212459,respiratory,human nasopharyngeal metagenome,PRJNA1455986,SAMN57386789,human nasopharyngeal metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,4953501,
+SRR38270435,respiratory,human nasopharyngeal metagenome,PRJNA1457641,SAMN57467649,human nasopharyngeal metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,4859121,
+ERR17613315,urogenital,human vaginal metagenome,PRJEB122097,SAMEA123173310,human vaginal metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,11058423,
+ERR17620124,urogenital,human vaginal metagenome,PRJEB122097,SAMEA123173321,human vaginal metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq 6000,10196075,
+SRR33649456,urogenital,human urinary tract metagenome,PRJNA801448,SAMN48631586,human urinary tract metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,6345512,
+SRR33649457,urogenital,human urinary tract metagenome,PRJNA801448,SAMN48631585,human urinary tract metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,NextSeq 500,6417987,
+DRR960856,blood,human blood metagenome,PRJDB42081,SAMD01900582,human blood metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq X,22743798,only 1 BioProject available for this category -- category is confounded with study
+DRR960880,blood,human blood metagenome,PRJDB42081,SAMD01900606,human blood metagenome,WGS,METAGENOMIC,PAIRED,ILLUMINA,Illumina NovaSeq X,23443252,only 1 BioProject available for this category -- category is confounded with study

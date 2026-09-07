@@ -1,10 +1,35 @@
 E1 accession verification
 source file : benchmark/accessions.csv
-run count   : 2
+run count   : 28
 criteria    : Illumina / PAIRED / WGS / METAGENOMIC / >= 1,000,000 spots
 
-  FAIL  SRR6062009   Klebsiella pneumoniae                   1863630 spots  source is 'GENOMIC', not METAGENOMIC
-  FAIL  SRR14235678  soil metagenome                           91000 spots  strategy is 'AMPLICON', not WGS; 91,000 spots, below the 1,000,000 minimum
+  PASS  ERR17677614  wastewater metagenome                   4918816 spots  
+  PASS  ERR17686861  freshwater metagenome                   3795919 spots  
+  PASS  SRR40377959  wastewater metagenome                  11280629 spots  
+  PASS  SRR40540089  soil metagenome                        21338286 spots  
+  PASS  ERR17748752  human feces metagenome                  5446927 spots  
+  PASS  ERR17748821  human feces metagenome                  3780374 spots  
+  PASS  SRR40495461  human gut metagenome                    9402895 spots  
+  PASS  SRR40495528  human gut metagenome                    8083536 spots  
+  PASS  SRR40503994  gut metagenome                         11287155 spots  
+  PASS  SRR40504199  gut metagenome                          9599087 spots  
+  PASS  DRR1069101   human saliva metagenome                 5340077 spots  
+  PASS  DRR1069109   human saliva metagenome                 5082346 spots  
+  PASS  DRR464416    human oral metagenome                   4013524 spots  
+  PASS  ERR14111904  human oral metagenome                   6760114 spots  
+  PASS  ERR17782539  human skin metagenome                   4158011 spots  
+  PASS  ERR17782559  human skin metagenome                   4482121 spots  
+  PASS  ERR17782565  human skin metagenome                   4194661 spots  
+  PASS  ERR17782568  human skin metagenome                   5684576 spots  
+  PASS  ERR15898346  human sputum metagenome                 4742327 spots  
+  PASS  ERR15957391  human lung metagenome                   5394620 spots  
+  PASS  SRR38212459  human nasopharyngeal metagenome         4953501 spots  
+  PASS  SRR38270435  human nasopharyngeal metagenome         4859121 spots  
+  PASS  ERR17613315  human vaginal metagenome               11058423 spots  
+  PASS  ERR17620124  human vaginal metagenome               10196075 spots  
+  PASS  SRR33649456  human urinary tract metagenome          6345512 spots  
+  PASS  SRR33649457  human urinary tract metagenome          6417987 spots  
+  PASS  DRR960856    human blood metagenome                 22743798 spots  
+  PASS  DRR960880    human blood metagenome                 23443252 spots  
 
-PASS 0 / 2
-INCOMPLETE: the panel needs 30 runs; 2 are listed in benchmark/accessions.csv.
+PASS 28 / 28

@@ -1,5 +1,5 @@
-[wsl_run] stage=han1  repo=8cc30cc  threads=8
-[wsl_run] started 2026-09-07T06:26:37Z
+[wsl_run] stage=han1  repo=6c72d4a  threads=8
+[wsl_run] started 2026-09-07T06:31:33Z
 ==============================================================================
 HG00438  GCA_018471515.1  (Han Chinese South (CHS))
   assembly_name:   HG00438.pri.mat.f1_v2
@@ -12,7 +12,21 @@ HG00438  GCA_018471515.1  (Han Chinese South (CHS))
   biosample:       SAMN17861652
   population:      Han Chinese South
   total_length:    3035719151
-    downloading https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/471/515/GCA_018471515.1_HG00438.pri.mat.f1_v2/GCA_018471515.1_HG00438.pri.mat.f1_v2_genomic.fna.gz
-    decompressing (0.92 GB compressed)
-    wrote HG00438_pri_mat_f1_v2.fna (3.07 GB)
   measuring case composition (this streams the whole FASTA)...
+  lowercase:       39.546787 %  (1200535948 bases)
+  N content:       0.000000 %
+  total bases:     3035735720
+  REJECTED: lowercase content above threshold
+==============================================================================
+HG00733  GCA_018506975.1  (Puerto Rican (PUR))
+  assembly_name:   HG00733.pri.mat.f1_v2
+  assembly_level:  Scaffold
+  assembly_method: Hifiasm v. 0.14
+  sequencing_tech: PacBio Sequel
+  submitter:       UCSC Genomics Institute
+  release_date:    2021-05-26
+  bioproject:      PRJNA727433
+  biosample:       SAMN00006581
+  population:      PUR
+  total_length:    3026516595
+    downloading https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/018/506/975/GCA_018506975.1_HG00733.pri.mat.f1_v2/GCA_018506975.1_HG00733.pri.mat.f1_v2_genomic.fna.gz
