@@ -301,8 +301,12 @@ def main():
         print("\nMetadata checks pass for %d source(s): hifiasm de novo, "
               "contig/scaffold level, not Han1." % len(findings))
         if findings and len(measured) == len(findings):
-            print("Sequence composition measured for all %d: no meaningful "
-                  "soft-masked content." % len(measured))
+            pcts = [f["lowercase_pct"] for f in measured]
+            print("Sequence composition measured for all %d: lowercase "
+                  "%.2f-%.2f%%, against 40.27%% for T2T-CHM13v2.0 itself. "
+                  "That is repeat soft-masking, not gap-fill; it is reported "
+                  "as metadata and gates nothing."
+                  % (len(measured), min(pcts), max(pcts)))
         else:
             print("Sequence composition NOT yet measured for %d of %d source(s) "
                   "(FASTA not downloaded). The no-CHM13-sequence claim is "

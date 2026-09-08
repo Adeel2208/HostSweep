@@ -1,0 +1,24 @@
+[chain 15:55:29] waiting for the E2 lock to clear
+[chain 15:55:29] E2 finished
+[chain 15:55:29] libraries with a manifest: 12 / 12
+[chain 15:55:29] writing synthetic_manifest.csv
+wrote /home/adeel/hostsweep/out/synthetic_manifest.csv (12 rows)
+wrote /home/adeel/hostsweep/out/per_library.csv (15 rows, 0 FAILED)
+[chain 15:55:29] starting E3, HostSweep only, 3 runs per library
+[E3 15:55:29] 12 libraries x 1 tools x 3 runs
+[E3 15:55:29] SYN-CHM13-01 / hostsweep / run 1: already scored
+[E3 15:55:29] SYN-CHM13-01 / hostsweep / run 2: already scored
+[E3 15:55:29] SYN-CHM13-01 / hostsweep / run 3: already scored
+[E3 15:55:29] SYN-CHM13-02 / hostsweep / run 1: already scored
+[E3 15:55:29] SYN-CHM13-02 / hostsweep / run 2: already scored
+[E3 15:55:29] SYN-CHM13-02 / hostsweep / run 3: already scored
+[E3 15:55:29] SYN-CHM13-03 / hostsweep / run 1: already scored
+[E3 15:55:29] SYN-CHM13-03 / hostsweep / run 2: already scored
+[E3 15:55:29] SYN-CHM13-03 / hostsweep / run 3: already scored
+[E3 15:55:29] SYN-CHM13-04 / hostsweep / run 1: already scored
+[E3 15:55:29] SYN-CHM13-04 / hostsweep / run 2: already scored
+[E3 15:55:29] SYN-CHM13-04 / hostsweep / run 3: already scored
+[E3 15:55:29] SYN-CHM13-05 / hostsweep / run 1: already scored
+[E3 15:55:29] SYN-CHM13-05 / hostsweep / run 2: already scored
+[E3 15:55:29] SYN-CHM13-05 / hostsweep / run 3: already scored
+[E3 15:55:29] SYN-CHM13-06 / hostsweep / run 1
