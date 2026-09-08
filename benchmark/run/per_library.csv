@@ -1,0 +1,16 @@
+library,category,condition,tool,run,pairs_m,host_pct,sensitivity_pct,fpr_pct,runtime_min,peak_mem_gb
+SYN-CHM13-01,synthetic,synthetic_matched,hostsweep,1,2.0,0.1,100.0,0.0142,18.5113,11.0462
+SYN-CHM13-01,synthetic,synthetic_matched,hostsweep,2,2.0,0.1,100.0,0.0142,17.3793,11.0895
+SYN-CHM13-01,synthetic,synthetic_matched,hostsweep,3,2.0,0.1,100.0,0.0142,18.973,11.1061
+SYN-CHM13-02,synthetic,synthetic_matched,hostsweep,1,2.0,0.5,100.0,0.0147,22.3827,11.0893
+SYN-CHM13-02,synthetic,synthetic_matched,hostsweep,2,2.0,0.5,100.0,0.0147,16.312,11.1085
+SYN-CHM13-02,synthetic,synthetic_matched,hostsweep,3,2.0,0.5,100.0,0.0147,14.991,11.1132
+SYN-CHM13-03,synthetic,synthetic_matched,hostsweep,1,2.0,1.0,100.0,0.0146,16.3883,11.108
+SYN-CHM13-03,synthetic,synthetic_matched,hostsweep,2,2.0,1.0,100.0,0.0146,20.6537,11.1081
+SYN-CHM13-03,synthetic,synthetic_matched,hostsweep,3,2.0,1.0,100.0,0.0146,18.1398,11.0891
+SYN-CHM13-04,synthetic,synthetic_matched,hostsweep,1,2.0,5.0,100.0,0.0144,45.3352,11.1105
+SYN-CHM13-04,synthetic,synthetic_matched,hostsweep,2,2.0,5.0,100.0,0.0144,39.8352,11.1067
+SYN-CHM13-04,synthetic,synthetic_matched,hostsweep,3,2.0,5.0,100.0,0.0144,25.5342,11.1179
+SYN-CHM13-05,synthetic,synthetic_matched,hostsweep,1,2.0,10.0,100.0,0.0137,30.9613,11.1066
+SYN-CHM13-05,synthetic,synthetic_matched,hostsweep,2,2.0,10.0,100.0,0.0137,69.4,11.1133
+SYN-CHM13-05,synthetic,synthetic_matched,hostsweep,3,2.0,10.0,100.0,0.0137,35.8392,11.0986
