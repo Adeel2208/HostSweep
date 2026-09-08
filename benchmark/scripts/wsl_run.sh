@@ -84,6 +84,18 @@ case "$STAGE" in
             --synthetic "$BENCH/synthetic" \
             --out-dir "$OUT"
         ;;
+    e4dl)
+        # Runs in the sra env, not hostsweep. Kept as a stage rather than an
+        # inline "source ... && conda activate sra && ..." string because that
+        # form is mangled passing through PowerShell to wsl.exe and fails with
+        # "source: filename argument required" -- silently, having done nothing.
+        conda activate sra || { echo "sra env missing; install it first" >&2; exit 1; }
+        bash "$SCRIPTS/05_download_panel.sh" "${1:-$ROOT/e4_fastq}" "${2:-2}"
+        ;;
+    e4)
+        bash "$SCRIPTS/run_e4.sh" "${1:-$ROOT/e4_fastq}" "$OUT/e4_results" \
+             "${2:-3}" "${@:3}"
+        ;;
     shell)
         "$@"
         ;;
