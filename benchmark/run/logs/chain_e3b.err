@@ -1,0 +1,1 @@
+/mnt/c/Users/HP/Documents/hotsweep/HostSweep/benchmark/scripts/chain_e3.sh: line 66:   389 Killed                  bash "$REPO/benchmark/scripts/run_e3.sh" "$SYN" "$OUT/results" "$RUNS" hostsweep

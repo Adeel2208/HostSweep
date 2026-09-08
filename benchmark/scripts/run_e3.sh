@@ -137,8 +137,26 @@ for R1 in "${LIBS[@]}"; do
                 || { echo "scoring failed" > "$DIR/${TOOL}_run${N}.failed"
                      say "  FAILED during scoring"; continue; }
 
-            # The work tree holds the tool's intermediates and is large; the
-            # evidence that matters (metrics, .time, stdout/stderr) is kept.
+            # Keep run 1's cleaned reads: E9 assembles them, and regenerating
+            # them later costs a full pipeline run per library. Only run 1 is
+            # kept -- the pipeline is deterministic, so runs 2 and 3 produce
+            # identical reads and storing them three times buys nothing.
+            if [ "$N" = "1" ] && [ ${#CLEAN[@]} -gt 0 ]; then
+                KEEP="$DIR/cleaned_run1"
+                mkdir -p "$KEEP"
+                for f in "${CLEAN[@]}"; do
+                    cp -f "$f" "$KEEP/" 2>/dev/null || true
+                done
+                # HostSweep's assembly tier is paired and is what E9 needs;
+                # cleaned_paths() returns only the scored tier, so take the
+                # pair explicitly when it exists.
+                for f in "$WD"/cleaned/*_ASSEMBLY_R[12].fastq.gz; do
+                    [ -e "$f" ] && cp -f "$f" "$KEEP/"
+                done
+            fi
+
+            # The rest of the work tree holds bulky intermediates; the evidence
+            # that matters (metrics, .time, stdout/stderr) is kept.
             rm -rf "$WD"
             say "  done"
         done

@@ -161,6 +161,47 @@ really a claim about vaginal metagenomes specifically.
 
 ---
 
+### D17. Runtime and peak-memory figures from this host are not comparable
+
+**Specified.** Report runtime and peak memory per tool, so the comparator table
+carries a performance column alongside accuracy.
+
+**Done.** The measurements are taken and reported, but they must **not** be used
+to compare tools, and the manuscript should say so.
+
+**Why.** Every HostSweep run on this host peaks at **11.05-11.12 GB against an
+11 GB ceiling** and completes only by paging into swap. The resulting timings
+are dominated by swap behaviour, not by the method. Measured, same library,
+same inputs, same parameters:
+
+| Library | run 1 | run 2 | run 3 |
+|---|---|---|---|
+| SYN-CHM13-04 (5%) | 45.34 min | 39.84 min | 25.53 min |
+| SYN-CHM13-05 (10%) | 30.96 min | **69.40 min** | 35.84 min |
+
+A 2.2x spread between replicates of an identical, deterministic computation is
+the machine, not the pipeline. A comparator ranking built on these numbers
+would rank whichever tool happened to run when the page cache was warm.
+
+**Interpretation cost.** Accuracy is unaffected: sensitivity and false positive
+rate are byte-identical across replicates, because the pipeline is
+deterministic and the arithmetic does not care how long it took. Those figures
+stand. But:
+
+- **No runtime claim should be made from this data**, including "faster than",
+  "comparable to", or a runtime column in the comparator table.
+- **Peak memory is a floor set by the ceiling**, not a measurement of demand: a
+  tool that would use 20 GB on a larger machine records ~11 GB here or fails.
+  The numbers say what fitted, not what was wanted.
+- Runtime and memory must be re-measured on unconstrained hardware before any
+  performance claim enters the manuscript. Everything needed is in
+  `benchmark/scripts/`; the runs are idempotent and would reproduce there.
+
+This is the single largest limitation of running the benchmark on this host,
+and it is a hardware limitation rather than a methodological one.
+
+---
+
 ## Category 2 — Deviations in inputs and provenance
 
 ### D8. Three background genome accessions corrected
