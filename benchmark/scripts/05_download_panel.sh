@@ -52,18 +52,37 @@ fetch_one() {
     if [ -s "$r1" ] && [ -s "$r2" ]; then
         say "  $run already present"; return 0
     fi
-    say "  $run: prefetch"
-    if ! prefetch --max-size 100G -O "$OUTDIR/sra" "$run" \
-            > "$OUTDIR/${run}.prefetch.log" 2>&1; then
-        printf '%s\tprefetch\t%s\n' "$run" "$?" >> "$FAILURES"
-        say "  $run: prefetch FAILED"; return 1
+    # A prefetch killed mid-download leaves <run>.sra.lock behind, and every
+    # later attempt refuses with "lock exists while copying file: download
+    # canceled". The lock guards against two concurrent prefetches, but this
+    # script already holds an exclusive flock, so a lock here is always a
+    # leftover from an interrupted run rather than a live writer.
+    local stale="$OUTDIR/sra/$run/${run}.sra.lock"
+    if [ -e "$stale" ]; then
+        say "  $run: clearing stale lock from an interrupted download"
+        rm -f "$stale"
     fi
+
+    say "  $run: prefetch"
+    local rc=0
+    prefetch --max-size 100G -O "$OUTDIR/sra" "$run" \
+        > "$OUTDIR/${run}.prefetch.log" 2>&1 || rc=$?
+    if [ "$rc" -ne 0 ]; then
+        # $? must be captured before any other command runs. Reading it inside
+        # an `if ! cmd; then` body yields the negated status, which is always
+        # 0 -- every failure was previously recorded as exit_status 0.
+        printf '%s\tprefetch\t%s\n' "$run" "$rc" >> "$FAILURES"
+        say "  $run: prefetch FAILED (exit $rc)"; return 1
+    fi
+
     say "  $run: fasterq-dump"
-    if ! fasterq-dump --split-3 --skip-technical -e "$THREADS" \
-            -O "$OUTDIR" -t "$OUTDIR/tmp" "$OUTDIR/sra/$run" \
-            > "$OUTDIR/${run}.dump.log" 2>&1; then
-        printf '%s\tfasterq-dump\t%s\n' "$run" "$?" >> "$FAILURES"
-        say "  $run: fasterq-dump FAILED"; return 1
+    rc=0
+    fasterq-dump --split-3 --skip-technical -e "$THREADS" \
+        -O "$OUTDIR" -t "$OUTDIR/tmp" "$OUTDIR/sra/$run" \
+        > "$OUTDIR/${run}.dump.log" 2>&1 || rc=$?
+    if [ "$rc" -ne 0 ]; then
+        printf '%s\tfasterq-dump\t%s\n' "$run" "$rc" >> "$FAILURES"
+        say "  $run: fasterq-dump FAILED (exit $rc)"; return 1
     fi
     # --split-3 writes _1/_2 for paired runs; a single unsplit file means the
     # run is not actually paired, which the panel criteria should have excluded.

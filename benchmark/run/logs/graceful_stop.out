@@ -1,0 +1,8 @@
+[stop 08:24:04] scored runs before stop: 33
+[stop 08:24:04] stopping chain wrappers (no new runs will start)
+[stop 08:24:04] waiting up to 45m for the in-flight run to score
+[stop 08:24:21] run_e3.sh exited without scoring another run
+[stop 08:24:21] stopping remaining processes
+[stop 08:24:26] processes still running: 0
+[stop 08:24:26] scored runs after stop:  33 (was 33)
+[stop 08:24:26] stopped. Resume with chain_e3.sh; completed runs are skipped.

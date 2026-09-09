@@ -1,0 +1,35 @@
+[wsl_run] stage=e4dl  repo=1162416  threads=8
+[wsl_run] started 2026-09-09T12:05:46Z
+[E4dl 12:05:46] 30 runs to fetch into /home/adeel/hostsweep/e4_fastq (max 1 concurrent)
+[E4dl 12:05:46]   ERR17336437 already present
+[E4dl 12:05:46]   ERR17677614 already present
+[E4dl 12:05:46]   SRR38455354 already present
+[E4dl 12:05:46]   SRR39037539 already present
+[E4dl 12:05:46]   ERR17585876 already present
+[E4dl 12:05:46]   ERR17748752 already present
+[E4dl 12:05:46]   SRR34685905 already present
+[E4dl 12:05:46]   SRR40486826 already present
+[E4dl 12:05:46]   SRR40495631 already present
+[E4dl 12:05:46]   SRR40504164 already present
+[E4dl 12:05:46]   DRR1076765 already present
+[E4dl 12:05:46]   DRR1080602 already present
+[E4dl 12:05:46]   ERR14111908 already present
+[E4dl 12:05:46]   SRR35056885 already present
+[E4dl 12:05:46]   ERR17782559 already present
+[E4dl 12:05:46]   ERR17782568 already present
+[E4dl 12:05:46]   SRR37938678 already present
+[E4dl 12:05:46]   SRR37938898 already present
+[E4dl 12:05:46]   DRR319909 already present
+[E4dl 12:05:46]   ERR15898346 already present
+[E4dl 12:05:46]   SRR38212227: prefetch
+[E4dl 12:05:50]   SRR38212227: prefetch FAILED
+[E4dl 12:05:50]   SRR38270435: prefetch
+[E4dl 12:05:53]   SRR38270435: prefetch FAILED
+[E4dl 12:05:53]   SRR17798721 already present
+[E4dl 12:05:53]   SRR26038964 already present
+[E4dl 12:05:53]   SRR38402605 already present
+[E4dl 12:05:53]   SRR38746241 already present
+[E4dl 12:05:53]   DRR960856 already present
+[E4dl 12:05:53]   SRR31641567 already present
+[E4dl 12:05:53]   SRR36045879: prefetch
+[wsl_run] finished 2026-09-09T12:06:45Z rc=143

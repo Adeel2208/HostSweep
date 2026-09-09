@@ -1,0 +1,57 @@
+[wsl_run] stage=e4dl  repo=0aef984  threads=8
+[wsl_run] started 2026-09-09T06:17:29Z
+[E4dl 06:17:30] 30 runs to fetch into /home/adeel/hostsweep/e4_fastq (max 2 concurrent)
+[E4dl 06:17:30]   ERR17336437 already present
+[E4dl 06:17:30]   ERR17677614 already present
+[E4dl 06:17:30]   SRR39037539: prefetch
+[E4dl 06:17:30]   SRR38455354: prefetch
+[E4dl 06:27:23]   SRR39037539: fasterq-dump
+[E4dl 06:30:57]   SRR38455354: fasterq-dump
+[E4dl 06:39:24]   SRR39037539: done (995M)
+[E4dl 06:39:31]   SRR38455354: done (1.1G)
+[E4dl 06:39:31]   ERR17748752: prefetch
+[E4dl 06:39:31]   ERR17585876: prefetch
+[E4dl 06:50:44]   ERR17748752: fasterq-dump
+[E4dl 06:50:47]   ERR17585876: fasterq-dump
+[E4dl 06:59:15]   ERR17585876: done (882M)
+[E4dl 06:59:15]   SRR34685905: prefetch
+[E4dl 06:59:27]   ERR17748752: done (840M)
+[E4dl 06:59:27]   SRR40486826 already present
+[E4dl 07:04:33]   SRR34685905: fasterq-dump
+[E4dl 07:16:56]   SRR34685905: done (1.2G)
+[E4dl 07:16:56]   SRR40495631 already present
+[E4dl 07:16:56]   SRR40504164: prefetch
+[E4dl 07:16:56]   DRR1076765 already present
+[E4dl 07:23:48]   SRR40504164: fasterq-dump
+[E4dl 07:32:25]   SRR40504164: done (1.3G)
+[E4dl 07:32:25]   ERR14111908 already present
+[E4dl 07:32:25]   DRR1080602 already present
+[E4dl 07:32:25]   SRR35056885 already present
+[E4dl 07:32:25]   ERR17782559 already present
+[E4dl 07:32:25]   ERR17782568 already present
+[E4dl 07:32:25]   SRR37938678 already present
+[E4dl 07:32:25]   SRR37938898 already present
+[E4dl 07:32:25]   DRR319909 already present
+[E4dl 07:32:25]   SRR38212227: prefetch
+[E4dl 07:32:25]   ERR15898346 already present
+[E4dl 07:32:25]   SRR38270435: prefetch
+[E4dl 07:32:29]   SRR38270435: prefetch FAILED
+[E4dl 07:32:29]   SRR38212227: prefetch FAILED
+[E4dl 07:32:29]   SRR26038964: prefetch
+[E4dl 07:32:29]   SRR17798721: prefetch
+[E4dl 07:35:37]   SRR17798721: fasterq-dump
+[E4dl 07:39:45]   SRR17798721: done (752M)
+[E4dl 07:39:45]   SRR38402605: prefetch
+[E4dl 07:42:49]   SRR38402605: fasterq-dump
+[E4dl 07:46:52]   SRR38402605: done (760M)
+[E4dl 07:48:13]   SRR26038964: fasterq-dump
+[E4dl 07:51:36]   SRR26038964: done (750M)
+[E4dl 07:51:36]   DRR960856: prefetch
+[E4dl 07:51:36]   SRR38746241: prefetch
+[E4dl 07:55:56]   SRR38746241: fasterq-dump
+[E4dl 07:58:02]   SRR38746241: done (661M)
+[E4dl 07:58:02]   SRR31641567: prefetch
+[E4dl 08:01:17]   SRR31641567: fasterq-dump
+[E4dl 08:02:46]   SRR31641567: done (422M)
+[E4dl 08:08:09]   DRR960856: fasterq-dump
+[wsl_run] finished 2026-09-09T08:24:04Z rc=143

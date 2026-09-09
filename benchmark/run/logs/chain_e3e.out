@@ -1,0 +1,42 @@
+[chain 12:05:26] waiting for the E2 lock to clear
+[chain 12:05:26] E2 finished
+[chain 12:05:26] libraries with a manifest: 12 / 12
+[chain 12:05:26] writing synthetic_manifest.csv
+wrote /home/adeel/hostsweep/out/synthetic_manifest.csv (12 rows)
+wrote /home/adeel/hostsweep/out/per_library.csv (33 rows, 0 FAILED)
+[chain 12:05:26] starting E3, HostSweep only, 3 runs per library
+[E3 12:05:26] 12 libraries x 1 tools x 3 runs
+[E3 12:05:26] SYN-CHM13-01 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-01 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-01 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-02 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-02 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-02 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-03 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-03 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-03 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-04 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-04 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-04 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-05 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-05 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-05 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-06 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-06 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-06 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-07 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-07 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-07 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-08 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-08 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-08 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-CHM13-09 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-CHM13-09 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-CHM13-09 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-IND-01 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-IND-01 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-IND-01 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-NEU-02 / hostsweep / run 1: already scored
+[E3 12:05:26] SYN-NEU-02 / hostsweep / run 2: already scored
+[E3 12:05:26] SYN-NEU-02 / hostsweep / run 3: already scored
+[E3 12:05:26] SYN-NEU-03 / hostsweep / run 1
