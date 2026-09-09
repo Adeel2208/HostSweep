@@ -1,0 +1,20 @@
+[chain75 06:17:29] waiting for the E3 lock to clear
+[chain75 06:17:29] E3 finished
+[chain75 06:17:29] rebuilding per_library.csv from whatever E3 produced
+wrote /home/adeel/hostsweep/out/synthetic_manifest.csv (12 rows)
+wrote /home/adeel/hostsweep/out/per_library.csv (31 rows, 0 FAILED)
+[chain75 06:17:29] E7 threshold sweep on SYN-CHM13-01 SYN-CHM13-04 SYN-CHM13-07
+[E7 06:17:29] SYN-CHM13-01: building the profiling tier (full pipeline, once)
+[E7 07:01:15] SYN-CHM13-01 H0.75_L70
+[E7 07:04:15] SYN-CHM13-01 H0.75_L80
+[E7 07:09:49] SYN-CHM13-01 H0.75_L90
+[E7 07:12:58] SYN-CHM13-01 H0.75_L100
+[E7 07:15:23] SYN-CHM13-01 H0.75_L110
+[E7 07:18:01] SYN-CHM13-01 H0.80_L70
+[E7 07:18:52] SYN-CHM13-01 H0.80_L80
+[E7 07:19:24] SYN-CHM13-01 H0.80_L90
+[E7 07:19:52] SYN-CHM13-01 H0.80_L100
+[E7 07:20:24] SYN-CHM13-01 H0.80_L110
+[E7 07:21:10] SYN-CHM13-01 H0.85_L70
+[E7 07:22:33] SYN-CHM13-01 H0.85_L80
+[E7 07:27:43] SYN-CHM13-01 H0.85_L90

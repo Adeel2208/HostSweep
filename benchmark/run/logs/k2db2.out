@@ -1,0 +1,4 @@
+[k2db 06:17:27] fetching k2_standard_08gb_20250402.tar.gz (~8 GB, resumable)
+[k2db 07:06:02] downloaded 5.6G; extracting
+[k2db 07:17:11] ready: /home/adeel/hostsweep/k2_standard_08gb (8.0G), build 20250402
+[k2db 07:17:11] REMINDER: Standard-8 is capped; residual-human counts are a floor (D5).

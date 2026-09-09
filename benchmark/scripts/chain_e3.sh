@@ -26,6 +26,20 @@ say() { echo "[chain $(date -u +%H:%M:%S)] $*"; }
 conda activate hostsweep || { echo "cannot activate hostsweep" >&2; exit 1; }
 
 mkdir -p "$OUT"
+# Claim the E3 lock FIRST, before any slow step.
+#
+# It used to be taken just before run_e3.sh, after waiting on E2 and running
+# the aggregate. chain_e7_e5.sh waits on this same lock to know E3 has
+# finished, and in that window it acquired the lock, concluded E3 was done and
+# started E7 alongside a still-running E3 -- two pipelines against an 11 GB
+# ceiling, which is precisely what the locking exists to prevent. Holding it
+# from the outset closes the window.
+exec 8>"$OUT/.e3.lock"
+if ! flock -n 8; then
+    say "another E3 chain holds $OUT/.e3.lock; exiting"
+    exit 0
+fi
+
 say "waiting for the E2 lock to clear"
 # flock -w blocks until the builder releases the lock, then we drop it again.
 exec 9>"$LOCK"
@@ -55,11 +69,7 @@ python "$REPO/benchmark/scripts/aggregate_results.py" \
 # Single-instance lock on E3 itself. Two chains would each launch run_e3.sh
 # against the same metrics paths, which is the same class of corruption that
 # hit the mixing stage. fd 8, because fd 9 held the E2 lock above.
-exec 8>"$OUT/.e3.lock"
-if ! flock -n 8; then
-    say "another E3 run holds $OUT/.e3.lock; exiting without starting a second"
-    exit 0
-fi
+# (The E3 lock is already held from the top of this script.)
 
 say "starting E3, HostSweep only, $RUNS runs per library"
 bash "$REPO/benchmark/scripts/run_e3.sh" \

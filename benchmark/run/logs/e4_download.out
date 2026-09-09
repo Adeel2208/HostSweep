@@ -1,0 +1,59 @@
+[wsl_run] stage=e4dl  repo=0aef984  threads=8
+[wsl_run] started 2026-09-08T17:12:33Z
+[E4dl 17:12:41] 30 runs to fetch into /home/adeel/hostsweep/e4_fastq (max 2 concurrent)
+[E4dl 17:12:41]   ERR17677614: prefetch
+[E4dl 17:12:41]   ERR17336437: prefetch
+[E4dl 18:32:49]   ERR17336437: fasterq-dump
+[E4dl 18:35:29]   ERR17677614: fasterq-dump
+[E4dl 18:43:07]   ERR17336437: done (1.3G)
+[E4dl 18:43:07]   SRR38455354: prefetch
+[E4dl 18:44:10]   SRR38455354: prefetch FAILED
+[E4dl 18:45:03]   ERR17677614: done (1.3G)
+[E4dl 18:45:03]   SRR39037539: prefetch
+[E4dl 18:45:03]   ERR17585876: prefetch
+[E4dl 18:50:43]   SRR39037539: prefetch FAILED
+[E4dl 18:50:43]   ERR17585876: prefetch FAILED
+[E4dl 18:50:43]   ERR17748752: prefetch
+[E4dl 18:50:43]   SRR34685905: prefetch
+[E4dl 18:56:21]   ERR17748752: prefetch FAILED
+[E4dl 18:56:21]   SRR40486826: prefetch
+[E4dl 18:56:22]   SRR34685905: prefetch FAILED
+[E4dl 18:56:22]   SRR40495631: prefetch
+[E4dl 19:27:14]   SRR40486826: fasterq-dump
+[E4dl 19:31:06]   SRR40486826: done (679M)
+[E4dl 19:31:07]   SRR40504164: prefetch
+[E4dl 19:46:57]   SRR40495631: fasterq-dump
+[E4dl 19:49:44]   SRR40495631: done (666M)
+[E4dl 19:49:44]   DRR1076765: prefetch
+[E4dl 20:51:25]   DRR1076765: fasterq-dump
+[E4dl 20:53:45]   DRR1076765: done (590M)
+[E4dl 21:20:59]   SRR40504164: prefetch FAILED
+[E4dl 21:20:59]   ERR14111908: prefetch
+[E4dl 21:20:59]   DRR1080602: prefetch
+[E4dl 21:34:43]   ERR14111908: fasterq-dump
+[E4dl 21:37:42]   ERR14111908: done (546M)
+[E4dl 22:17:03]   DRR1080602: fasterq-dump
+[E4dl 22:32:42]   DRR1080602: done (1.2G)
+[E4dl 22:32:42]   ERR17782559: prefetch
+[E4dl 22:32:42]   SRR35056885: prefetch
+[E4dl 22:43:58]   ERR17782559: fasterq-dump
+[E4dl 22:44:49]   ERR17782559: done (464M)
+[E4dl 22:52:03]   SRR35056885: fasterq-dump
+[E4dl 22:54:20]   SRR35056885: done (783M)
+[E4dl 22:54:20]   SRR37938678: prefetch
+[E4dl 22:54:20]   ERR17782568: prefetch
+[E4dl 23:03:35]   ERR17782568: fasterq-dump
+[E4dl 23:04:51]   ERR17782568: done (589M)
+[E4dl 23:04:51]   SRR37938898: prefetch
+[E4dl 23:25:48]   SRR37938898: fasterq-dump
+[E4dl 23:29:02]   SRR37938898: done (1.2G)
+[E4dl 23:31:18]   SRR37938678: fasterq-dump
+[E4dl 01:20:29]   SRR37938678: done (781M)
+[E4dl 01:20:29]   ERR15898346: prefetch
+[E4dl 01:20:29]   DRR319909: prefetch
+[E4dl 01:31:41]   DRR319909: fasterq-dump
+[E4dl 01:33:18]   DRR319909: done (526M)
+[E4dl 01:33:18]   SRR38212227: prefetch
+[E4dl 01:33:26]   ERR15898346: fasterq-dump
+[E4dl 01:35:10]   ERR15898346: done (529M)
+[E4dl 01:35:10]   SRR38270435: prefetch

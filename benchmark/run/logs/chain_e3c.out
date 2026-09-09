@@ -26,3 +26,31 @@ wrote /home/adeel/hostsweep/out/per_library.csv (15 rows, 0 FAILED)
 [E3 16:35:01] SYN-CHM13-06 / hostsweep / run 2
 [E3 16:58:46]   done
 [E3 16:58:46] SYN-CHM13-06 / hostsweep / run 3
+[E3 17:26:21]   done
+[E3 17:26:21] SYN-CHM13-07 / hostsweep / run 1
+[E3 18:05:08]   done
+[E3 18:05:08] SYN-CHM13-07 / hostsweep / run 2
+[E3 18:57:31]   done
+[E3 18:57:31] SYN-CHM13-07 / hostsweep / run 3
+[E3 19:35:03]   done
+[E3 19:35:03] SYN-CHM13-08 / hostsweep / run 1
+[E3 20:18:51]   done
+[E3 20:18:51] SYN-CHM13-08 / hostsweep / run 2
+[E3 20:40:40]   done
+[E3 20:40:40] SYN-CHM13-08 / hostsweep / run 3
+[E3 21:03:13]   done
+[E3 21:03:13] SYN-CHM13-09 / hostsweep / run 1
+[E3 21:31:12]   done
+[E3 21:31:12] SYN-CHM13-09 / hostsweep / run 2
+[E3 21:57:31]   done
+[E3 21:57:31] SYN-CHM13-09 / hostsweep / run 3
+[E3 22:19:34]   done
+[E3 22:19:34] SYN-IND-01 / hostsweep / run 1
+[E3 22:49:55]   done
+[E3 22:49:55] SYN-IND-01 / hostsweep / run 2
+[E3 23:07:53]   done
+[E3 23:07:53] SYN-IND-01 / hostsweep / run 3
+[E3 23:23:39]   done
+[E3 23:23:40] SYN-NEU-02 / hostsweep / run 1
+[E3 01:38:06]   done
+[E3 01:38:06] SYN-NEU-02 / hostsweep / run 2
