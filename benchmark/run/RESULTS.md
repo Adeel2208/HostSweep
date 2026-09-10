@@ -19,6 +19,7 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 1. [Status of each experiment](#1-status-of-each-experiment)
 2. [E3 — sensitivity and false positive rate (headline result)](#2-e3--sensitivity-and-false-positive-rate)
 3. [E7 — threshold sweep](#3-e7--threshold-sweep)
+3b. [E5 — dual-pass ablation](#3b-e5--dual-pass-ablation)
 4. [E2 — controlled-truth panel](#4-e2--controlled-truth-panel)
 5. [E1 — real-library panel verification](#5-e1--real-library-panel-verification)
 6. [Provenance and control measurements](#6-provenance-and-control-measurements)
@@ -38,7 +39,7 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 | E7 | Entropy × length threshold sweep | **Complete** | `threshold_sweep.csv`, `equivalence_check.txt` |
 | E4 | Real-library reads | Downloaded, not scored | 30 libraries on disk |
 | E9 | Assembly and classification | Running | `downstream.csv`, `kraken2_human.csv` |
-| E5 | Dual-pass ablation | **Deferred by instruction** | drivers written and tested |
+| E5 | Dual-pass ablation | **Running** (31/36) | `ablation.csv` |
 | E8 | Labelling sensitivity | Not applicable | requires real-library truth set |
 
 ---
@@ -206,6 +207,91 @@ library=SYN-CHM13-04 full=3799007 cached=3799007 MATCH
 Read-for-read agreement on both libraries where the check ran. `SYN-CHM13-07`
 was **not** verified: the check is enabled by a wrapper that was bypassed when
 the sweep was relaunched standalone. Two of three verified, both exact.
+
+
+---
+
+## 3b. E5 — dual-pass ablation
+
+**31 of 36 runs.** The nine matched libraries are complete for all three
+configurations; the three mismatch libraries are still running.
+
+Three configurations, all ending at the profiling tier so the comparison
+isolates the alignment passes rather than comparing different output tiers:
+
+| config | pipeline |
+|---|---|
+| `minimap2_only` | fastp → **minimap2** → PE→SE → complexity → length → normalise |
+| `bowtie2_only` | fastp → PE→SE → complexity → length → **bowtie2** → normalise |
+| `dual_pass` | fastp → **minimap2** → PE→SE → complexity → length → **bowtie2** → normalise |
+
+### Matched arm — complete, 9 libraries
+
+| config | sensitivity mean | range | FPR mean | runtime mean |
+|---|---|---|---|---|
+| `minimap2_only` | 99.9063 % | 99.885 – 99.950 | 0.0123 % | 9.9 min |
+| `bowtie2_only` | **99.9999 %** | 99.999 – 100.000 | **0.0056 %** | **7.0 min** |
+| `dual_pass` | 100.0000 % | 100.000 – 100.000 | 0.0142 % | 13.7 min |
+
+### This is an unfavourable result for the dual-pass sensitivity claim
+
+**Adding the minimap2 pass to Bowtie2 buys 0.0001 percentage points of
+sensitivity on the matched arm**, and costs 2.5x the false positive rate
+(0.0056 % → 0.0142 %) and roughly twice the runtime (7.0 → 13.7 min).
+
+On the one mismatch library complete so far the picture is the same: Bowtie2
+alone reaches 99.955 % against dual-pass 99.960 % — a gain of **0.005
+percentage points** for 2.6x the FPR. The mismatch case was the most plausible
+place for an approximate first pass to earn a sensitivity role, and on this
+library it does not.
+
+For context, the previous manuscript claimed the second pass recovered **2.55
+%** additional contamination. That figure traced to `SRR14235678`, a soil
+amplicon library, and was deleted. The measured value is three orders of
+magnitude smaller.
+
+**The paper cannot claim dual-pass is more sensitive.**
+
+### What the ablation does support
+
+`bowtie2_only` **produces no paired-end assembly tier at all.** Skipping Pass 1
+sends the trimmed pairs straight to PE→SE conversion, so there is no Output 1 —
+Bowtie2 in this pipeline runs single-end after conversion. The first pass exists
+to deliver assembly-grade *paired* reads with mate structure preserved, not to
+add sensitivity.
+
+That is a workflow claim, consistent with how the paper is framed, and the
+measured cost of it is now known: **≈0.009 pp of false positive rate and ≈6
+minutes per 2 M-pair library**, versus a single-pass alternative that produces
+neither a paired assembly tier nor the tiered outputs.
+
+E9's `downstream.csv` is where that claim gets tested, since it compares
+HostSweep Output 1 against KneadData and Hostile on assembly quality.
+
+### Per-library sensitivity
+
+| library | host % | minimap2_only | bowtie2_only | dual_pass |
+|---|---|---|---|---|
+| `SYN-CHM13-01` | 0.1 | 99.95 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-02` | 0.5 | 99.89 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-03` | 1 | 99.885 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-04` | 5 | 99.903 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-05` | 10 | 99.9135 % | 99.9995 % | 100.0 % |
+| `SYN-CHM13-06` | 20 | 99.906 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-07` | 40 | 99.906 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-08` | 5 | 99.891 % | 100.0 % | 100.0 % |
+| `SYN-CHM13-09` | 10 | 99.9125 % | 100.0 % | 100.0 % |
+
+**Mismatch arm, partial:**
+
+| library | host % | minimap2_only | bowtie2_only | dual_pass |
+|---|---|---|---|---|
+| `SYN-IND-01` | 1 | 99.845 % | 99.955 % | 99.96 % |
+| `SYN-NEU-02` | 10 | 99.895 % | *pending* | *pending* |
+
+> Runtime figures in this section carry the same caveat as everywhere else
+> (D17). `SYN-IND-01 / dual_pass` recorded 56.8 min against 15–30 min for the
+> same library in E3 — contention, not method.
 
 ---
 
@@ -485,9 +571,11 @@ none entered any results file.** A single-instance lock now prevents recurrence.
 - **No comparator ranking.** Hostile, KneadData, BMTagger and DeconSeq have not
   been scored on the synthetic panel. The five-tool table cannot be reinstated
   in any form.
-- **No dual-pass gain figure.** E5 is deferred, so the second pass's
-  contribution is unmeasured. The previous 2.55 % claim traced to an invalid
-  library and has been removed.
+- **The dual-pass sensitivity claim is refuted, not merely unmeasured.**
+  The second pass's marginal contribution over Bowtie2 alone is 0.0001 pp
+  matched and 0.005 pp on the mismatch library measured so far. The
+  architecture must be defended on the paired assembly tier it uniquely
+  produces, not on sensitivity. See section 3b.
 - **No runtime or memory claim.** See D17.
 - **No real-library accuracy.** The 30 real libraries have no per-read truth
   set; sensitivity and FPR are left empty for them by design rather than

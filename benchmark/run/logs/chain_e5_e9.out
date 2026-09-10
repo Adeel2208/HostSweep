@@ -1,0 +1,61 @@
+[chain59 08:07:55] E5 dual-pass ablation, 1 run(s) per configuration, 12 libraries
+[E5 08:07:55] 12 libraries x 3 configs x 1 runs
+[E5 08:07:55] SYN-CHM13-01 / minimap2_only / run 1
+[E5 08:17:11]   done
+[E5 08:17:11] SYN-CHM13-01 / bowtie2_only / run 1
+[E5 08:24:10]   done
+[E5 08:24:10] SYN-CHM13-01 / dual_pass / run 1
+[E5 08:36:54]   done
+[E5 08:36:54] SYN-CHM13-02 / minimap2_only / run 1
+[E5 08:44:11]   done
+[E5 08:44:11] SYN-CHM13-02 / bowtie2_only / run 1
+[E5 08:50:31]   done
+[E5 08:50:31] SYN-CHM13-02 / dual_pass / run 1
+[E5 09:01:15]   done
+[E5 09:01:15] SYN-CHM13-03 / minimap2_only / run 1
+[E5 09:09:14]   done
+[E5 09:09:14] SYN-CHM13-03 / bowtie2_only / run 1
+[E5 09:16:06]   done
+[E5 09:16:06] SYN-CHM13-03 / dual_pass / run 1
+[E5 09:26:02]   done
+[E5 09:26:02] SYN-CHM13-04 / minimap2_only / run 1
+[E5 09:36:32]   done
+[E5 09:36:32] SYN-CHM13-04 / bowtie2_only / run 1
+[E5 09:44:13]   done
+[E5 09:44:13] SYN-CHM13-04 / dual_pass / run 1
+[E5 09:59:32]   done
+[E5 09:59:33] SYN-CHM13-05 / minimap2_only / run 1
+[E5 10:10:57]   done
+[E5 10:10:57] SYN-CHM13-05 / bowtie2_only / run 1
+[E5 10:18:29]   done
+[E5 10:18:29] SYN-CHM13-05 / dual_pass / run 1
+[E5 10:33:54]   done
+[E5 10:33:54] SYN-CHM13-06 / minimap2_only / run 1
+[E5 10:47:35]   done
+[E5 10:47:35] SYN-CHM13-06 / bowtie2_only / run 1
+[E5 10:55:05]   done
+[E5 10:55:05] SYN-CHM13-06 / dual_pass / run 1
+[E5 11:11:21]   done
+[E5 11:11:21] SYN-CHM13-07 / minimap2_only / run 1
+[E5 11:27:14]   done
+[E5 11:27:14] SYN-CHM13-07 / bowtie2_only / run 1
+[E5 11:35:59]   done
+[E5 11:35:59] SYN-CHM13-07 / dual_pass / run 1
+[E5 11:52:34]   done
+[E5 11:52:34] SYN-CHM13-08 / minimap2_only / run 1
+[E5 11:58:34]   done
+[E5 11:58:34] SYN-CHM13-08 / bowtie2_only / run 1
+[E5 12:05:03]   done
+[E5 12:05:03] SYN-CHM13-08 / dual_pass / run 1
+[E5 12:16:00]   done
+[E5 12:16:00] SYN-CHM13-09 / minimap2_only / run 1
+[E5 12:25:22]   done
+[E5 12:25:22] SYN-CHM13-09 / bowtie2_only / run 1
+[E5 12:33:32]   done
+[E5 12:33:32] SYN-CHM13-09 / dual_pass / run 1
+[E5 12:51:31]   done
+[E5 12:51:31] SYN-IND-01 / minimap2_only / run 1
+[E5 12:58:35]   done
+[E5 12:58:35] SYN-IND-01 / bowtie2_only / run 1
+[E5 13:05:15]   done
+[E5 13:05:15] SYN-IND-01 / dual_pass / run 1
