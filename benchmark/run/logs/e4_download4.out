@@ -1,0 +1,47 @@
+[wsl_run] stage=e4dl  repo=0aece41  threads=8
+[wsl_run] started 2026-09-09T12:06:57Z
+[E4dl 12:06:59] 30 runs to fetch into /home/adeel/hostsweep/e4_fastq (max 1 concurrent)
+[E4dl 12:06:59]   ERR17336437 already present
+[E4dl 12:06:59]   ERR17677614 already present
+[E4dl 12:06:59]   SRR38455354 already present
+[E4dl 12:06:59]   SRR39037539 already present
+[E4dl 12:06:59]   ERR17585876 already present
+[E4dl 12:06:59]   ERR17748752 already present
+[E4dl 12:06:59]   SRR34685905 already present
+[E4dl 12:06:59]   SRR40486826 already present
+[E4dl 12:06:59]   SRR40495631 already present
+[E4dl 12:06:59]   SRR40504164 already present
+[E4dl 12:06:59]   DRR1076765 already present
+[E4dl 12:06:59]   DRR1080602 already present
+[E4dl 12:06:59]   ERR14111908 already present
+[E4dl 12:06:59]   SRR35056885 already present
+[E4dl 12:06:59]   ERR17782559 already present
+[E4dl 12:06:59]   ERR17782568 already present
+[E4dl 12:06:59]   SRR37938678 already present
+[E4dl 12:06:59]   SRR37938898 already present
+[E4dl 12:06:59]   DRR319909 already present
+[E4dl 12:06:59]   ERR15898346 already present
+[E4dl 12:06:59]   SRR38212227: clearing stale lock from an interrupted download
+[E4dl 12:06:59]   SRR38212227: prefetch
+[E4dl 12:08:29]   SRR38212227: fasterq-dump
+[E4dl 12:10:13]   SRR38212227: done (725M)
+[E4dl 12:10:13]   SRR38270435: clearing stale lock from an interrupted download
+[E4dl 12:10:13]   SRR38270435: prefetch
+[E4dl 12:14:15]   SRR38270435: fasterq-dump
+[E4dl 12:16:39]   SRR38270435: done (1.2G)
+[E4dl 12:16:39]   SRR17798721 already present
+[E4dl 12:16:39]   SRR26038964 already present
+[E4dl 12:16:39]   SRR38402605 already present
+[E4dl 12:16:39]   SRR38746241 already present
+[E4dl 12:16:39]   DRR960856 already present
+[E4dl 12:16:39]   SRR31641567 already present
+[E4dl 12:16:39]   SRR36045879: clearing stale lock from an interrupted download
+[E4dl 12:16:39]   SRR36045879: prefetch
+[E4dl 12:19:22]   SRR36045879: fasterq-dump
+[E4dl 12:20:35]   SRR36045879: done (576M)
+[E4dl 12:20:35]   SRR36642854: prefetch
+[E4dl 12:22:26]   SRR36642854: fasterq-dump
+[E4dl 12:23:54]   SRR36642854: done (448M)
+[E4dl 12:23:54] complete: 30 of 30 runs present
+[E4dl 12:23:54] failures recorded in /home/adeel/hostsweep/e4_fastq/failures.tsv
+[wsl_run] finished 2026-09-09T12:23:54Z rc=0

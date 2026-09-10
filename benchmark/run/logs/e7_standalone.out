@@ -1,0 +1,58 @@
+[wsl_run] stage=e7  repo=0aece41  threads=8
+[wsl_run] started 2026-09-10T05:58:51Z
+[E7 05:58:51] SYN-CHM13-01: profiling tier already built
+[E7 05:58:51] SYN-CHM13-01 H0.75_L70: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.75_L80: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.75_L90: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.75_L100: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.75_L110: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.80_L70: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.80_L80: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.80_L90: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.80_L100: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.80_L110: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.85_L70: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.85_L80: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.85_L90: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.85_L100: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.85_L110: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.90_L70: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.90_L80: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.90_L90: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.90_L100: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.90_L110: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.95_L70: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.95_L80: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.95_L90: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.95_L100: already scored
+[E7 05:58:51] SYN-CHM13-01 H0.95_L110: already scored
+[E7 05:58:51] SYN-CHM13-04: profiling tier already built
+[E7 05:58:51] SYN-CHM13-04 H0.75_L70: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.75_L80: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.75_L90: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.75_L100: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.75_L110: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.80_L70: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.80_L80: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.80_L90: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.80_L100: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.80_L110: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.85_L70: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.85_L80: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.85_L90: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.85_L100: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.85_L110: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.90_L70: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.90_L80: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.90_L90: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.90_L100: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.90_L110: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.95_L70: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.95_L80: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.95_L90: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.95_L100: already scored
+[E7 05:58:51] SYN-CHM13-04 H0.95_L110: already scored
+[E7 05:58:51] SYN-CHM13-07: profiling tier already built
+[E7 05:58:51] SYN-CHM13-07 H0.75_L70: already scored
+[E7 05:58:51] SYN-CHM13-07 H0.75_L80: already scored
+[E7 05:58:51] SYN-CHM13-07 H0.75_L90

@@ -40,3 +40,13 @@ wrote /home/adeel/hostsweep/out/per_library.csv (33 rows, 0 FAILED)
 [E3 12:05:26] SYN-NEU-02 / hostsweep / run 2: already scored
 [E3 12:05:26] SYN-NEU-02 / hostsweep / run 3: already scored
 [E3 12:05:26] SYN-NEU-03 / hostsweep / run 1
+[E3 12:20:52]   done
+[E3 12:20:52] SYN-NEU-03 / hostsweep / run 2
+[E3 12:34:40]   done
+[E3 12:34:40] SYN-NEU-03 / hostsweep / run 3
+[E3 12:47:10]   done
+[E3 12:47:10] complete. Aggregate with: python3 /home/adeel/hostsweep/HostSweep/benchmark/scripts/aggregate_results.py /home/adeel/hostsweep/out/results
+[chain 12:47:10] E3 finished; rebuilding per_library.csv
+wrote /home/adeel/hostsweep/out/synthetic_manifest.csv (12 rows)
+wrote /home/adeel/hostsweep/out/per_library.csv (36 rows, 0 FAILED)
+[chain 12:47:10] done
