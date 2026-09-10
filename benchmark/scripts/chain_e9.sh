@@ -90,7 +90,8 @@ r2_of() {
 }
 
 run_hostsweep() {
-    local lib="$1" r1="$2" r2="$3" dest="$CLEAN_ROOT/$lib"
+    local lib="$1" r1="$2" r2="$3"
+    local dest="$CLEAN_ROOT/$lib"
     [ -s "$dest/hostsweep_R1.fastq.gz" ] && { say "  $lib hostsweep: present"; return 0; }
     local wd="$E9_RESULTS/$lib/hostsweep.work"
     rm -rf "$wd"; mkdir -p "$wd" "$dest"
@@ -111,7 +112,8 @@ run_hostsweep() {
 }
 
 run_kneaddata() {
-    local lib="$1" r1="$2" r2="$3" dest="$CLEAN_ROOT/$lib"
+    local lib="$1" r1="$2" r2="$3"
+    local dest="$CLEAN_ROOT/$lib"
     [ -s "$dest/kneaddata_R1.fastq.gz" ] && { say "  $lib kneaddata: present"; return 0; }
     local wd="$E9_RESULTS/$lib/kneaddata.work"
     rm -rf "$wd"; mkdir -p "$wd" "$dest"
@@ -137,7 +139,8 @@ run_kneaddata() {
 }
 
 run_hostile() {
-    local lib="$1" r1="$2" r2="$3" dest="$CLEAN_ROOT/$lib"
+    local lib="$1" r1="$2" r2="$3"
+    local dest="$CLEAN_ROOT/$lib"
     [ -s "$dest/hostile_R1.fastq.gz" ] && { say "  $lib hostile: present"; return 0; }
     local wd="$E9_RESULTS/$lib/hostile.work"
     rm -rf "$wd"; mkdir -p "$wd" "$dest"
