@@ -11,3 +11,12 @@
 [E9chain 18:13:29]   SYN-CHM13-05 kneaddata: present
 [E9chain 18:14:12]   SYN-CHM13-05 hostile: done
 [E9chain 18:14:12]  SYN-NEU-03
+[E9chain 18:25:45]   SYN-NEU-03 hostsweep: done
+[E9chain 18:32:38]   SYN-NEU-03 kneaddata: done
+[E9chain 18:33:38]   SYN-NEU-03 hostile: done
+[E9chain 18:33:38]  SRR40486826
+[E9chain 18:50:25]   SRR40486826 hostsweep: done
+[E9chain 19:03:23]   SRR40486826 kneaddata: done
+[E9chain 19:04:52]   SRR40486826 hostile: done
+[E9chain 19:04:52]  ERR15898346
+[E9chain 19:18:59]   ERR15898346 hostsweep: done
