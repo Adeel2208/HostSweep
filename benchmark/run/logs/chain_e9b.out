@@ -3,3 +3,7 @@
 [E9chain 07:30:26] threshold_sweep.csv: 75 rows
 [E9chain 07:30:26] cleaning 6 libraries with 3 methods
 [E9chain 07:30:26]  SYN-CHM13-01
+[E9chain 07:41:10]   SYN-CHM13-01 hostsweep: done
+[E9chain 07:47:44]   SYN-CHM13-01 kneaddata: done
+[E9chain 07:48:19]   SYN-CHM13-01 hostile: done
+[E9chain 07:48:19]  SYN-CHM13-05

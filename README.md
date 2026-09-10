@@ -33,7 +33,7 @@ custodian and their governance framework.
 - **Three tiered outputs** — assembly-grade paired-end reads, profiling-grade single-end reads, and a high-stringency complexity- and length-filtered single-end set, from one execution.
 - **Automatic database management** — `hostsweep --build` downloads and indexes T2T-CHM13v2.0; custom references are supported.
 - **Modular architecture** — nine focused Python modules, straightforward to extend or integrate.
-- **Reproducible** — pure Python, a single conda environment, JSON statistics, complete logging, and a published benchmark harness in [`benchmark/`](benchmark/).
+- **Reproducible** — pure Python, a single conda environment, JSON statistics, complete logging, and a complete benchmark harness in [`benchmark/`](benchmark/).
 
 ---
 
