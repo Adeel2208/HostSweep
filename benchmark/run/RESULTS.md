@@ -20,6 +20,7 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 2. [E3 — sensitivity and false positive rate (headline result)](#2-e3--sensitivity-and-false-positive-rate)
 3. [E7 — threshold sweep](#3-e7--threshold-sweep)
 3b. [E5 — dual-pass ablation](#3b-e5--dual-pass-ablation)
+3b. [E5 — dual-pass ablation](#3b-e5--dual-pass-ablation)
 4. [E2 — controlled-truth panel](#4-e2--controlled-truth-panel)
 5. [E1 — real-library panel verification](#5-e1--real-library-panel-verification)
 6. [Provenance and control measurements](#6-provenance-and-control-measurements)
@@ -39,7 +40,7 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 | E7 | Entropy × length threshold sweep | **Complete** | `threshold_sweep.csv`, `equivalence_check.txt` |
 | E4 | Real-library reads | Downloaded, not scored | 30 libraries on disk |
 | E9 | Assembly and classification | Running | `downstream.csv`, `kraken2_human.csv` |
-| E5 | Dual-pass ablation | **Running** (31/36) | `ablation.csv` |
+| E5 | Dual-pass ablation | **Complete** | `ablation.csv` |
 | E8 | Labelling sensitivity | Not applicable | requires real-library truth set |
 
 ---
@@ -213,8 +214,8 @@ the sweep was relaunched standalone. Two of three verified, both exact.
 
 ## 3b. E5 — dual-pass ablation
 
-**31 of 36 runs.** The nine matched libraries are complete for all three
-configurations; the three mismatch libraries are still running.
+**36 of 36 runs, 0 failures.** All twelve libraries complete for all three
+configurations.
 
 Three configurations, all ending at the profiling tier so the comparison
 isolates the alignment passes rather than comparing different output tiers:
@@ -239,11 +240,16 @@ isolates the alignment passes rather than comparing different output tiers:
 sensitivity on the matched arm**, and costs 2.5x the false positive rate
 (0.0056 % → 0.0142 %) and roughly twice the runtime (7.0 → 13.7 min).
 
-On the one mismatch library complete so far the picture is the same: Bowtie2
-alone reaches 99.955 % against dual-pass 99.960 % — a gain of **0.005
-percentage points** for 2.6x the FPR. The mismatch case was the most plausible
-place for an approximate first pass to earn a sensitivity role, and on this
-library it does not.
+The mismatch arm, now complete, says the same: Bowtie2 alone averages
+99.9662 % against dual-pass 99.9698 % — a gain of **0.0036 percentage points**
+for 2.6x the FPR (0.0057 % → 0.0147 %). Per library the dual-pass gain is
+0.005, 0.002 and 0.004 pp. The mismatch case was the most plausible place for
+an approximate first pass to earn a sensitivity role, and across all three
+divergent genomes it does not.
+
+minimap2 alone is consistently the weakest configuration — 99.8866 % mismatch,
+99.9063 % matched — so the second pass is doing the host-removal work in every
+condition tested.
 
 For context, the previous manuscript claimed the second pass recovered **2.55
 %** additional contamination. That figure traced to `SRR14235678`, a soil
@@ -282,12 +288,13 @@ HostSweep Output 1 against KneadData and Hostile on assembly quality.
 | `SYN-CHM13-08` | 5 | 99.891 % | 100.0 % | 100.0 % |
 | `SYN-CHM13-09` | 10 | 99.9125 % | 100.0 % | 100.0 % |
 
-**Mismatch arm, partial:**
+**Mismatch arm — complete, 3 libraries:**
 
 | library | host % | minimap2_only | bowtie2_only | dual_pass |
 |---|---|---|---|---|
 | `SYN-IND-01` | 1 | 99.845 % | 99.955 % | 99.96 % |
-| `SYN-NEU-02` | 10 | 99.895 % | *pending* | *pending* |
+| `SYN-NEU-02` | 10 | 99.895 % | 99.9745 % | 99.9765 % |
+| `SYN-NEU-03` | 20 | 99.9197 % | 99.969 % | 99.9728 % |
 
 > Runtime figures in this section carry the same caveat as everywhere else
 > (D17). `SYN-IND-01 / dual_pass` recorded 56.8 min against 15–30 min for the

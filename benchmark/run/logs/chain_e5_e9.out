@@ -59,3 +59,21 @@
 [E5 12:58:35] SYN-IND-01 / bowtie2_only / run 1
 [E5 13:05:15]   done
 [E5 13:05:15] SYN-IND-01 / dual_pass / run 1
+[E5 14:02:30]   done
+[E5 14:02:30] SYN-NEU-02 / minimap2_only / run 1
+[E5 14:14:09]   done
+[E5 14:14:09] SYN-NEU-02 / bowtie2_only / run 1
+[E5 14:26:17]   done
+[E5 14:26:17] SYN-NEU-02 / dual_pass / run 1
+[E5 14:45:12]   done
+[E5 14:45:12] SYN-NEU-03 / minimap2_only / run 1
+[E5 14:56:18]   done
+[E5 14:56:18] SYN-NEU-03 / bowtie2_only / run 1
+[E5 15:03:43]   done
+[E5 15:03:43] SYN-NEU-03 / dual_pass / run 1
+[E5 15:14:24]   done
+[E5 15:14:24] ablation written to /home/adeel/hostsweep/out/ablation_results/ablation.csv
+[chain59 15:14:24] ablation.csv: 36 rows
+[chain59 15:14:24] resuming E9 (staged libraries are skipped)
+[chain59 15:14:24] E9 returned non-zero
+[chain59 15:14:24] chain complete

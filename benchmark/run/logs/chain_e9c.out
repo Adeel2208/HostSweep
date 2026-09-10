@@ -1,0 +1,13 @@
+[E9chain 18:13:29] waiting for E7 to finish
+[E9chain 18:13:29] E7 no longer running
+[E9chain 18:13:29] threshold_sweep.csv: 75 rows
+[E9chain 18:13:29] cleaning 6 libraries with 3 methods
+[E9chain 18:13:29]  SYN-CHM13-01
+[E9chain 18:13:29]   SYN-CHM13-01 hostsweep: present
+[E9chain 18:13:29]   SYN-CHM13-01 kneaddata: present
+[E9chain 18:13:29]   SYN-CHM13-01 hostile: present
+[E9chain 18:13:29]  SYN-CHM13-05
+[E9chain 18:13:29]   SYN-CHM13-05 hostsweep: present
+[E9chain 18:13:29]   SYN-CHM13-05 kneaddata: present
+[E9chain 18:14:12]   SYN-CHM13-05 hostile: done
+[E9chain 18:14:12]  SYN-NEU-03
