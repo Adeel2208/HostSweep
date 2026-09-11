@@ -43,6 +43,7 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 | E5 | Dual-pass ablation | **Complete** | `ablation.csv` |
 | E8 | Labelling sensitivity | Not applicable | requires real-library truth set |
 | — | Comparator benchmark | **Not run** — 36 runs failed on an environment bug, since fixed | — |
+| — | Comparator benchmark | **Not run** — 36 runs failed on an environment bug, since fixed | — |
 
 ---
 
@@ -306,6 +307,38 @@ HostSweep Output 1 against KneadData and Hostile on assembly quality.
 
 ## 3c. E9 — downstream assembly and classification
 
+> **CORRECTION.** An earlier version of this section compared misassembly
+> rates on the three real libraries and headlined *"869 misassemblies against
+> HostSweep's 292"* on the gut library. **That comparison was invalid and has
+> been withdrawn.**
+>
+> For real libraries `metaquast.py` was run without `-r`, intending a
+> reference-free run. MetaQUAST's behaviour without `-r` is to BLAST the
+> contigs against SILVA 16S and download reference genomes from NCBI on its
+> own — it fetched 46 for the gut library, 7 respiratory, 47 blood. And because
+> each method's run chose references **from that method's own contigs**, the
+> three methods were scored against **different reference sets**:
+>
+> | gut library `SRR40486826` | reference genomes | total reference length |
+> |---|---|---|
+> | hostsweep | 44 | 28.7 Mb |
+> | hostile | 45 | 36.1 Mb |
+> | kneaddata | 44 | **66.3 Mb** |
+>
+> HostSweep and KneadData shared only 18 of 44 genomes, and KneadData's
+> reference was 2.3x larger — more reference sequence means more places to call
+> a misassembly. The protocol already specified that a metagenomic misassembly
+> rate without a reference set is not interpretable; this is the concrete
+> reason why.
+>
+> Genome fraction and misassemblies are therefore **blanked for all real
+> libraries** in `downstream.csv`. Reference-free metrics — N50, total length,
+> contig counts, largest contig, assembled Mb ≥ 1 kb, duplication ratio — are
+> computed from the contigs alone and are retained. `run_e9.sh` now passes
+> `--max-ref-number 0` so this cannot recur. Synthetic libraries were unaffected:
+> they used the known ten-genome reference set via `-r`, identical for all
+> three methods, and MetaQUAST downloaded nothing for them.
+
 **17 of 18 (library, method) pairs.** Six libraries — three synthetic spanning
 the host range including the mismatch arm, three real from different categories
 and BioProjects — each cleaned by three methods and assembled identically.
@@ -328,7 +361,9 @@ de-duplication would have been refused rather than silently picking one.
 ### Assembly quality
 
 `misasm / Mb` is misassemblies divided by `assembled_mb_ge_1kb` — the explicit
-denominator Editor point 14 asks for.
+denominator Editor point 14 asks for. It is defined only for synthetic
+libraries; for real libraries genome fraction and misassemblies are blank by
+design (see the correction above), and the table below shows `—` there.
 
 | library | description | method | N50 | genome fraction % | misassemblies | assembled Mb ≥1 kb | misasm / Mb |
 |---|---|---|---|---|---|---|---|
@@ -341,38 +376,58 @@ denominator Editor point 14 asks for.
 | `SYN-NEU-03` | synthetic, 20 % host, **mismatch** | hostsweep | 9746 | 80.522 | 125 | 34.4135 | 3.63 |
 | `SYN-NEU-03` | synthetic, 20 % host, **mismatch** | hostile | 9805 | 80.534 | 126 | 34.4189 | 3.66 |
 | `SYN-NEU-03` | synthetic, 20 % host, **mismatch** | kneaddata | 8383 | 81.602 | 282 | 34.8475 | 8.09 |
-| `SRR40486826` | real, gut | hostsweep | 4491 | 50.627 | 292 | 57.6203 | 5.07 |
-| `SRR40486826` | real, gut | hostile | 4405 | 49.968 | 375 | 57.5884 | 6.51 |
-| `SRR40486826` | real, gut | kneaddata | 3848 | 49.551 | 869 | 54.5411 | 15.93 |
-| `ERR15898346` | real, respiratory | hostsweep | 255614 | 90.074 | 93 | 6.6145 | 14.06 |
-| `ERR15898346` | real, respiratory | hostile | 255614 | 90.073 | 93 | 6.6143 | 14.06 |
-| `ERR15898346` | real, respiratory | kneaddata | 149836 | 90.059 | 94 | 6.6072 | 14.23 |
-| `SRR31641567` | real, blood | hostsweep | 21425 | 78.818 | 104 | 9.7558 | 10.66 |
-| `SRR31641567` | real, blood | hostile | 20761 | 78.815 | 110 | 9.7756 | 11.25 |
+| `SRR40486826` | real, gut | hostsweep | 4491 |  |  | 57.6203 | — |
+| `SRR40486826` | real, gut | hostile | 4405 |  |  | 57.5884 | — |
+| `SRR40486826` | real, gut | kneaddata | 3848 |  |  | 54.5411 | — |
+| `ERR15898346` | real, respiratory | hostsweep | 255614 |  |  | 6.6145 | — |
+| `ERR15898346` | real, respiratory | hostile | 255614 |  |  | 6.6143 | — |
+| `ERR15898346` | real, respiratory | kneaddata | 149836 |  |  | 6.6072 | — |
+| `SRR31641567` | real, blood | hostsweep | 21425 |  |  | 9.7558 | — |
+| `SRR31641567` | real, blood | hostile | 20761 |  |  | 9.7756 | — |
 | `SRR31641567` | real, blood | kneaddata | *absent* | — | — | — | — |
 
-### The clearest finding
+### The clearest valid finding — synthetic libraries only
 
-**KneadData produces substantially more misassemblies than either other method,
-at comparable or slightly higher genome fraction**, on every library where all
-three ran:
+Misassemblies per assembled Mb ≥ 1 kb, against the known ten-genome reference
+set, identical for all three methods:
 
 | library | hostsweep | hostile | kneaddata |
 |---|---|---|---|
-| SYN-CHM13-01 | 2.77 | 2.69 | **4.67** |
-| SYN-CHM13-05 | 2.76 | 2.82 | **6.88** |
-| SYN-NEU-03 (mismatch) | 3.63 | 3.66 | **8.09** |
-| SRR40486826 (gut) | 5.07 | 6.51 | **15.93** |
-| ERR15898346 (respiratory) | 14.06 | 14.06 | 14.23 |
+| SYN-CHM13-01 (0.1 % host) | 2.77 | 2.69 | **4.67** |
+| SYN-CHM13-05 (10 % host) | 2.76 | 2.82 | **6.88** |
+| SYN-NEU-03 (20 % host, mismatch) | 3.63 | 3.66 | **8.09** |
 
-On the gut library KneadData records **869 misassemblies against HostSweep's
-292** — a 3.0x difference — while assembling 3.1 Mb *less* sequence ≥1 kb.
+**KneadData produces 1.7–2.9x more misassemblies per assembled Mb than either
+other method on all three synthetic libraries**, at comparable genome fraction.
+This is the defensible form of the result: three libraries, one reference set,
+no confound. It is a smaller claim than the withdrawn real-library figure, and
+it is the one that holds.
 
 **HostSweep and Hostile are near-indistinguishable throughout.** On the
-respiratory library their N50 is identical to the base pair (255,614) and their
-misassembly counts are equal (93). This is the same pattern E5 found upstream:
-the Bowtie2 pass is doing the work, and HostSweep's contribution is the tiered
-output structure rather than better alignment.
+synthetic libraries their misassembly rates differ by at most 0.06 per Mb. On
+the real respiratory library — using reference-free metrics only — their N50 is
+identical to the base pair (255,614) and assembled Mb differs by 0.2 kb. This is
+the same pattern E5 found upstream: the Bowtie2 pass is doing the work, and
+HostSweep's contribution is the tiered output structure rather than better
+alignment.
+
+### Real libraries — reference-free metrics only
+
+| library | method | N50 | contigs ≥ 1 kb | assembled Mb ≥ 1 kb |
+|---|---|---|---|---|
+| SRR40486826 (gut) | hostsweep | 4,491 | 18,148 | 57.620 |
+| SRR40486826 (gut) | hostile | 4,405 | 18,389 | 57.588 |
+| SRR40486826 (gut) | kneaddata | 3,848 | 18,705 | 54.541 |
+| ERR15898346 (respiratory) | hostsweep | 255,614 | 60 | 6.615 |
+| ERR15898346 (respiratory) | hostile | 255,614 | 62 | 6.614 |
+| ERR15898346 (respiratory) | kneaddata | 149,836 | 90 | 6.607 |
+| SRR31641567 (blood) | hostsweep | 21,425 | 1,571 | 9.756 |
+| SRR31641567 (blood) | hostile | 20,761 | 1,579 | 9.776 |
+
+These need no reference and are valid across methods. KneadData gives the
+lowest N50 on both libraries where it ran — 14 % lower on gut, 41 % lower on
+respiratory — and 3.1 Mb less assembled sequence on gut. That is consistent
+with the synthetic misassembly result without depending on a reference.
 
 ### Residual human content (Kraken2 Standard-8)
 

@@ -112,8 +112,16 @@ for LIB in "${LIBS[@]}"; do
         # shellcheck disable=SC1090
         . "$CONDA_SH"; conda activate megahit
         if [ "$COND" = real ]; then
-            # Reference-free: no genome fraction, no misassembly rate.
-            metaquast.py "$CONTIGS" --min-contig 1000 -t "$THREADS" -o "$MQ" \
+            # Genuinely reference-free. Omitting -r is NOT enough: without it
+            # MetaQUAST BLASTs the contigs against SILVA 16S and downloads
+            # reference genomes from NCBI on its own -- 46 for the gut library
+            # on the first run. Worse, each method's run chose references from
+            # its OWN contigs, so the three methods were scored against
+            # different sets (KneadData 66.3 Mb vs HostSweep 28.7 Mb, 18 of 44
+            # genomes shared). --max-ref-number 0 stops the download, so only
+            # reference-free metrics (N50, lengths, contig counts) are produced.
+            metaquast.py "$CONTIGS" --min-contig 1000 -t "$THREADS" \
+                         --max-ref-number 0 -o "$MQ" \
                 > "$MQ.stdout" 2>&1 || say "  metaquast (reference-free) failed"
         else
             metaquast.py "$CONTIGS" -r "$REFS_DIR" --min-contig 1000 \
@@ -169,14 +177,34 @@ row = [
     mb("Total length (>= 0 bp)") or mb("Total length"),
     num("# contigs (>= 1000 bp)"),
     kb("Largest contig"),
-    num("Genome fraction (%)"),          # empty for reference-free runs
-    num("# misassemblies"),              # empty for reference-free runs
+    num("Genome fraction (%)"),
+    num("# misassemblies"),
     mb("Total length (>= 1000 bp)"),     # explicit denominator, Editor 14
     num("Duplication ratio"),
 ]
-with open(out, "a", newline="") as fh:
-    csv.writer(fh).writerow(row)
-print("recorded", lib, method, "report:", path or "NONE")
+# Belt and braces: reference-based columns are blank for real libraries no
+# matter what the report contains. The comments here once claimed these would
+# be "empty for reference-free runs" -- they were not, because MetaQUAST
+# fetched its own references, and the claim went unchecked into a results
+# table. Enforced in code now rather than asserted in a comment.
+if cond == "real":
+    row[7] = ""    # genome_fraction_pct
+    row[8] = ""    # misassemblies
+
+# Idempotent: one row per (library, method). run_e9.sh appends, and being
+# invoked twice once doubled every row in this file.
+existing = set()
+if os.path.exists(out):
+    with open(out, newline="") as fh:
+        for r in csv.reader(fh):
+            if len(r) >= 3:
+                existing.add((r[0], r[2]))
+if (lib, method) in existing:
+    print("already recorded", lib, method, "- not appending a duplicate")
+else:
+    with open(out, "a", newline="") as fh:
+        csv.writer(fh).writerow(row)
+    print("recorded", lib, method, "report:", path or "NONE")
 PYEOF
 
         # --- Kraken2 --------------------------------------------------
@@ -216,9 +244,18 @@ if os.path.exists(rep):
             if taxid == "9606":
                 human = clade
 pct = round(100.0 * human / total, 6) if total else ""
-with open(out, "a", newline="") as fh:
-    csv.writer(fh).writerow([lib, method, total, human, pct, dbdate])
-print("kraken2", lib, method, "total", total, "human", human)
+existing = set()
+if os.path.exists(out):
+    with open(out, newline="") as fh:
+        for r in csv.reader(fh):
+            if len(r) >= 2:
+                existing.add((r[0], r[1]))
+if (lib, method) in existing:
+    print("kraken2 already recorded", lib, method, "- not appending a duplicate")
+else:
+    with open(out, "a", newline="") as fh:
+        csv.writer(fh).writerow([lib, method, total, human, pct, dbdate])
+    print("kraken2", lib, method, "total", total, "human", human)
 PYEOF
         else
             say "  Kraken2 DB absent at $K2DB; kraken2_human.csv row not written"

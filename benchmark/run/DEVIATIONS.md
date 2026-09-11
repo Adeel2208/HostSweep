@@ -467,6 +467,54 @@ declines).
 because the reader is entitled to know that the pipeline's outputs were
 checked for this class of corruption rather than assumed free of it.
 
+### I2. Real-library assembly metrics computed against auto-selected references (detected, withdrawn)
+
+**What happened.** For the three real libraries in E9, `metaquast.py` was run
+without `-r`, intending a reference-free assessment. MetaQUAST's documented
+behaviour without `-r` is to BLAST the contigs against SILVA 16S and download
+matching reference genomes from NCBI itself. It did — 46 genomes for the gut
+library, 7 for respiratory, 47 for blood — and reported genome fraction and
+misassemblies against them.
+
+**Why it matters.** Each method's MetaQUAST run chose references from **that
+method's own contigs**, so the three cleaning methods were scored against
+different reference sets:
+
+| gut library `SRR40486826` | reference genomes | total reference length |
+|---|---|---|
+| HostSweep | 44 | 28.7 Mb |
+| Hostile | 45 | 36.1 Mb |
+| KneadData | 44 | 66.3 Mb |
+
+HostSweep and KneadData shared 18 of 44 genomes, and KneadData's reference was
+2.3x larger. More reference sequence means more places to call a
+misassembly, so a comparison across these sets measures the reference, not the
+cleaning method. The protocol had already required reference-based columns to
+be empty for real libraries; this is the mechanism behind that rule.
+
+**Consequence before detection.** A results summary reported *"869
+misassemblies against HostSweep's 292"* on the gut library as the headline
+downstream finding. That figure was withdrawn.
+
+**Action.** Genome fraction and misassemblies were blanked for all real
+libraries in `downstream.csv` (16 cells across 8 rows). Reference-free metrics —
+N50, total length, contig counts, largest contig, assembled Mb ≥ 1 kb,
+duplication ratio — depend only on the contigs and were retained.
+`run_e9.sh` now passes `--max-ref-number 0` for real libraries so MetaQUAST
+cannot fetch references, and additionally blanks the two columns in code for
+any real library, so the rule no longer rests on a comment.
+
+**What survives.** The synthetic arm was unaffected — it used the known
+ten-genome set via `-r`, identical across methods, and MetaQUAST downloaded
+nothing. There, KneadData still produces 1.7–2.9x more misassemblies per
+assembled Mb than HostSweep or Hostile. The reference-free real-library
+metrics also point the same way: KneadData gives the lowest N50 on both real
+libraries where it ran. The finding holds; it is smaller than first stated.
+
+**How it was caught.** The script's own comment claimed the reference-based
+columns would be "empty for reference-free runs". They were populated. The
+contradiction between that comment and the data it produced was the signal.
+
 ---
 
 *No entry in this file describes a number that was estimated, interpolated or
