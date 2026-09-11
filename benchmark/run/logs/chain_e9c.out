@@ -20,3 +20,67 @@
 [E9chain 19:04:52]   SRR40486826 hostile: done
 [E9chain 19:04:52]  ERR15898346
 [E9chain 19:18:59]   ERR15898346 hostsweep: done
+[E9chain 19:27:54]   ERR15898346 kneaddata: done
+[E9chain 19:28:49]   ERR15898346 hostile: done
+[E9chain 19:28:49]  SRR31641567
+[E9chain 19:38:09]   SRR31641567 hostsweep: done
+[E9chain 19:38:47]   SRR31641567 kneaddata: FAILED (exit 1)
+[E9chain 19:39:52]   SRR31641567 hostile: done
+[E9chain 19:39:53] MetaQUAST reference set: 10 genomes
+[E9chain 19:39:53] running E9 over 6 staged libraries
+[E9 19:39:53] SYN-CHM13-01/hostsweep: MEGAHIT
+recorded SYN-CHM13-01 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-01_hostsweep/combined_reference/report.tsv
+kraken2 SYN-CHM13-01 hostsweep total 2686838 human 2
+[E9 19:46:42] SYN-CHM13-01/kneaddata: MEGAHIT
+recorded SYN-CHM13-01 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-01_kneaddata/combined_reference/report.tsv
+kraken2 SYN-CHM13-01 kneaddata total 2677396 human 0
+[E9 19:55:15] SYN-CHM13-01/hostile: MEGAHIT
+recorded SYN-CHM13-01 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-01_hostile/combined_reference/report.tsv
+kraken2 SYN-CHM13-01 hostile total 2687272 human 11
+[E9 20:01:54] SYN-CHM13-05/hostsweep: MEGAHIT
+recorded SYN-CHM13-05 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-05_hostsweep/combined_reference/report.tsv
+kraken2 SYN-CHM13-05 hostsweep total 2422066 human 139
+[E9 20:09:35] SYN-CHM13-05/kneaddata: MEGAHIT
+recorded SYN-CHM13-05 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-05_kneaddata/combined_reference/report.tsv
+kraken2 SYN-CHM13-05 kneaddata total 2413090 human 0
+[E9 20:21:11] SYN-CHM13-05/hostile: MEGAHIT
+recorded SYN-CHM13-05 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-05_hostile/combined_reference/report.tsv
+kraken2 SYN-CHM13-05 hostile total 2422243 human 10
+[E9 20:28:47] SYN-NEU-03/hostsweep: MEGAHIT
+recorded SYN-NEU-03 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-NEU-03_hostsweep/combined_reference/report.tsv
+kraken2 SYN-NEU-03 hostsweep total 2153571 human 231
+[E9 20:36:58] SYN-NEU-03/kneaddata: MEGAHIT
+recorded SYN-NEU-03 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-NEU-03_kneaddata/combined_reference/report.tsv
+kraken2 SYN-NEU-03 kneaddata total 2145547 human 50
+[E9 20:48:03] SYN-NEU-03/hostile: MEGAHIT
+recorded SYN-NEU-03 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-NEU-03_hostile/combined_reference/report.tsv
+kraken2 SYN-NEU-03 hostile total 2154280 human 227
+[E9 20:55:18] SRR40486826/hostsweep: MEGAHIT
+recorded SRR40486826 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR40486826_hostsweep/combined_reference/report.tsv
+kraken2 SRR40486826 hostsweep total 7641137 human 5
+[E9 21:44:35] SRR40486826/kneaddata: MEGAHIT
+recorded SRR40486826 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR40486826_kneaddata/combined_reference/report.tsv
+kraken2 SRR40486826 kneaddata total 7418809 human 0
+[E9 22:41:21] SRR40486826/hostile: MEGAHIT
+recorded SRR40486826 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR40486826_hostile/combined_reference/report.tsv
+kraken2 SRR40486826 hostile total 7836297 human 103
+[E9 00:39:26] ERR15898346/hostsweep: MEGAHIT
+recorded ERR15898346 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/ERR15898346_hostsweep/combined_reference/report.tsv
+kraken2 ERR15898346 hostsweep total 7384654 human 0
+[E9 00:44:09] ERR15898346/kneaddata: MEGAHIT
+recorded ERR15898346 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/ERR15898346_kneaddata/combined_reference/report.tsv
+kraken2 ERR15898346 kneaddata total 7296246 human 0
+[E9 00:50:26] ERR15898346/hostile: MEGAHIT
+recorded ERR15898346 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/ERR15898346_hostile/combined_reference/report.tsv
+kraken2 ERR15898346 hostile total 7395001 human 0
+[E9 00:55:25] SRR31641567/hostsweep: MEGAHIT
+recorded SRR31641567 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR31641567_hostsweep/combined_reference/report.tsv
+kraken2 SRR31641567 hostsweep total 1818549 human 224
+[E9 01:19:15] SRR31641567/kneaddata: cleaned reads absent, skipping
+[E9 01:19:15] SRR31641567/hostile: MEGAHIT
+recorded SRR31641567 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR31641567_hostile/combined_reference/report.tsv
+kraken2 SRR31641567 hostile total 1940560 human 5987
+[E9 01:44:57] downstream.csv and kraken2_human.csv written under /home/adeel/hostsweep/out/downstream_results
+[E9chain 01:44:57] downstream.csv: 17 rows
+[E9chain 01:44:57] kraken2_human.csv: 17 rows
+[E9chain 01:44:57] E9 chain complete

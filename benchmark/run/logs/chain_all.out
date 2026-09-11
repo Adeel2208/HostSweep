@@ -1,0 +1,194 @@
+[ALL 2026-09-10T19:33:30Z] clone at c9d67b8
+[ALL 2026-09-10T19:33:34Z] STAGE 1/4  E9 downstream (waiting for any running instance first)
+[E9chain 01:45:12] waiting for E7 to finish
+[E9chain 01:45:12] E7 no longer running
+[E9chain 01:45:12] threshold_sweep.csv: 75 rows
+[E9chain 01:45:12] cleaning 6 libraries with 3 methods
+[E9chain 01:45:12]  SYN-CHM13-01
+[E9chain 01:45:12]   SYN-CHM13-01 hostsweep: present
+[E9chain 01:45:12]   SYN-CHM13-01 kneaddata: present
+[E9chain 01:45:12]   SYN-CHM13-01 hostile: present
+[E9chain 01:45:12]  SYN-CHM13-05
+[E9chain 01:45:12]   SYN-CHM13-05 hostsweep: present
+[E9chain 01:45:12]   SYN-CHM13-05 kneaddata: present
+[E9chain 01:45:12]   SYN-CHM13-05 hostile: present
+[E9chain 01:45:12]  SYN-NEU-03
+[E9chain 01:45:12]   SYN-NEU-03 hostsweep: present
+[E9chain 01:45:12]   SYN-NEU-03 kneaddata: present
+[E9chain 01:45:12]   SYN-NEU-03 hostile: present
+[E9chain 01:45:12]  SRR40486826
+[E9chain 01:45:12]   SRR40486826 hostsweep: present
+[E9chain 01:45:12]   SRR40486826 kneaddata: present
+[E9chain 01:45:12]   SRR40486826 hostile: present
+[E9chain 01:45:12]  ERR15898346
+[E9chain 01:45:12]   ERR15898346 hostsweep: present
+[E9chain 01:45:12]   ERR15898346 kneaddata: present
+[E9chain 01:45:12]   ERR15898346 hostile: present
+[E9chain 01:45:12]  SRR31641567
+[E9chain 01:45:12]   SRR31641567 hostsweep: present
+[E9chain 01:45:59]   SRR31641567 kneaddata: FAILED (exit 1)
+[E9chain 01:45:59]   SRR31641567 hostile: present
+[E9chain 01:45:59] MetaQUAST reference set: 10 genomes
+[E9chain 01:45:59] running E9 over 6 staged libraries
+[E9 01:46:00] SYN-CHM13-01/hostsweep: assembly present
+recorded SYN-CHM13-01 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-01_hostsweep/combined_reference/report.tsv
+kraken2 SYN-CHM13-01 hostsweep total 2686838 human 2
+[E9 01:48:13] SYN-CHM13-01/kneaddata: assembly present
+recorded SYN-CHM13-01 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-01_kneaddata/combined_reference/report.tsv
+kraken2 SYN-CHM13-01 kneaddata total 2677396 human 0
+[E9 01:50:51] SYN-CHM13-01/hostile: assembly present
+recorded SYN-CHM13-01 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-01_hostile/combined_reference/report.tsv
+kraken2 SYN-CHM13-01 hostile total 2687272 human 11
+[E9 01:53:00] SYN-CHM13-05/hostsweep: assembly present
+recorded SYN-CHM13-05 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-05_hostsweep/combined_reference/report.tsv
+kraken2 SYN-CHM13-05 hostsweep total 2422066 human 139
+[E9 01:56:13] SYN-CHM13-05/kneaddata: assembly present
+recorded SYN-CHM13-05 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-05_kneaddata/combined_reference/report.tsv
+kraken2 SYN-CHM13-05 kneaddata total 2413090 human 0
+[E9 01:59:32] SYN-CHM13-05/hostile: assembly present
+recorded SYN-CHM13-05 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-CHM13-05_hostile/combined_reference/report.tsv
+kraken2 SYN-CHM13-05 hostile total 2422243 human 10
+[E9 02:03:00] SYN-NEU-03/hostsweep: assembly present
+recorded SYN-NEU-03 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-NEU-03_hostsweep/combined_reference/report.tsv
+kraken2 SYN-NEU-03 hostsweep total 2153571 human 231
+[E9 02:06:35] SYN-NEU-03/kneaddata: assembly present
+recorded SYN-NEU-03 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-NEU-03_kneaddata/combined_reference/report.tsv
+kraken2 SYN-NEU-03 kneaddata total 2145547 human 50
+[E9 02:10:07] SYN-NEU-03/hostile: assembly present
+recorded SYN-NEU-03 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SYN-NEU-03_hostile/combined_reference/report.tsv
+kraken2 SYN-NEU-03 hostile total 2154280 human 227
+[E9 02:13:36] SRR40486826/hostsweep: assembly present
+recorded SRR40486826 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR40486826_hostsweep/combined_reference/report.tsv
+kraken2 SRR40486826 hostsweep total 7641137 human 5
+[E9 02:17:42] SRR40486826/kneaddata: assembly present
+recorded SRR40486826 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR40486826_kneaddata/combined_reference/report.tsv
+kraken2 SRR40486826 kneaddata total 7418809 human 0
+[E9 02:21:47] SRR40486826/hostile: assembly present
+recorded SRR40486826 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR40486826_hostile/combined_reference/report.tsv
+kraken2 SRR40486826 hostile total 7836297 human 103
+[E9 02:28:25] ERR15898346/hostsweep: assembly present
+recorded ERR15898346 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/ERR15898346_hostsweep/combined_reference/report.tsv
+kraken2 ERR15898346 hostsweep total 7384654 human 0
+[E9 02:31:17] ERR15898346/kneaddata: assembly present
+recorded ERR15898346 kneaddata report: /home/adeel/hostsweep/out/downstream_results/metaquast/ERR15898346_kneaddata/combined_reference/report.tsv
+kraken2 ERR15898346 kneaddata total 7296246 human 0
+[E9 02:36:04] ERR15898346/hostile: assembly present
+recorded ERR15898346 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/ERR15898346_hostile/combined_reference/report.tsv
+kraken2 ERR15898346 hostile total 7395001 human 0
+[E9 02:40:42] SRR31641567/hostsweep: assembly present
+recorded SRR31641567 hostsweep report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR31641567_hostsweep/combined_reference/report.tsv
+kraken2 SRR31641567 hostsweep total 1818549 human 224
+[E9 02:44:16] SRR31641567/kneaddata: cleaned reads absent, skipping
+[E9 02:44:16] SRR31641567/hostile: assembly present
+recorded SRR31641567 hostile report: /home/adeel/hostsweep/out/downstream_results/metaquast/SRR31641567_hostile/combined_reference/report.tsv
+kraken2 SRR31641567 hostile total 1940560 human 5987
+[E9 02:48:48] downstream.csv and kraken2_human.csv written under /home/adeel/hostsweep/out/downstream_results
+[E9chain 02:48:48] downstream.csv: 34 rows
+[E9chain 02:48:48] kraken2_human.csv: 34 rows
+[E9chain 02:48:48] E9 chain complete
+[ALL 2026-09-11T02:48:48Z]   downstream.csv: 34 rows
+[ALL 2026-09-11T02:48:48Z]   kraken2_human.csv: 34 rows
+[ALL 2026-09-11T02:48:48Z] STAGE 2/4  comparator benchmark on the synthetic panel
+[E3 02:48:48] 12 libraries x 3 tools x 1 runs
+[E3 02:48:48] SYN-CHM13-01 / hostile_matched / run 1
+[E3 02:48:48]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:48] SYN-CHM13-01 / hostile_default / run 1
+[E3 02:48:48]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:48] SYN-CHM13-01 / kneaddata / run 1
+[E3 02:48:49]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:49] SYN-CHM13-02 / hostile_matched / run 1
+[E3 02:48:49]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:49] SYN-CHM13-02 / hostile_default / run 1
+[E3 02:48:49]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:49] SYN-CHM13-02 / kneaddata / run 1
+[E3 02:48:49]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:49] SYN-CHM13-03 / hostile_matched / run 1
+[E3 02:48:49]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:49] SYN-CHM13-03 / hostile_default / run 1
+[E3 02:48:49]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:49] SYN-CHM13-03 / kneaddata / run 1
+[E3 02:48:50]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:50] SYN-CHM13-04 / hostile_matched / run 1
+[E3 02:48:50]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:50] SYN-CHM13-04 / hostile_default / run 1
+[E3 02:48:50]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:50] SYN-CHM13-04 / kneaddata / run 1
+[E3 02:48:50]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:50] SYN-CHM13-05 / hostile_matched / run 1
+[E3 02:48:50]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:50] SYN-CHM13-05 / hostile_default / run 1
+[E3 02:48:50]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:50] SYN-CHM13-05 / kneaddata / run 1
+[E3 02:48:50]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:50] SYN-CHM13-06 / hostile_matched / run 1
+[E3 02:48:50]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:51] SYN-CHM13-06 / hostile_default / run 1
+[E3 02:48:51]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:51] SYN-CHM13-06 / kneaddata / run 1
+[E3 02:48:51]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:51] SYN-CHM13-07 / hostile_matched / run 1
+[E3 02:48:51]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:51] SYN-CHM13-07 / hostile_default / run 1
+[E3 02:48:51]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:51] SYN-CHM13-07 / kneaddata / run 1
+[E3 02:48:51]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:51] SYN-CHM13-08 / hostile_matched / run 1
+[E3 02:48:52]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:52] SYN-CHM13-08 / hostile_default / run 1
+[E3 02:48:52]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:52] SYN-CHM13-08 / kneaddata / run 1
+[E3 02:48:52]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:52] SYN-CHM13-09 / hostile_matched / run 1
+[E3 02:48:52]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:52] SYN-CHM13-09 / hostile_default / run 1
+[E3 02:48:52]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:52] SYN-CHM13-09 / kneaddata / run 1
+[E3 02:48:52]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:52] SYN-IND-01 / hostile_matched / run 1
+[E3 02:48:52]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:52] SYN-IND-01 / hostile_default / run 1
+[E3 02:48:53]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:53] SYN-IND-01 / kneaddata / run 1
+[E3 02:48:53]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:53] SYN-NEU-02 / hostile_matched / run 1
+[E3 02:48:53]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:53] SYN-NEU-02 / hostile_default / run 1
+[E3 02:48:53]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:53] SYN-NEU-02 / kneaddata / run 1
+[E3 02:48:53]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:53] SYN-NEU-03 / hostile_matched / run 1
+[E3 02:48:53]   FAILED exit=127 (see hostile_matched_run1.stderr)
+[E3 02:48:53] SYN-NEU-03 / hostile_default / run 1
+[E3 02:48:53]   FAILED exit=127 (see hostile_default_run1.stderr)
+[E3 02:48:53] SYN-NEU-03 / kneaddata / run 1
+[E3 02:48:53]   FAILED exit=127 (see kneaddata_run1.stderr)
+[E3 02:48:53] complete. Aggregate with: python3 /home/adeel/hostsweep/HostSweep/benchmark/scripts/aggregate_results.py /home/adeel/hostsweep/out/results
+[ALL 2026-09-11T02:48:53Z] STAGE 3/4  E4 real-library scoring, HostSweep on 30 libraries
+[E4 02:48:54] 30 libraries x 1 tools x 1 runs
+[E4 02:48:54] DRR1076765 / hostsweep / run 1
+recorded DRR1076765 hostsweep in 4798439 assembly 4368480 profiling 8735170
+[E4 02:59:56]   done
+[E4 02:59:57] DRR1080602 / hostsweep / run 1
+recorded DRR1080602 hostsweep in 4977378 assembly 763783 profiling 1519821
+[E4 03:47:13]   done
+[E4 03:47:13] DRR319909 / hostsweep / run 1
+recorded DRR319909 hostsweep in 4992355 assembly 112119 profiling 155112
+[E4 04:15:34]   done
+[E4 04:15:34] DRR960856 / hostsweep / run 1
+[E4 04:17:00]   FAILED exit=1
+[E4 04:17:00] ERR14111908 / hostsweep / run 1
+recorded ERR14111908 hostsweep in 4964485 assembly 4467010 profiling 8929381
+[E4 04:26:14]   done
+[E4 04:26:14] ERR15898346 / hostsweep / run 1
+recorded ERR15898346 hostsweep in 4742327 assembly 4736193 profiling 9472369
+[E4 04:35:49]   done
+[E4 04:35:49] ERR17336437 / hostsweep / run 1
+recorded ERR17336437 hostsweep in 4988509 assembly 4980767 profiling 9961207
+[E4 04:50:37]   done
+[E4 04:50:37] ERR17585876 / hostsweep / run 1
+recorded ERR17585876 hostsweep in 4985685 assembly 4936241 profiling 9872176
+[E4 05:04:29]   done
+[E4 05:04:29] ERR17677614 / hostsweep / run 1
+recorded ERR17677614 hostsweep in 4918816 assembly 4775704 profiling 9534651
+[E4 05:24:21]   done
+[E4 05:24:21] ERR17748752 / hostsweep / run 1

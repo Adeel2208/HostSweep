@@ -39,6 +39,7 @@ TOOLS=("$@")
 THREADS="${THREADS:-8}"
 INDEX="${INDEX:-standard}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONDA_SH="${CONDA_SH:-$HOME/hostsweep/miniforge3/etc/profile.d/conda.sh}"
 
 mkdir -p "$RESULTS"
 say() { echo "[E3 $(date -u +%H:%M:%S)] $*"; }
@@ -55,6 +56,25 @@ run_one() {
     local so="$dir/${tool}_run${run}.stdout" se="$dir/${tool}_run${run}.stderr"
     local wd="$dir/${tool}_run${run}.work"
     rm -rf "$wd"; mkdir -p "$wd"
+
+    # Each comparator lives in its own conda environment, because their
+    # dependency sets conflict. Running them from whatever environment the
+    # caller happens to have active fails with exit 127 and "cannot run
+    # <tool>: No such file or directory" -- which is exactly what happened
+    # when this script was first pointed at comparators: 36 runs, all 127.
+    local env_for=""
+    case "$tool" in
+        hostsweep)                        env_for="hostsweep" ;;
+        hostile_default|hostile_matched)  env_for="hostile" ;;
+        kneaddata)                        env_for="kneaddata" ;;
+        bmtagger)                         env_for="bmtagger" ;;
+    esac
+    if [ -n "$env_for" ] && [ -f "$CONDA_SH" ]; then
+        # shellcheck disable=SC1090
+        . "$CONDA_SH"
+        conda activate "$env_for" 2>/dev/null || {
+            say "  cannot activate conda env '$env_for' for $tool"; return 127; }
+    fi
 
     local -a CMD
     case "$tool" in
@@ -121,6 +141,9 @@ for R1 in "${LIBS[@]}"; do
                 say "  FAILED exit=$STATUS (see ${TOOL}_run${N}.stderr)"
                 continue
             fi
+
+            # Return to a known environment before the next tool.
+            conda deactivate 2>/dev/null || true
 
             mapfile -t CLEAN < <(cleaned_paths "$TOOL" "$LIB" "$WD")
             if [ ${#CLEAN[@]} -eq 0 ]; then
