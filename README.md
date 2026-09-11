@@ -286,6 +286,14 @@ retention. See [`benchmark/README.md`](benchmark/README.md) to start, and
 [`benchmark/synthetic/README.md`](benchmark/synthetic/README.md) for the ART
 simulation protocol and seeds.
 
+Moving the harness to a second machine to continue an interrupted run? See
+[`benchmark/NEW_MACHINE.md`](benchmark/NEW_MACHINE.md) — one script
+(`benchmark/scripts/bootstrap_new_machine.sh`) rebuilds the toolchain, the
+reference index, the synthetic panel and the real-library panel from scratch,
+checks that the new machine reproduces the old machine's numbers before
+trusting it with anything else, and then runs whatever experiments are still
+incomplete.
+
 ### Benchmark datasets
 
 **Real SRA libraries** — the panel is being rebuilt and verified against SRA; see [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md).
