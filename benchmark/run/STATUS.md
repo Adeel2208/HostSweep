@@ -1,5 +1,12 @@
 # Benchmark run status
 
+> **This file is a point-in-time snapshot from the first working session
+> (2026-09-06), kept as a record of early decisions (e.g. the HG00514
+> assumption below, later corrected to HG00438).** It describes the benchmark
+> as "not started" throughout because, at that point, it hadn't been. Every
+> experiment referenced here as pending has since run. **For current status,
+> see `RESULTS.md`, section 1.**
+
 **Manuscript:** BIOADV-2026-394 (Bioinformatics Advances, major revision)
 **Session:** 2026-09-06
 **Command journal:** [`logs/commands.log`](logs/commands.log)

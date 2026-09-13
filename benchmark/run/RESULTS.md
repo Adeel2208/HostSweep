@@ -18,11 +18,13 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 
 1. [Status of each experiment](#1-status-of-each-experiment)
 2. [E3 — sensitivity and false positive rate (headline result)](#2-e3--sensitivity-and-false-positive-rate)
+2b. [Comparator benchmark — sensitivity and false positive rate](#2b-comparator-benchmark--sensitivity-and-false-positive-rate)
 3. [E7 — threshold sweep](#3-e7--threshold-sweep)
 3b. [E5 — dual-pass ablation](#3b-e5--dual-pass-ablation)
 3c. [E9 — downstream assembly and classification](#3c-e9--downstream-assembly-and-classification)
 4. [E2 — controlled-truth panel](#4-e2--controlled-truth-panel)
 5. [E1 — real-library panel verification](#5-e1--real-library-panel-verification)
+5b. [E4 — real-library scoring](#5b-e4--real-library-scoring)
 6. [Provenance and control measurements](#6-provenance-and-control-measurements)
 7. [Environment and tool versions](#7-environment-and-tool-versions)
 8. [Deviations that must appear in Methods](#8-deviations-that-must-appear-in-methods)
@@ -38,12 +40,11 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 | E2 | Synthetic controlled-truth panel | **Complete** | `synthetic_manifest.csv` |
 | E3 | Sensitivity and FPR, HostSweep | **Complete** | `per_library.csv` |
 | E7 | Entropy × length threshold sweep | **Complete** | `threshold_sweep.csv`, `equivalence_check.txt` |
-| E4 | Real-library scoring | **Partial** — 9 of 30 scored | `e4_results/` |
-| E9 | Assembly and classification | **Complete** — 17 of 18 pairs | `downstream.csv`, `kraken2_human.csv` |
+| E4 | Real-library scoring | **Complete** — 30 of 30 (HostSweep; no per-read truth set for real libraries, so accuracy columns are empty by design) | `e4_per_library.csv` |
+| E9 | Assembly and classification | **Complete** — 18 of 18 pairs | `downstream.csv`, `kraken2_human.csv` |
 | E5 | Dual-pass ablation | **Complete** | `ablation.csv` |
 | E8 | Labelling sensitivity | Not applicable | requires real-library truth set |
-| — | Comparator benchmark | **Not run** — 36 runs failed on an environment bug, since fixed | — |
-| — | Comparator benchmark | **Not run** — 36 runs failed on an environment bug, since fixed | — |
+| — | Comparator benchmark | **Complete for 3 of 5 tools** — `hostile_default`, `hostile_matched`, `kneaddata` (n=1, all 12 synthetic libraries). BMTagger deferred (env installs, not yet wired — D20); DeconSeq dropped (not on bioconda — D20) | `per_library.csv` |
 
 ---
 
@@ -84,7 +85,9 @@ hifiasm v0.14, UCSC Genomics Institute — one assembly project and one assemble
 version across three populations, so *reference mismatch* is not confounded
 with *different assembler* or *different scaffolding*.
 
-### Complete per-run data (`per_library.csv`, 36 rows)
+### Complete per-run data (`per_library.csv`, HostSweep's 36 of 72 rows)
+
+The other 36 rows are the comparator benchmark — see section 2b.
 
 Sensitivity and FPR are identical across the three runs of every library. The
 pipeline is deterministic, so replicate agreement is the expected result and
@@ -133,6 +136,112 @@ All libraries are 2.0 M pairs, tool `hostsweep`, tier `profiling`.
 
 > **The `runtime_min` and `peak_mem_gb` columns are not publication-grade.**
 > See deviation D17 in section 8. The accuracy columns are unaffected.
+
+---
+
+## 2b. Comparator benchmark — sensitivity and false positive rate
+
+**36 runs, 0 failures, n=1.** `hostile_default`, `hostile_matched` and
+`kneaddata`, each scored against the same truth labels, by the same
+`compute_metrics.py`, on all 12 synthetic libraries — the comparison this
+benchmark exists to make. **BMTagger is not in this table** (deferred, not
+dropped: its conda environment installs but the command was never wired into
+`run_e3.sh` in time — D20) and **DeconSeq is not in this table** (dropped:
+not on bioconda, needs a hand-edited manual install — D20).
+
+Run on a second machine (D18); before anything here was trusted, that machine
+rebuilt `SYN-CHM13-01` and reproduced HostSweep's sensitivity and FPR to the
+fourth decimal against the first machine's `per_library.csv`. Accuracy figures
+from the two machines are combined on that basis. **Runtime and peak memory are
+not** — see the callout after the tables.
+
+n=1 here, against n=3 for HostSweep, is a real asymmetry, not an oversight:
+HostSweep's three replicates were run to *establish* that this pipeline is
+deterministic (12/12 libraries bit-identical). That property has not been
+separately re-verified for Hostile or KneadData, so a single run each is what
+is reported, not what would ideally exist.
+
+### Summary
+
+| tool | condition | n | sensitivity mean | sensitivity range | FPR mean | FPR range |
+|---|---|---|---|---|---|---|
+| hostsweep | matched | 27 | 100.0000 % | 100.0000 – 100.0000 | 0.0142 % | 0.0133 – 0.0147 |
+| hostile_default | matched | 9 | 99.9998 % | 99.9990 – 100.0000 | **0.0000 %** | 0.0000 – 0.0000 |
+| hostile_matched | matched | 9 | 99.9998 % | 99.9990 – 100.0000 | **0.0000 %** | 0.0000 – 0.0000 |
+| kneaddata | matched | 9 | **100.0000 %** | 100.0000 – 100.0000 | 0.4255 % | 0.4216 – 0.4293 |
+| hostsweep | mismatch | 9 | 99.9698 % | 99.9600 – 99.9765 | 0.0147 % | 0.0142 – 0.0150 |
+| hostile_default | mismatch | 3 | 99.8665 % | 99.8150 – 99.9080 | **0.0000 %** | 0.0000 – 0.0000 |
+| hostile_matched | mismatch | 3 | 99.8646 % | 99.8100 – 99.9075 | **0.0000 %** | 0.0000 – 0.0000 |
+| kneaddata | mismatch | 3 | **99.9692 %** | 99.9550 – 99.9780 | 0.4268 % | 0.4233 – 0.4304 |
+
+### Per-library sensitivity
+
+| library | host % | hostsweep | hostile_default | hostile_matched | kneaddata |
+|---|---|---|---|---|---|
+| SYN-CHM13-01 | 0.1 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-02 | 0.5 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-03 | 1.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-04 | 5.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-05 | 10.0 | 100.0 | 99.9995 | 99.9995 | 100.0 |
+| SYN-CHM13-06 | 20.0 | 100.0 | 99.9997 | 99.9997 | 100.0 |
+| SYN-CHM13-07 | 40.0 | 100.0 | 99.9997 | 99.9997 | 100.0 |
+| SYN-CHM13-08 | 5.0 | 100.0 | 99.9990 | 99.9990 | 100.0 |
+| SYN-CHM13-09 | 10.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-IND-01 (mismatch) | 1.0 | **99.9600** | 99.8150 | 99.8100 | 99.9550 |
+| SYN-NEU-02 (mismatch) | 10.0 | 99.9765 | 99.9080 | 99.9075 | **99.9780** |
+| SYN-NEU-03 (mismatch) | 20.0 | 99.9728 | 99.8765 | 99.8762 | **99.9745** |
+
+HostSweep's sensitivity is greater than or equal to both Hostile configurations
+on **12 of 12** libraries. Against KneadData it is greater or equal on **10 of
+12** — KneadData edges it out on two of the three mismatch-arm libraries
+(`SYN-NEU-02`, `SYN-NEU-03`), by 0.0015–0.0017 percentage points.
+
+### Per-library false positive rate
+
+| library | hostsweep | hostile_default | hostile_matched | kneaddata |
+|---|---|---|---|---|
+| SYN-CHM13-01 | 0.0142 | **0.0** | **0.0** | 0.4258 |
+| SYN-CHM13-02 | 0.0147 | **0.0** | **0.0** | 0.4276 |
+| SYN-CHM13-03 | 0.0146 | **0.0** | **0.0** | 0.4293 |
+| SYN-CHM13-04 | 0.0144 | **0.0** | **0.0** | 0.4221 |
+| SYN-CHM13-05 | 0.0137 | **0.0** | **0.0** | 0.4292 |
+| SYN-CHM13-06 | 0.0141 | **0.0** | **0.0** | 0.4246 |
+| SYN-CHM13-07 | 0.0144 | **0.0** | **0.0** | 0.4239 |
+| SYN-CHM13-08 | 0.0143 | **0.0** | **0.0** | 0.4251 |
+| SYN-CHM13-09 | 0.0133 | **0.0** | **0.0** | 0.4216 |
+| SYN-IND-01 (mismatch) | 0.0148 | **0.0** | **0.0** | 0.4267 |
+| SYN-NEU-02 (mismatch) | 0.0142 | **0.0** | **0.0** | 0.4233 |
+| SYN-NEU-03 (mismatch) | 0.0150 | **0.0** | **0.0** | 0.4304 |
+
+### This table contains a result unfavourable to HostSweep
+
+**Both Hostile configurations record exactly 0.0000 % FPR on every one of the
+12 libraries — zero background reads removed in error, at essentially the same
+sensitivity as HostSweep.** HostSweep's FPR is small (0.0133–0.0150 %) but is
+never zero. On this measure, on this panel, Hostile is strictly better: equal
+or near-equal sensitivity, and no measured cost in specificity at all. This
+must be reported as measured, not narrowed to the sensitivity axis alone.
+
+**KneadData is the mirror image: it matches or slightly beats HostSweep on
+sensitivity (including outright winning on 2 of 3 mismatch libraries) at
+roughly 30x the false positive rate** (~0.42–0.43 % against HostSweep's
+~0.013–0.015 %). KneadData is the most aggressive of the three at removing
+reads that resemble host sequence, which costs it specificity here and costs
+it assembly quality in section 3c.
+
+The honest summary: **on this panel, no single tool dominates on both axes.**
+HostSweep sits between the two — never the best on either sensitivity or
+specificity alone, but the only one of the three with zero FPR nowhere and zero
+sensitivity loss nowhere simultaneously extreme. Framing HostSweep as
+strictly superior to Hostile would not survive a reviewer reading this table.
+
+> **Runtime and peak memory in `per_library.csv` for these three tools are not
+> comparable to HostSweep's own E3 timings above.** They were measured on a
+> different, unconstrained machine (D18) — Hostile ~0.6–1.5 min / ~3.4–3.6 GB,
+> KneadData ~2–6 min / ~5.0–5.6 GB, against HostSweep's 15–70 min / ~11.0–11.2
+> GB from the first, memory-constrained machine. That gap reflects the two
+> hosts, not the three tools, and must not be presented as a performance
+> comparison in any form.
 
 ---
 
@@ -339,17 +448,23 @@ HostSweep Output 1 against KneadData and Hostile on assembly quality.
 > they used the known ten-genome reference set via `-r`, identical for all
 > three methods, and MetaQUAST downloaded nothing for them.
 
-**17 of 18 (library, method) pairs.** Six libraries — three synthetic spanning
-the host range including the mismatch arm, three real from different categories
-and BioProjects — each cleaned by three methods and assembled identically.
+**18 of 18 (library, method) pairs, complete.** Six libraries — three synthetic
+spanning the host range including the mismatch arm, three real from different
+categories and BioProjects — each cleaned by three methods and assembled
+identically.
 
-`SRR31641567 / kneaddata` is **absent**: the run was stopped before it
-completed. It is reported absent rather than filled.
+`SRR31641567 / kneaddata` — the pair stopped mid-run on the first machine — was
+completed on the second machine (D18) and is included below. Its accuracy
+figures (Kraken2 residual-human count) were verified cross-machine comparable
+before being combined with the rest (D18); its exact assembly statistics were
+not re-measured on the first machine and so carry no cross-machine check of
+their own, same as every other second-machine assembly number in this section.
 
-Both CSVs originally carried every row twice, because `run_e9.sh` appends a row
-per scoring pass and `chain_e9.sh` was invoked twice. The duplicate copies were
-verified byte-identical before being collapsed; had any pair disagreed, the
-de-duplication would have been refused rather than silently picking one.
+Both CSVs originally carried every pre-existing row twice, because `run_e9.sh`
+appends a row per scoring pass and `chain_e9.sh` was invoked twice. The
+duplicate copies were verified byte-identical before being collapsed; had any
+pair disagreed, the de-duplication would have been refused rather than
+silently picking one.
 
 > **D4 applies to every number in this section.** MEGAHIT replaced metaSPAdes
 > because metaSPAdes needs 30–120 GB. MEGAHIT typically produces lower N50 and
@@ -384,7 +499,7 @@ design (see the correction above), and the table below shows `—` there.
 | `ERR15898346` | real, respiratory | kneaddata | 149836 |  |  | 6.6072 | — |
 | `SRR31641567` | real, blood | hostsweep | 21425 |  |  | 9.7558 | — |
 | `SRR31641567` | real, blood | hostile | 20761 |  |  | 9.7756 | — |
-| `SRR31641567` | real, blood | kneaddata | *absent* | — | — | — | — |
+| `SRR31641567` | real, blood | kneaddata | 13061 |  |  | 9.4192 | — |
 
 ### The clearest valid finding — synthetic libraries only
 
@@ -423,11 +538,13 @@ alignment.
 | ERR15898346 (respiratory) | kneaddata | 149,836 | 90 | 6.607 |
 | SRR31641567 (blood) | hostsweep | 21,425 | 1,571 | 9.756 |
 | SRR31641567 (blood) | hostile | 20,761 | 1,579 | 9.776 |
+| SRR31641567 (blood) | kneaddata | 13,061 | 1,686 | 9.419 |
 
 These need no reference and are valid across methods. KneadData gives the
-lowest N50 on both libraries where it ran — 14 % lower on gut, 41 % lower on
-respiratory — and 3.1 Mb less assembled sequence on gut. That is consistent
-with the synthetic misassembly result without depending on a reference.
+lowest N50 on all three real libraries where it ran — 14 % lower on gut, 41 %
+lower on respiratory, 39 % lower on blood — and less assembled sequence on gut
+and blood (3.1 Mb and 0.34 Mb respectively). That is consistent with the
+synthetic misassembly result without depending on a reference.
 
 ### Residual human content (Kraken2 Standard-8)
 
@@ -450,7 +567,7 @@ with the synthetic misassembly result without depending on a reference.
 | `ERR15898346` | kneaddata | 7,296,246 | **0** | 0.0 % |
 | `SRR31641567` | hostsweep | 1,818,549 | **224** | 0.012318 % |
 | `SRR31641567` | hostile | 1,940,560 | **5,987** | 0.308519 % |
-| `SRR31641567` | kneaddata | *absent* | — | — |
+| `SRR31641567` | kneaddata | 1,340,525 | **45** | 0.003357 % |
 
 > **D5 applies to every figure in this table.** Standard-8 is a capped
 > database; capping drops minimizers, so it detects **less** human sequence
@@ -460,26 +577,39 @@ with the synthetic misassembly result without depending on a reference.
 
 ### This table contains a result unfavourable to HostSweep
 
-**KneadData leaves zero detectable human reads on every library.** HostSweep
-and Hostile both leave some. And on `SYN-CHM13-05`, HostSweep leaves **139
-human reads against Hostile's 10** — 14x worse on that library.
+**KneadData leaves fewer or equal residual human reads than HostSweep on all
+six libraries where both ran — tied on one, ahead on five.** An earlier version
+of this section said KneadData leaves zero on *every* library; that was wrong
+on the data already in this table (`SYN-NEU-03` was never zero) and is
+corrected here rather than repeated.
 
-The picture is a genuine trade-off rather than a ranking: KneadData is the most
-aggressive filter, which is why it also destroys the most contigs. HostSweep
-and Hostile retain more microbial sequence and assemble it better, at the cost
-of a small number of residual human reads.
+| library | hostsweep | kneaddata | kneaddata vs hostsweep |
+|---|---|---|---|
+| SYN-CHM13-01 | 2 | **0** | fewer |
+| SYN-CHM13-05 | 139 | **0** | fewer |
+| SYN-NEU-03 (mismatch) | 231 | **50** | fewer, 4.6x |
+| SRR40486826 (gut) | 5 | **0** | fewer |
+| ERR15898346 (respiratory) | 0 | 0 | tied |
+| SRR31641567 (blood) | 224 | **45** | fewer, 5.0x |
 
-One result does favour HostSweep strongly, on the highest-host-content library
-in the panel:
+This is the sharper version of the trade-off already visible in section 3c's
+assembly numbers: **KneadData's more aggressive removal leaves less residual
+host sequence and more misassembled, lower-N50 microbial sequence, on the same
+libraries, every time it was measured.** HostSweep and Hostile trade the
+reverse way — cleaner assemblies, and human reads that occasionally survive.
+Neither the assembly numbers nor the residual-human numbers support ranking
+one tool above the other in the abstract; they support describing where each
+one spends its error budget.
 
-| `SRR31641567` (blood) | reads human | % human |
-|---|---|---|
-| hostsweep | **224** | 0.012 |
-| hostile | **5,987** | 0.309 |
-
-HostSweep leaves 27x fewer human reads than Hostile on blood, the hardest real
-case. That is worth reporting, and it is the one place in the downstream arm
-where the two separate meaningfully.
+**HostSweep versus Hostile is a genuine split, not a trend.** HostSweep is
+lower on 3 of 6 libraries (gut: 5 vs 103; blood: 224 vs 5,987 — 27x fewer;
+CHM13-01: 2 vs 11), Hostile is lower on 2 of 6 (CHM13-05: 10 vs 139 — 14x
+fewer; NEU-03: 227 vs 231, essentially tied), and both hit zero on respiratory.
+The largest single gap in the whole table is HostSweep's advantage on blood,
+the highest real-host-content library measured: **27x fewer residual human
+reads than Hostile.** That is worth reporting on its own terms, but it sits
+alongside CHM13-05 where the same comparison favours Hostile by 14x — this
+table does not show one tool consistently ahead of the other.
 
 ---
 
@@ -585,6 +715,41 @@ are reproduced in `verification_log.txt`.
 
 ---
 
+## 5b. E4 — real-library scoring
+
+**30 of 30 real libraries, HostSweep, 0 failures.** `sensitivity_pct`,
+`fpr_pct` and `host_pct` are empty on every row **by design**: real libraries
+carry no per-read origin label, so there is no ground truth to score against,
+and the protocol calls for reporting that absence rather than estimating it.
+What is measured is what can be: reads in and out (via the assembly-tier
+output), wall-clock runtime and peak memory, over all 7 categories of the
+verified panel (section 5).
+
+| category | libraries | runtime mean (min) | runtime range | peak memory mean (GB) | peak memory range |
+|---|---|---|---|---|---|
+| blood | 4 | 16.90 | 7.83 – 39.61 | 11.48 | 11.38 – 11.68 |
+| environmental | 4 | 18.27 | 14.74 – 23.79 | 11.32 | 11.30 – 11.34 |
+| gut | 6 | 16.45 | 5.16 – 24.85 | 11.40 | 11.28 – 11.79 |
+| oral | 4 | 13.97 | 7.81 – 20.44 | 11.43 | 11.32 – 11.61 |
+| respiratory | 4 | 13.32 | 7.08 – 19.87 | 11.66 | 11.33 – 12.21 |
+| skin | 4 | 10.48 | 5.05 – 20.18 | 11.57 | 11.42 – 11.68 |
+| urogenital | 4 | 13.75 | 12.56 – 14.59 | 11.35 | 11.29 – 11.40 |
+| **all 30** | 30 | **14.85** | 5.05 – 39.61 | **11.45** | 11.28 – 12.21 |
+
+This ran on the second machine (D18), which has 26 GB available to WSL2 —
+HostSweep's ~11.3–12.2 GB peak here is comfortably under that ceiling, not
+pinned against it the way the first machine's 11 GB ceiling pinned every E3
+run (D17). That makes this table an internally consistent, largely
+unconstrained measurement of HostSweep's own real-library memory demand — but
+it is **still not comparable to HostSweep's E3 timings**, which were measured
+on the other, constrained machine, or to the comparator runtime/memory numbers
+in section 2b, for the reasons given in D18.
+
+No category mean is drawn from a single BioProject (section 5); no accuracy
+claim is made or implied by this section.
+
+---
+
 ## 6. Provenance and control measurements
 
 ### No sequence-composition test can establish reference independence
@@ -669,8 +834,8 @@ alignment was 10.523 GB.
 | BBTools (BBDuk) | 40.02 |
 | ART | 2.5.8 (Q Version, June 2016) |
 | hostile | **2.0.2** (2.x asserted before use) |
-| kneaddata | 0.12.4 |
-| bmtagger / bmtool / srprism | installed |
+| kneaddata | 0.12.4 (run with `_JAVA_OPTIONS=-Xmx8g`, D19) |
+| bmtagger / bmtool / srprism | environment installs; not yet scored (D20) |
 | MEGAHIT | 1.2.9 |
 | QUAST / MetaQUAST | 5.3.0 |
 | Kraken2 | 2.17.1 |
@@ -679,15 +844,21 @@ alignment was 10.523 GB.
 
 Full 118-package resolution in `conda_explicit.txt`.
 
-**Host:** 8 threads, 11 GB RAM available to the guest (single 16 GiB DIMM,
-15.64 GiB visible to the OS), 32 GB swap, WSL2 Ubuntu on Windows 10.
+**Host 1** (E1–E3, E5, E7, first 17 of 18 E9 pairs): 8 threads, 11 GB RAM
+available to the guest (single 16 GiB DIMM, 15.64 GiB visible to the OS), 32 GB
+swap, WSL2 Ubuntu on Windows 10.
+
+**Host 2** ("Ozi"; comparator benchmark, all 30 E4 libraries, the last E9 pair):
+12 threads, 26 GB RAM available to WSL2 (32 GB physical), WSL2 Ubuntu on
+Windows 11. Verified to reproduce Host 1's accuracy figures exactly before any
+of its results were combined with Host 1's (D18).
 
 ---
 
 ## 8. Deviations that must appear in Methods
 
-Full text with interpretation costs in `DEVIATIONS.md` (17 deviations plus one
-integrity incident). The ones that change how a number should be read:
+Full text with interpretation costs in `DEVIATIONS.md` (20 deviations plus two
+integrity incidents). The ones that change how a number should be read:
 
 ### D1 — Background coverage 200×, not 50×
 Forced by arithmetic, not preference. At 50× the pool is ~730,000 pairs against
@@ -744,6 +915,27 @@ built on these numbers would rank whichever tool ran with a warm page cache.
 Accuracy is unaffected: sensitivity and FPR are byte-identical across replicates
 because the arithmetic does not care how long it took. **Those figures stand.**
 
+### D18 — Comparator, E4 and the last E9 pair ran on a second machine
+Verified cross-machine comparable for accuracy (sensitivity/FPR reproduced to
+the fourth decimal) before combining. **Not** verified comparable for runtime,
+memory, or exact assembly statistics — the second machine is unconstrained
+where the first was pinned at its ceiling, and MEGAHIT reassembly of the same
+reads on the two machines disagrees by up to 47% on some contig statistics
+(most, on HostSweep and Hostile, disagree by a few percent; KneadData's
+disagree far more — a reproducibility finding in its own right, section 3c).
+
+### D19 — KneadData required an explicit 8 GB JVM heap
+Its bundled Trimmomatic wrapper hardcodes a 1 GB heap regardless of
+`--max-memory`. Fixed with a `_JAVA_OPTIONS=-Xmx8g` shim. No effect on
+KneadData's reported accuracy or assembly figures; affects only whether the
+run completes.
+
+### D20 — Comparator table ships with 3 tools, not 5
+BMTagger's environment installs but was not wired into `run_e3.sh` in time —
+deferred, not attempted-and-failed. DeconSeq is dropped: not on bioconda, needs
+a manual install. Report the comparison as "Hostile (two configurations) and
+KneadData," not as "the comparator suite."
+
 ### I1 — Concurrent writers corrupted one synthetic library (detected, discarded)
 Two `mix_spikein.py` processes were found writing the same output prefix after a
 suspended launcher reconnected across a guest restart. Interleaved writes give
@@ -752,33 +944,57 @@ correspond. Both processes were killed, all three output files deleted unread,
 and the library rebuilt. **No measurement was taken from the corrupt files and
 none entered any results file.** A single-instance lock now prevents recurrence.
 
+### I2 — Real-library assembly metrics computed against auto-selected references (detected, withdrawn)
+`metaquast.py` run without `-r` for real libraries does not skip reference
+comparison — it BLASTs the contigs against SILVA 16S and downloads references
+from NCBI itself, chosen from **each method's own contigs**, so the three
+methods were scored against three different reference sets. A published
+headline ("869 misassemblies against HostSweep's 292" on the gut library) was
+withdrawn on this basis. `genome_fraction_pct` and `misassemblies` are now
+blanked for every real-library row; `run_e9.sh` passes `--max-ref-number 0` so
+it cannot recur. A second reference-based column, `duplication_ratio`, was
+missed in the first correction and has since been blanked too — it was left
+populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
+
 ---
 
 ## 9. What the paper cannot yet claim
 
-- **No comparator sensitivity or FPR.** Hostile, KneadData, BMTagger and
-  DeconSeq have not been scored against truth on the synthetic panel. The
-  attempt failed: all 36 runs exited 127 because `run_e3.sh` invoked the
-  comparators from the wrong conda environment. The bug is fixed and the stage
-  is ready to re-run, but until it does **the five-tool table cannot be
-  reinstated in any form.** Note that E9 *does* compare all three tools
-  downstream — that is assembly quality and residual human content, not
-  sensitivity.
+- **No claim that HostSweep dominates the comparator field.** Hostile matches
+  or nearly matches HostSweep's sensitivity with 0.0000 % FPR on all 12
+  synthetic libraries — strictly better specificity at equal sensitivity, on
+  this panel. KneadData matches or beats HostSweep's sensitivity on the
+  mismatch arm at ~30x the FPR. See section 2b. Any claim of the form
+  "HostSweep outperforms existing tools" needs to specify on which axis, for
+  which comparator, because the direction changes depending on which one.
+- **BMTagger and DeconSeq are not in the comparator table.** BMTagger's
+  environment installs but the run was never wired up in time (deferred, not
+  failed); DeconSeq needs a manual, non-bioconda install and was dropped per
+  the original instruction. A "five-tool comparison" cannot be claimed; a
+  "three-tool comparison, with BMTagger and DeconSeq's absence stated" can.
+  See D20.
 - **The dual-pass sensitivity claim is refuted, not merely unmeasured.**
   The second pass's marginal contribution over Bowtie2 alone is 0.0001 pp
-  matched and 0.005 pp on the mismatch library measured so far. The
-  architecture must be defended on the paired assembly tier it uniquely
-  produces, not on sensitivity. See section 3b.
-- **No runtime or memory claim.** See D17.
-- **No real-library accuracy, and only partial real-library coverage.** The 30
-  real libraries have no per-read truth set, so sensitivity and FPR are left
-  empty by design rather than estimated. Of the 30, **9 have been scored** for
-  host-removal percentage; the remaining 21 are downloaded but not run.
-- **Downstream results exist but rest on substituted tools.** E9 is complete
-  at 17 of 18 pairs, but MEGAHIT stands in for metaSPAdes (D4) and Kraken2
-  Standard-8 for Standard (D5). Absolute contiguity is not comparable to
-  published metaSPAdes figures, and residual-human counts are floors. The
-  between-method comparison is the valid part.
+  matched and 0.0036 pp on the mismatch library. The architecture must be
+  defended on the paired assembly tier it uniquely produces, not on
+  sensitivity. See section 3b.
+- **No cross-machine runtime or memory claim, on top of the existing
+  single-machine one (D17).** The comparator, E4 and second-machine E9 numbers
+  come from a different, unconstrained host than HostSweep's own E3 timings.
+  Comparing them would compound D17's warning with a hardware confound. See
+  D18.
+- **No real-library accuracy.** All 30 real libraries are downloaded and
+  scored for HostSweep (section 5b), but none have a per-read truth set, so
+  sensitivity and FPR are empty by design, not estimated, on every one of
+  them.
+- **Downstream results (E9) rest on substituted tools, and on two hosts.**
+  E9 is complete at 18 of 18 pairs, but MEGAHIT stands in for metaSPAdes (D4)
+  and Kraken2 Standard-8 for Standard (D5). Absolute contiguity is not
+  comparable to published metaSPAdes figures, residual-human counts are
+  floors, and MEGAHIT's exact contig statistics are not bit-identical between
+  the two hosts that produced this section's numbers (D18) — KneadData's
+  assemblies vary the most. The between-method comparison, on one host at a
+  time, is what stands.
 - **25 of the original 30 accessions remain unverifiable**, having never been
   available to check.
 
@@ -788,7 +1004,7 @@ none entered any results file.** A single-instance lock now prevents recurrence.
 
 | File | Rows | Contents |
 |---|---|---|
-| `per_library.csv` | 36 | Sensitivity, FPR, runtime, peak memory per (library, run) |
+| `per_library.csv` | 72 | Sensitivity, FPR, runtime, peak memory — hostsweep (36, n=3) + hostile_default/hostile_matched/kneaddata (36, n=1) |
 | `synthetic_manifest.csv` | 12 | Realised fractions, seeds, source accessions |
 | `threshold_sweep.csv` | 75 | Entropy × length grid, three libraries |
 | `equivalence_check.txt` | 2 | Proof the Step-8 caching shortcut is exact |
@@ -796,11 +1012,14 @@ none entered any results file.** A single-instance lock now prevents recurrence.
 | `verification_log.txt` | — | Per-category study counts, exact queries, UID counts |
 | `genomes_verified.tsv` | 10 | Background community, verified at NCBI |
 | `human_sources_provenance.json` | 3 | Mismatch-arm assembly provenance and composition |
-| `DEVIATIONS.md` | 18 | 17 deviations + 1 integrity incident |
+| `DEVIATIONS.md` | 22 | 20 deviations + 2 integrity incidents |
 | `STATUS.md` | — | What ran, what failed, what was skipped |
-| `downstream.csv` | 17 | N50, misassemblies, assembled Mb ≥1 kb, per method |
-| `kraken2_human.csv` | 17 | Residual human reads per method (floors, D5) |
+| `downstream.csv` | 18 | N50, misassemblies, assembled Mb ≥1 kb, per method |
+| `kraken2_human.csv` | 18 | Residual human reads per method (floors, D5) |
 | `ablation.csv` | 36 | Dual-pass contribution, 3 configurations |
+| `e4_per_library.csv` | 30 | Real libraries, HostSweep: runtime, peak memory (no truth set, D18) |
+| `AUDIT.md` | — | Self-audit, run on Host 2's own evidence tree (see the note at the top of the file) |
+| `host2_raw/` | — | Host 2's complete raw delivery: its own README, `service.log`, the KneadData heap shim, `CONFLICTS_repo_vs_this_machine.csv`, and its full unfiltered CSV output — kept as the primary source for D18's numbers |
 
 **`DEVIATIONS.md` is the file to attach to the response letter.** Each entry
 states what was specified, what was done, why, and what it costs in

@@ -202,6 +202,77 @@ and it is a hardware limitation rather than a methodological one.
 
 ---
 
+### D18. Comparator, E4 and the last E9 pair ran on a second, more capable machine
+
+**Specified.** Finish the comparator sensitivity/FPR benchmark, score the
+remaining real libraries, and complete E9 — all still pending on the first
+(11 GB) host.
+
+**Done.** A second machine ("Ozi": 32 GB RAM, 26 GB given to WSL2, 12
+threads) ran `bootstrap_new_machine.sh` end to end: the comparator benchmark
+(`hostile_default`, `hostile_matched`, `kneaddata` × 12 synthetic libraries,
+n=1), all 30 real libraries for HostSweep (`e4_per_library.csv`), and the
+missing E9 pair (`SRR31641567` / `kneaddata`). See [[bootstrap-second-machine]].
+
+**Before any of it was trusted:** the script rebuilt one synthetic library
+(`SYN-CHM13-01`) on the new machine and diffed its sensitivity and FPR against
+`per_library.csv` from the first machine. **Passed — identical to the fourth
+decimal** (sensitivity 100.0000 %, FPR 0.0142 %). Accuracy figures from the two
+machines are therefore combinable, and are combined in `per_library.csv`,
+`downstream.csv` and `kraken2_human.csv`.
+
+Two things are **not** combinable, and must not be presented as if they were:
+
+**a) Runtime and peak memory, across machines, are not one dataset.**
+HostSweep's own E3 timings (15–70 min, ~11.05–11.15 GB peak) come from the
+first machine, running at its 11 GB ceiling (D17). The comparator and E4
+timings in this correction (Hostile ~0.6–1.5 min, KneadData ~2–6 min,
+HostSweep on real libraries ~5–40 min, all under ~5.2 GB peak for comparators
+and ~11.3–12.2 GB for HostSweep) come from the second machine, which is not
+memory-constrained at all — 26 GB available against an observed HostSweep
+peak of ~11.3 GB is comfortably inside the ceiling, not pinned against it the
+way the first machine was. **A runtime or memory comparison between HostSweep
+and a comparator built from these two datasets would be comparing a
+constrained run against an unconstrained one, on top of D17's existing
+warning that timings aren't comparable between tools even on one machine.**
+No runtime or memory column may appear in any comparator table assembled from
+this benchmark. (One narrow exception: numbers within `e4_per_library.csv`
+are internally comparable to each other, and to the comparator table, because
+all of it came from the second machine — HostSweep's *own* E3 numbers are the
+ones that don't cross over.)
+
+**b) MEGAHIT assemblies are not bit-identical across machines.** The same
+cleaned reads, same MEGAHIT version, assembled on both machines, disagree by a
+few percent on contig-level statistics — expected, since MEGAHIT's de Bruijn
+graph construction is thread-scheduling-dependent and the two hosts have
+different core counts (8 vs 12). Measured directly by re-running the six E9
+libraries already scored on the first machine and diffing against the second
+machine's independent re-run (`CONFLICTS_repo_vs_this_machine.csv`, kept in
+full alongside this file):
+
+| method | cells differing (of 46 compared) | typical size |
+|---|---|---|
+| hostsweep | 5 | 4th-decimal jitter (18.4978 vs 18.4975 Mb; 18389 vs 18388 contigs) |
+| hostile | 7 | same order |
+| kneaddata | 34 | **up to 47 %** (`largest_contig_kb`: SYN-NEU-03 578.0 vs 306.5) |
+
+**This asymmetry is itself a result, not just a bookkeeping problem: KneadData's
+assemblies reproduce across machines far less well than HostSweep's or
+Hostile's.** It is consistent with, and adds weight to, the misassembly-rate
+finding in section 3c (KneadData produces 1.7–2.9x more misassemblies per Mb) —
+an assembly downstream of noisier cleaning is less stable, not just worse on
+average. `downstream.csv` keeps the **first machine's** values as canonical for
+all rows measured on both (first-recorded, and already the basis of the E9
+narrative); the second machine's independent measurements are the evidence for
+this reproducibility finding, not a replacement dataset.
+
+**Interpretation cost.** Accuracy (sensitivity, FPR, reads-human counts) is
+established as cross-machine comparable by the check above, and combining it
+across machines is the point of running a second one at all. Runtime, memory
+and exact assembly statistics are not, for the reasons given.
+
+---
+
 ## Category 2 — Deviations in inputs and provenance
 
 ### D8. Three background genome accessions corrected
@@ -356,6 +427,33 @@ as a hard failure.
 
 ---
 
+### D19. KneadData given an explicit 8 GB JVM heap
+
+**Specified.** Run KneadData with its packaged defaults.
+
+**Done.** `_JAVA_OPTIONS=-Xmx8g` set before every KneadData invocation.
+
+**Why.** Every KneadData run failed identically with
+`java.lang.OutOfMemoryError: Java heap space` inside its Trimmomatic step.
+Cause: the bioconda build of Trimmomatic ships a Python wrapper executable
+that hardcodes `-Xms512m -Xmx1g`, too small for a ~2,000,000-pair library.
+KneadData's own `--max-memory` flag does **not** fix this — it is only honoured
+on the `java -jar trimmomatic.jar` code path, and this build's wrapper never
+takes it. (Tried first; failed identically.) The wrapper drops its hardcoded
+default whenever `_JAVA_OPTIONS` is already set in the environment, so a one-line
+shim at `envs/kneaddata/bin/kneaddata` exports it and execs the real entry
+point.
+
+**Interpretation cost.** None to KneadData's reported accuracy or assembly
+figures — a heap ceiling failure has no partial output to be biased by, it
+either completes normally afterward or is absent. HostSweep and Hostile are
+unaffected; neither runs a JVM. The shim lives in the conda environment, not in
+`benchmark/scripts/`, so a fresh machine (including a third one) will hit this
+same failure unless `install_comparators.sh`'s `kneaddata` case installs the
+shim as part of environment creation.
+
+---
+
 ## Category 4 — Scope reductions
 
 ### D15. Reduced scope on constrained hardware
@@ -368,6 +466,57 @@ then real arm and downstream as hardware and time permit.
 
 **Why.** 8 threads, 12 GB RAM, 574 GB free disk against an assumed 8 threads /
 64 GB / 2 TB. The full matrix is multiple weeks of continuous compute here.
+
+---
+
+### D20. Comparator benchmark ships with three tools, not five: BMTagger deferred, DeconSeq dropped
+
+**Specified.** Five-tool comparator table: `hostile_matched`, `hostile_default`,
+`kneaddata`, `bmtagger`, `deconseq`, dropping a tool only if it will not
+install, and only with a documented reason.
+
+**Done.** `hostile_matched`, `hostile_default` and `kneaddata` are scored
+against truth on all 12 synthetic libraries (n=1; see `per_library.csv`).
+BMTagger and DeconSeq are not in this result.
+
+**BMTagger — deferred, not dropped.** Its conda environment installs cleanly
+(`bmtagger`, `bmtool`, `srprism`, all bioconda). What is missing is the
+reference index (`bmtool` bitmask + `srprism mkindex` + a BLAST seqdb over
+T2T-CHM13v2.0) and the command wired into `run_e3.sh`'s tool dispatch, which
+currently has no case for `bmtagger` at all and would exit 127 if asked to run
+it — i.e. it was never actually attempted, not attempted-and-failed. The
+command line was smoke-tested against a small reference (*E. coli*,
+`GCF_000005845.2`) to confirm the exact invocation before committing anything
+that runs against the full genome:
+```
+bmtool     -d ref.fasta -o ref.bitmask -w 18
+srprism mkindex -i ref.fasta -o ref.srprism --memory <MB>
+makeblastdb -in ref.fasta -dbtype nucl -out ref.seqdb
+bmtagger.sh -b ref.bitmask -x ref.srprism -d ref.seqdb \
+            -q 1 -1 r1.fastq -2 r2.fastq -o out -T tmpdir -X
+```
+Two things learned from that smoke test that the eventual wiring must account
+for: **bmtagger.sh does not accept gzipped FASTQ** (it reads the raw bytes as
+sequence and either errors or hangs; inputs must be decompressed first), and
+its output is plain-text `<out>_1.fastq` / `<out>_2.fastq` containing the
+*non*-matching (human-free) reads directly, given `-X`. The bitmask file is a
+fixed ~8.1 GB regardless of reference size (`4^18` bits for word size 18); the
+srprism index scales with reference size and was not built against the full
+3.1 Gb T2T genome in this session, so its size and build time for the actual
+run are not yet known.
+
+**DeconSeq — dropped, per the original instruction.** Not on bioconda; the
+project's own install path is a manual download plus a hand-edited
+`DeconSeqConfig.pm` pointing at local BLAST/bwa binaries and reference
+databases. Given the instruction to drop rather than hand-roll a fragile
+install, it is excluded rather than attempted.
+
+**Interpretation cost.** The comparator table in this benchmark has three
+tools. A claim of the form "HostSweep versus every requested comparator" is
+not supportable until BMTagger is either scored or formally dropped with the
+same standard applied to DeconSeq. Until then, describe the comparison as
+"Hostile (two configurations) and KneadData" explicitly, not as "the
+comparator suite" unqualified.
 
 **Interpretation cost.** Any arm not completed is reported as absent, never
 estimated. `STATUS.md` records exactly what ran. Row counts in the CSVs reflect
@@ -514,6 +663,19 @@ libraries where it ran. The finding holds; it is smaller than first stated.
 **How it was caught.** The script's own comment claimed the reference-based
 columns would be "empty for reference-free runs". They were populated. The
 contradiction between that comment and the data it produced was the signal.
+
+**Addendum, 2026-09-13: a second reference-based column was missed the first
+time.** `duplication_ratio` — the fraction of aligned contig length that maps
+more than once to the reference — is computed the same way genome fraction and
+misassemblies are: from an alignment to a reference. It requires exactly the
+mechanism this incident withdrew, and it was left populated on all 8
+real-library rows when the first correction blanked only `genome_fraction_pct`
+and `misassemblies`. Confirmed empirically before touching anything: a second
+machine re-ran E9 with the already-fixed `run_e9.sh` (`--max-ref-number 0`),
+and every one of its real-library rows came back with `duplication_ratio`
+blank, because MetaQUAST has no reference to compute it against. The repo's
+`downstream.csv` has now been corrected to match — `duplication_ratio` blank
+on all real-library rows, synthetic rows untouched. See [[bootstrap-second-machine]].
 
 ---
 

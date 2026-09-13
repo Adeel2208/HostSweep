@@ -66,6 +66,28 @@ for tool in "${TOOLS[@]}"; do
         kneaddata)
             create_env kneaddata kneaddata || { say "kneaddata install FAILED"; continue; }
             conda activate kneaddata
+            # D19: bioconda's Trimmomatic wrapper hardcodes -Xmx1g, too small
+            # for ~2,000,000-pair libraries -- every run failed identically
+            # with java.lang.OutOfMemoryError. KneadData's own --max-memory
+            # does not help (it is honoured only on the `java -jar` path, and
+            # this build calls the wrapper executable instead). The wrapper
+            # drops its hardcoded default whenever _JAVA_OPTIONS is already
+            # set, so shim the entry point rather than patch the package.
+            # Idempotent: skip if the shim is already installed.
+            KDBIN="$(dirname "$(command -v kneaddata)")"
+            if [ -x "$KDBIN/kneaddata" ] && [ ! -e "$KDBIN/kneaddata-real" ]; then
+                mv "$KDBIN/kneaddata" "$KDBIN/kneaddata-real"
+                cat > "$KDBIN/kneaddata" <<'SHIM'
+#!/usr/bin/env bash
+# See benchmark/run/DEVIATIONS.md D19. Installed by install_comparators.sh.
+export _JAVA_OPTIONS="-Xmx8g"
+exec "$(dirname "$0")/kneaddata-real" "$@"
+SHIM
+                chmod +x "$KDBIN/kneaddata"
+                say "  kneaddata: installed the -Xmx8g heap shim (D19)"
+            else
+                say "  kneaddata: heap shim already present or binary layout unexpected, left alone"
+            fi
             kneaddata --version > "$RECORD/kneaddata_version.txt" 2>&1
             say "kneaddata -> $(head -1 "$RECORD/kneaddata_version.txt")"
             conda deactivate

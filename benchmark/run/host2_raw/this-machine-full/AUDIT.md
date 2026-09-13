@@ -1,23 +1,5 @@
 # Benchmark self-audit
 
-> **This file is Host 2's ("Ozi") self-audit**, run against its own local
-> `~/hostsweep/out` directory, where its raw evidence (metrics JSON, `.time`
-> files) actually lives — that is the only complete evidence tree available in
-> this session. Running `audit.py` against this git checkout instead reports
-> every row as lacking a metrics JSON, because raw evidence is deliberately
-> kept outside the repo on both machines (see `benchmark/scripts/wsl_run.sh`);
-> that is a structural mismatch, not a finding about the data.
->
-> The `ABSENT` lines below (`ablation.csv`, `threshold_sweep.csv`,
-> `accessions_verified.csv`) are **not gaps** — those three were produced on
-> Host 1 and are committed in this directory; Host 2's own `out/` never held
-> them because it never ran E5, E7 or E1. Row counts for `per_library.csv`,
-> `downstream.csv` and `kraken2_human.csv` are Host 2's own contribution only
-> (36, 16, 16) — the merged, committed files in this directory carry more (72,
-> 18, 18) once Host 1's rows are included. See `RESULTS.md` section 1 for the
-> current, combined status of every experiment, and `DEVIATIONS.md` D18 for
-> what is and is not comparable between the two hosts.
-
 Run directory: `/home/ozi/hostsweep/out`
 
 
@@ -53,5 +35,6 @@ Real replicates of a deterministic pipeline are *identical*; real replicates of 
   OK   no computed mean coincides with a pre-existing published figure
 
 ## Verdict
+
 
 All checks passed on the files that exist.

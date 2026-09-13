@@ -1,0 +1,2 @@
+library,condition,method,n50,total_length_mb,contigs_ge_1kb,largest_contig_kb,genome_fraction_pct,misassemblies,assembled_mb_ge_1kb,duplication_ratio
+SRR31641567,real,kneaddata,13061,17.8437,1686,118.184,,,9.4192,
