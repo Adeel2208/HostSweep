@@ -44,7 +44,7 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 | E9 | Assembly and classification | **Complete** — 18 of 18 pairs | `downstream.csv`, `kraken2_human.csv` |
 | E5 | Dual-pass ablation | **Complete** | `ablation.csv` |
 | E8 | Labelling sensitivity | Not applicable | requires real-library truth set |
-| — | Comparator benchmark | **Complete for 3 of 5 tools** — `hostile_default`, `hostile_matched`, `kneaddata` (n=1, all 12 synthetic libraries). BMTagger deferred (env installs, not yet wired — D20); DeconSeq dropped (not on bioconda — D20) | `per_library.csv` |
+| — | Comparator benchmark | **Complete for 3 of 5 tools** — `hostile_default`, `hostile_matched`, `kneaddata` (n=1, all 12 synthetic libraries). BMTagger is wired (index build + run_e3.sh support written and smoke-tested) but has not yet executed against the full genome/panel — queued for the next run (D20); DeconSeq dropped (not on bioconda — D20) | `per_library.csv` |
 
 ---
 
@@ -144,10 +144,11 @@ All libraries are 2.0 M pairs, tool `hostsweep`, tier `profiling`.
 **36 runs, 0 failures, n=1.** `hostile_default`, `hostile_matched` and
 `kneaddata`, each scored against the same truth labels, by the same
 `compute_metrics.py`, on all 12 synthetic libraries — the comparison this
-benchmark exists to make. **BMTagger is not in this table** (deferred, not
-dropped: its conda environment installs but the command was never wired into
-`run_e3.sh` in time — D20) and **DeconSeq is not in this table** (dropped:
-not on bioconda, needs a hand-edited manual install — D20).
+benchmark exists to make. **BMTagger is not in this table yet** (its command
+is now wired into `run_e3.sh` and its index-build script exists, but it has
+not yet been executed against the full genome or the panel — D20) and
+**DeconSeq is not in this table** (dropped: not on bioconda, needs a
+hand-edited manual install — D20).
 
 Run in a later benchmark session (D18); before anything here was trusted, that
 session rebuilt `SYN-CHM13-01` and reproduced HostSweep's sensitivity and FPR
@@ -834,7 +835,7 @@ alignment was 10.523 GB.
 | ART | 2.5.8 (Q Version, June 2016) |
 | hostile | **2.0.2** (2.x asserted before use) |
 | kneaddata | 0.12.4 (run with `_JAVA_OPTIONS=-Xmx8g`, D19) |
-| bmtagger / bmtool / srprism | environment installs; not yet scored (D20) |
+| bmtagger / bmtool / srprism | environment installs; command wired, not yet executed at full scale (D20) |
 | MEGAHIT | 1.2.9 |
 | QUAST / MetaQUAST | 5.3.0 |
 | Kraken2 | 2.17.1 |
@@ -971,11 +972,12 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
   "HostSweep outperforms existing tools" needs to specify on which axis, for
   which comparator, because the direction changes depending on which one.
 - **BMTagger and DeconSeq are not in the comparator table.** BMTagger's
-  environment installs but the run was never wired up in time (deferred, not
-  failed); DeconSeq needs a manual, non-bioconda install and was dropped per
-  the original instruction. A "five-tool comparison" cannot be claimed; a
-  "three-tool comparison, with BMTagger and DeconSeq's absence stated" can.
-  See D20.
+  command is now wired and its index-build script exists, but neither has
+  executed against the full genome or the synthetic panel yet — that is
+  queued, not failed; DeconSeq needs a manual, non-bioconda install and was
+  dropped per the original instruction. A "five-tool comparison" cannot be
+  claimed; a "three-tool comparison, with BMTagger and DeconSeq's absence
+  stated" can. See D20.
 - **The dual-pass sensitivity claim is refuted, not merely unmeasured.**
   The second pass's marginal contribution over Bowtie2 alone is 0.0001 pp
   matched and 0.0036 pp on the mismatch library. The architecture must be

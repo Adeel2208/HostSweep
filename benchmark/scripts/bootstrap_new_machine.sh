@@ -34,9 +34,20 @@
 #                             continuing on a machine that measures
 #                             differently.
 #   8. real-library downloads all 30 SRA accessions (wsl_run.sh e4dl)
-#   9. everything left        finishes E9, runs the comparator benchmark on
-#                             the synthetic panel, scores the remaining real
-#                             libraries, aggregates, audits (chain_all.sh)
+#   9. everything left        finishes E9; builds the BMTagger index against
+#                             the full T2T genome and runs it (D20 -- this is
+#                             the first time that index has been built at
+#                             full scale rather than against a small test
+#                             reference); runs the comparator benchmark
+#                             (Hostile x2, KneadData, BMTagger) on the
+#                             synthetic panel; scores the remaining real
+#                             libraries; attempts CheckM2 over every E9
+#                             assembly (D6 -- needs ~15 GB RAM plus its own
+#                             database, dropped on the original 11 GB host,
+#                             records FAILED rather than blocking if it still
+#                             doesn't fit here); aggregates; audits
+#                             (chain_all.sh -- see that script for the full
+#                             stage-by-stage breakdown)
 #
 # Every stage is idempotent -- re-running this script after Ctrl-C, a reboot,
 # or a lost connection resumes exactly where it stopped and recomputes
@@ -95,6 +106,7 @@ if run_stage 0 || true; then   # always shown, never skipped
     say "  free disk at \$HOME           : ${DISK_GB} GB"
     [ "${RAM_GB:-0}" -ge 10 ] || fail "under 10 GB RAM visible; every HostSweep-class run needs ~11 GB peak. If this is WSL, raise memory= in .wslconfig on the Windows side and run 'wsl --shutdown', then retry."
     [ "${DISK_GB:-0}" -ge 120 ] || say "  WARNING: under 120 GB free. The full benchmark (index + synthetic panel + 30 real libraries + comparator work trees) has used ~135 GB on the reference machine."
+    [ "${RAM_GB:-0}" -ge 20 ] || say "  NOTE: under 20 GB RAM. CheckM2 (stage 9) needs roughly 15 GB and was dropped on the original 11 GB host for exactly this reason (D6). If it still doesn't fit here, run_checkm2.sh records that and the rest of the chain continues -- it will not block anything else."
     export THREADS="${THREADS:-$(( CPU_N > 12 ? 12 : CPU_N ))}"
     say "  THREADS set to ${THREADS}"
 fi
@@ -217,7 +229,12 @@ say "=========================================================="
 say "bootstrap finished. Next:"
 say "  bash $SCRIPTS/status.sh                       -- what ran, what's left"
 say "  cat $OUT/AUDIT.md                             -- self-audit output"
+say "  cat $OUT/checkm2_results.csv                  -- if CheckM2 ran (D6)"
 say "  bash $SCRIPTS/package_results.sh $REPO         -- build the results bundle"
 say "Copy the updated CSVs from \$HOME/hostsweep/out/*.csv into"
 say "$REPO/benchmark/run/ before committing -- this script does not commit anything."
+say "If BMTagger's index built (\$HOME/hostsweep/bmtagger_index/), it is"
+say "reusable on this machine for any future re-run. It is NOT copied"
+say "anywhere by this script and does not need to be -- it never leaves"
+say "this machine."
 say "=========================================================="

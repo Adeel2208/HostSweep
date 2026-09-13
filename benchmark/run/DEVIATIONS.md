@@ -123,19 +123,33 @@ threshold.
 
 ---
 
-### D6. CheckM2 dropped
+### D6. CheckM2 dropped, now re-attempted where more RAM is available
 
 **Specified.** "Add CheckM2 completeness/contamination if you can run it; if
 not, say so explicitly."
 
-**Done.** Not run.
+**Done, originally.** Not run — the host at the time had 12 GB RAM.
 
-**Why.** CheckM2 needs roughly 15 GB RAM plus its reference database, above
-the 12 GB ceiling.
+**Why.** CheckM2 needs roughly 15 GB RAM plus its reference database (a
+diamond `.dmnd` file, several GB), above that ceiling.
 
-**Interpretation cost.** No completeness or contamination statistics are
-reported. The specification explicitly permitted this outcome provided it is
-stated. It is stated here and in `STATUS.md`.
+**Addendum: `run_checkm2.sh` now exists** and `chain_all.sh` calls it
+automatically as its own stage. It installs the `checkm2` conda environment
+and downloads the database on first use, then runs `checkm2 predict` against
+every MEGAHIT assembly E9 has produced, one completeness/contamination pair
+per (library, method) — a coarse, assembly-level proxy, since CheckM2 is
+designed to score single-genome bins, not a whole metagenomic co-assembly; say
+so wherever this number is used. If the install or a run fails, or RAM is
+still insufficient wherever this next runs, the script records `FAILED` rows
+and does not block anything else in the chain — it has **not yet actually
+completed a run** as of this entry; that happens on whichever machine runs
+`chain_all.sh` next with enough memory.
+
+**Interpretation cost.** Until it actually runs: no completeness or
+contamination statistics are reported, as originally stated. Once it does:
+treat the result as an assembly-level proxy, not a per-organism bin
+statistic, and note which (library, method) rows are `FAILED` rather than
+silently absent.
 
 ---
 
@@ -466,41 +480,46 @@ then real arm and downstream as hardware and time permit.
 
 ---
 
-### D20. Comparator benchmark ships with three tools, not five: BMTagger deferred, DeconSeq dropped
+### D20. Comparator benchmark ships with three tools, not five (at time of writing): BMTagger wired but not yet executed, DeconSeq dropped
 
 **Specified.** Five-tool comparator table: `hostile_matched`, `hostile_default`,
 `kneaddata`, `bmtagger`, `deconseq`, dropping a tool only if it will not
 install, and only with a documented reason.
 
-**Done.** `hostile_matched`, `hostile_default` and `kneaddata` are scored
-against truth on all 12 synthetic libraries (n=1; see `per_library.csv`).
-BMTagger and DeconSeq are not in this result.
+**Done so far.** `hostile_matched`, `hostile_default` and `kneaddata` are
+scored against truth on all 12 synthetic libraries (n=1; see
+`per_library.csv`). BMTagger's code is now written and wired in but has not
+yet produced a result; DeconSeq is dropped outright.
 
-**BMTagger — deferred, not dropped.** Its conda environment installs cleanly
-(`bmtagger`, `bmtool`, `srprism`, all bioconda). What is missing is the
-reference index (`bmtool` bitmask + `srprism mkindex` + a BLAST seqdb over
-T2T-CHM13v2.0) and the command wired into `run_e3.sh`'s tool dispatch, which
-currently has no case for `bmtagger` at all and would exit 127 if asked to run
-it — i.e. it was never actually attempted, not attempted-and-failed. The
-command line was smoke-tested against a small reference (*E. coli*,
-`GCF_000005845.2`) to confirm the exact invocation before committing anything
-that runs against the full genome:
+**BMTagger — wired, awaiting its first real-scale execution.** Its conda
+environment installs cleanly (`bmtagger`, `bmtool`, `srprism`, all bioconda).
+The exact command line was first smoke-tested against a small reference
+(*E. coli*, `GCF_000005845.2`) to nail down the real invocation before writing
+anything against the full genome:
 ```
-bmtool     -d ref.fasta -o ref.bitmask -w 18
+bmtool      -d ref.fasta -o ref.bitmask -w 18
 srprism mkindex -i ref.fasta -o ref.srprism --memory <MB>
 makeblastdb -in ref.fasta -dbtype nucl -out ref.seqdb
 bmtagger.sh -b ref.bitmask -x ref.srprism -d ref.seqdb \
             -q 1 -1 r1.fastq -2 r2.fastq -o out -T tmpdir -X
 ```
-Two things learned from that smoke test that the eventual wiring must account
-for: **bmtagger.sh does not accept gzipped FASTQ** (it reads the raw bytes as
-sequence and either errors or hangs; inputs must be decompressed first), and
-its output is plain-text `<out>_1.fastq` / `<out>_2.fastq` containing the
-*non*-matching (human-free) reads directly, given `-X`. The bitmask file is a
-fixed ~8.1 GB regardless of reference size (`4^18` bits for word size 18); the
-srprism index scales with reference size and was not built against the full
-3.1 Gb T2T genome in this session, so its size and build time for the actual
-run are not yet known.
+Two things learned from that smoke test and now built into the code:
+**bmtagger.sh does not accept gzipped FASTQ** (confirmed directly: given one,
+it reads the compressed bytes as sequence and either errors or hangs —
+`run_e3.sh` decompresses to a temp file first, outside the timed section), and
+its `-X` output is plain-text `<out>_1.fastq` / `<out>_2.fastq` containing the
+*non*-matching (human-free) reads directly.
+
+This is now implemented in `07_build_bmtagger_index.sh` (builds the bitmask,
+srprism index and BLAST seqdb against the full T2T-CHM13v2.0 genome) and in
+`run_e3.sh`'s `bmtagger` case, and `chain_all.sh` runs both automatically. **It
+has not yet actually run against the full genome or the synthetic panel** —
+the bitmask is a fixed ~8.1 GB regardless of reference size (`4^18` bits for
+word size 18, confirmed), but the srprism index scales with reference size and
+was only ever built against a 4.7 Mb test genome (129 MB there); its real size
+and build time against a 3.1 Gb genome are unmeasured. `chain_all.sh` builds it
+once and reuses it, records a clear failure if the build or the run does not
+complete, and does not block the rest of the chain either way.
 
 **DeconSeq — dropped, per the original instruction.** Not on bioconda; the
 project's own install path is a manual download plus a hand-edited

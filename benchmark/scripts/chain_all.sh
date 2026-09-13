@@ -3,12 +3,17 @@
 #
 # Order is by value to the manuscript:
 #   1. finish E9                     downstream.csv, kraken2_human.csv
-#   2. comparator benchmark          the largest remaining gap: Editor 6 and 19,
-#                                    and all three reviewers. hostile_matched,
-#                                    hostile_default and kneaddata scored
-#                                    against truth on all 12 synthetic libraries
-#   3. E4 real-library scoring       per-category host removal, Editor point 1
-#   4. aggregate + integrity + audit
+#   2. BMTagger index                built once, against the full T2T genome
+#                                    (D20) -- untested at this scale before
+#                                    this chain ran it for real
+#   3. comparator benchmark          hostile_matched, hostile_default,
+#                                    kneaddata AND bmtagger scored against
+#                                    truth on all 12 synthetic libraries
+#   4. E4 real-library scoring       per-category host removal, Editor point 1
+#   5. CheckM2                       completeness/contamination over every
+#                                    E9 assembly (D6 -- dropped on the
+#                                    original 11 GB host, attempted here)
+#   6. aggregate + integrity + audit
 #
 # Everything runs ONE AT A TIME. Each HostSweep-class run peaks at 11.05-11.15 GB
 # against an 11 GB ceiling, so two pipelines at once OOM both. This is why the
@@ -73,21 +78,46 @@ for f in downstream.csv kraken2_human.csv; do
         && say "  $f: $(( $(wc -l < "$OUT/$f") - 1 )) rows"
 done
 
-# --- 2. comparator benchmark -----------------------------------------
+# --- 2. BMTagger index -------------------------------------------------
+# Built once, reused by every library. Skips itself if already present.
+say "STAGE 2/6  BMTagger index (D20; this is the first time this has run"
+say "  against the full genome rather than a small test reference)"
+BMT_DIR="$ROOT/bmtagger_index"
+if conda env list | awk '{print $1}' | grep -qx bmtagger; then
+    conda activate bmtagger
+    bash "$SCRIPTS/07_build_bmtagger_index.sh" \
+         "$CONDA_PREFIX/share/hostsweep/databases/standard/human_T2T.fasta" \
+         "$BMT_DIR" \
+        || say "  BMTagger index build FAILED; bmtagger will be skipped below"
+    conda deactivate
+    conda activate hostsweep
+else
+    say "  bmtagger conda env absent; skipping index build and the bmtagger tool"
+fi
+
+# --- 3. comparator benchmark -----------------------------------------
 # Scored against the same truth labels as HostSweep, by the same script, on the
 # same libraries. hostile_matched uses the identical T2T Bowtie2 index every
 # other method uses, so what differs is method rather than reference;
 # hostile_default is Hostile as its authors intend it, with its own index.
-say "STAGE 2/4  comparator benchmark on the synthetic panel"
-bash "$SCRIPTS/run_e3.sh" "$SYN" "$OUT/results" 1 \
-     hostile_matched hostile_default kneaddata \
+say "STAGE 3/6  comparator benchmark on the synthetic panel"
+COMPARATOR_TOOLS=(hostile_matched hostile_default kneaddata)
+if [ -s "$BMT_DIR/human.bitmask" ] && [ -s "$BMT_DIR/human.srprism.idx" ] && [ -s "$BMT_DIR/human.seqdb.nsq" ]; then
+    export BMTAGGER_BITMASK="$BMT_DIR/human.bitmask"
+    export BMTAGGER_SRPRISM="$BMT_DIR/human.srprism"
+    export BMTAGGER_SEQDB="$BMT_DIR/human.seqdb"
+    COMPARATOR_TOOLS+=(bmtagger)
+else
+    say "  BMTagger index incomplete; running without it (see stage 2 output)"
+fi
+bash "$SCRIPTS/run_e3.sh" "$SYN" "$OUT/results" 1 "${COMPARATOR_TOOLS[@]}" \
     || say "comparators returned non-zero; continuing"
 
-# --- 3. E4 real-library scoring --------------------------------------
+# --- 4. E4 real-library scoring --------------------------------------
 # Real libraries carry no per-read origin label, so run_e4.sh records reads in,
 # reads out and retention, and leaves sensitivity and FPR EMPTY rather than
 # scoring against a ground truth that does not exist.
-say "STAGE 3/4  E4 real-library scoring, HostSweep on 30 libraries"
+say "STAGE 4/6  E4 real-library scoring, HostSweep on 30 libraries"
 if [ -d "$E4" ] && ls "$E4"/*_1.fastq.gz >/dev/null 2>&1; then
     bash "$SCRIPTS/run_e4.sh" "$E4" "$OUT/e4_results" 1 hostsweep \
         || say "E4 returned non-zero; continuing"
@@ -95,8 +125,21 @@ else
     say "  no reads in $E4; skipping"
 fi
 
-# --- 4. aggregate, verify, audit -------------------------------------
-say "STAGE 4/4  aggregate and audit"
+# --- 5. CheckM2 ---------------------------------------------------------
+# Dropped originally (D6): needed ~15 GB RAM plus its own database, over the
+# original 11 GB ceiling. Attempted here since more memory may be available;
+# if it still doesn't fit or won't install, run_checkm2.sh records that and
+# this chain continues rather than guessing at what it would have said.
+say "STAGE 5/6  CheckM2 over every E9 assembly (D6)"
+if [ -d "$OUT/downstream_results" ]; then
+    bash "$SCRIPTS/run_checkm2.sh" "$OUT/downstream_results" "$OUT/checkm2_results.csv" \
+        || say "  CheckM2 returned non-zero; continuing (recorded FAILED rows where applicable)"
+else
+    say "  $OUT/downstream_results absent (E9 has not produced assemblies); skipping"
+fi
+
+# --- 6. aggregate, verify, audit -------------------------------------
+say "STAGE 6/6  aggregate and audit"
 python "$SCRIPTS/aggregate_results.py" --results "$OUT/results" \
     --synthetic "$SYN" --out-dir "$OUT" || say "aggregate failed"
 python "$SCRIPTS/aggregate_results.py" --results "$OUT/e4_results" \

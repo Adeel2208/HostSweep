@@ -12,12 +12,20 @@
 #     bash run_e3.sh <synthetic_dir> <results_dir> [runs] [tool ...]
 #
 #     tool = hostsweep | hostile_default | hostile_matched | kneaddata
-#            | bmtagger | deconseq        (default: hostsweep only)
+#            | bmtagger                  (default: hostsweep only)
+#
+#     DeconSeq is not implemented here and never will be by default: it is
+#     not on bioconda and needs a manual install plus a hand-edited config
+#     (D20, DEVIATIONS.md). Dropped rather than attempted.
 #
 # Environment:
-#     THREADS   default 8
-#     INDEX     hostsweep index name, default 'standard'
-#     BT2_INDEX bowtie2 index prefix for the matched comparators
+#     THREADS           default 8
+#     INDEX             hostsweep index name, default 'standard'
+#     BT2_INDEX         bowtie2 index prefix for the matched comparators
+#     BMTAGGER_BITMASK  bmtool bitmask prefix, e.g. $HOME/hostsweep/bmtagger_index/human.bitmask
+#     BMTAGGER_SRPRISM  srprism index prefix,   .../human.srprism
+#     BMTAGGER_SEQDB    blast seqdb prefix,      .../human.seqdb
+#     (build all three with 07_build_bmtagger_index.sh)
 #
 # Outputs, per (library, tool, run):
 #     <results_dir>/<library>/metrics_<tool>_run<N>.json    scored by compute_metrics.py
@@ -93,6 +101,23 @@ run_one() {
                  --reference-db "${BT2_INDEX:?set BT2_INDEX}" --output "$wd"
                  --threads "$THREADS" --bypass-trf --remove-intermediate-output)
             ;;
+        bmtagger)
+            # bmtagger.sh does not accept gzipped FASTQ -- confirmed by
+            # direct test: given a .fastq.gz it reads the compressed bytes as
+            # sequence data and either errors immediately or hangs consuming
+            # CPU. Decompress first; this happens before the timed section
+            # below, so it is not charged to bmtagger's own runtime.
+            gunzip -c "$r1" > "$wd/r1.fastq" || { say "  decompress r1 failed"; return 1; }
+            gunzip -c "$r2" > "$wd/r2.fastq" || { say "  decompress r2 failed"; return 1; }
+            # -T's directory must already exist -- bmtagger.sh exits with
+            # "FATAL: ... is not directory" otherwise (confirmed by test).
+            mkdir -p "$wd/tmp"
+            CMD=(bmtagger.sh -b "${BMTAGGER_BITMASK:?set BMTAGGER_BITMASK}"
+                 -x "${BMTAGGER_SRPRISM:?set BMTAGGER_SRPRISM}"
+                 -d "${BMTAGGER_SEQDB:?set BMTAGGER_SEQDB}"
+                 -q 1 -1 "$wd/r1.fastq" -2 "$wd/r2.fastq"
+                 -o "$wd/out" -T "$wd/tmp" -X)
+            ;;
         *)
             say "  no runner defined for '$tool'"; return 127 ;;
     esac
@@ -112,6 +137,11 @@ cleaned_paths() {
         hostile_default|hostile_matched)
                           ls "$wd"/*.clean_1.fastq.gz "$wd"/*.clean_2.fastq.gz 2>/dev/null ;;
         kneaddata)        ls "$wd"/*paired_1.fastq "$wd"/*paired_2.fastq 2>/dev/null ;;
+        bmtagger)
+            # -X extract mode writes the NON-matching (human-free) reads
+            # directly as plain-text out_1.fastq/out_2.fastq -- confirmed by
+            # direct test against a small reference.
+            ls "$wd"/out_1.fastq "$wd"/out_2.fastq 2>/dev/null ;;
     esac
 }
 
