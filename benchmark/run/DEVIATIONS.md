@@ -139,17 +139,29 @@ and downloads the database on first use, then runs `checkm2 predict` against
 every MEGAHIT assembly E9 has produced, one completeness/contamination pair
 per (library, method) — a coarse, assembly-level proxy, since CheckM2 is
 designed to score single-genome bins, not a whole metagenomic co-assembly; say
-so wherever this number is used. If the install or a run fails, or RAM is
-still insufficient wherever this next runs, the script records `FAILED` rows
-and does not block anything else in the chain — it has **not yet actually
-completed a run** as of this entry; that happens on whichever machine runs
-`chain_all.sh` next with enough memory.
+so wherever this number is used.
 
-**Interpretation cost.** Until it actually runs: no completeness or
-contamination statistics are reported, as originally stated. Once it does:
-treat the result as an assembly-level proxy, not a per-organism bin
-statistic, and note which (library, method) rows are `FAILED` rather than
-silently absent.
+**The install, database download and CLI were smoke-tested end to end**
+(*E. coli*, `GCF_000005845.2`, one bin) on the one machine reachable at the
+time: `checkm2 database --download` (1.74 GB, CheckM2 v1.1.0) and
+`checkm2 predict --database_path <dmnd file> -x fa` both completed with exit
+0, and `quality_report.tsv` came back with exactly the columns
+`run_checkm2.sh` reads by name (`Completeness`, `Contamination`) —
+`Completeness=100.0, Contamination=0.14` for a single complete bacterial
+genome, which is the expected answer and confirms the parsing is reading the
+right fields, not silently misreading a different layout. **This confirms the
+CLI and output format `run_checkm2.sh` depends on; it does not confirm
+CheckM2's behaviour on an actual metagenomic co-assembly**, which is a
+different and harder input than one clean bacterial genome, and has not been
+tried. If the install or a run fails at that scale, or RAM is still
+insufficient wherever this next runs, the script records `FAILED` rows and
+does not block anything else in the chain.
+
+**Interpretation cost.** Until it runs against a real E9 assembly: no
+completeness or contamination statistics for this benchmark are reported, as
+originally stated. Once it does: treat the result as an assembly-level proxy,
+not a per-organism bin statistic, and note which (library, method) rows are
+`FAILED` rather than silently absent.
 
 ---
 

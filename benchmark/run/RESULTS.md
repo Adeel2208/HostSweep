@@ -888,9 +888,13 @@ Capping drops minimizers, so a capped database detects **less** human sequence.
 **The residual-human figure is a floor, not an estimate**, and cannot support a
 claim that residual human content is below any threshold.
 
-### D6 — CheckM2 dropped
-Needs ~15 GB plus its database. No completeness or contamination statistics are
-reported.
+### D6 — CheckM2 dropped, now re-attempted
+Originally dropped: needs ~15 GB RAM plus its database, over the original
+host's ceiling. `run_checkm2.sh` now exists and is wired into `chain_all.sh`;
+its install, database download and CLI were smoke-tested successfully
+end-to-end (confirmed `Completeness`/`Contamination` columns parse correctly),
+but it has not yet run against an actual E9 assembly. No completeness or
+contamination statistics for this benchmark exist yet.
 
 ### D7 — Category names changed to match SRA taxonomy
 The exact terms `"human urogenital metagenome"` and
