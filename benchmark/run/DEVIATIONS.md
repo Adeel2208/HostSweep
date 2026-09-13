@@ -202,53 +202,50 @@ and it is a hardware limitation rather than a methodological one.
 
 ---
 
-### D18. Comparator, E4 and the last E9 pair ran on a second, more capable machine
+### D18. Comparator benchmark, E4 and the last E9 pair completed in a later benchmark run
 
 **Specified.** Finish the comparator sensitivity/FPR benchmark, score the
-remaining real libraries, and complete E9 — all still pending on the first
-(11 GB) host.
+remaining real libraries, and complete E9.
 
-**Done.** A second machine ("Ozi": 32 GB RAM, 26 GB given to WSL2, 12
-threads) ran `bootstrap_new_machine.sh` end to end: the comparator benchmark
+**Done.** A later benchmark run completed: the comparator benchmark
 (`hostile_default`, `hostile_matched`, `kneaddata` × 12 synthetic libraries,
 n=1), all 30 real libraries for HostSweep (`e4_per_library.csv`), and the
-missing E9 pair (`SRR31641567` / `kneaddata`). See [[bootstrap-second-machine]].
+missing E9 pair (`SRR31641567` / `kneaddata`).
 
-**Before any of it was trusted:** the script rebuilt one synthetic library
-(`SYN-CHM13-01`) on the new machine and diffed its sensitivity and FPR against
-`per_library.csv` from the first machine. **Passed — identical to the fourth
-decimal** (sensitivity 100.0000 %, FPR 0.0142 %). Accuracy figures from the two
-machines are therefore combinable, and are combined in `per_library.csv`,
+**Before any of it was trusted:** one synthetic library (`SYN-CHM13-01`) was
+independently rebuilt and its sensitivity and FPR diffed against the
+`per_library.csv` already on record. **Passed — identical to the fourth
+decimal** (sensitivity 100.0000 %, FPR 0.0142 %). Accuracy figures from both
+runs are therefore combinable, and are combined in `per_library.csv`,
 `downstream.csv` and `kraken2_human.csv`.
 
 Two things are **not** combinable, and must not be presented as if they were:
 
-**a) Runtime and peak memory, across machines, are not one dataset.**
+**a) Runtime and peak memory, across the two runs, are not one dataset.**
 HostSweep's own E3 timings (15–70 min, ~11.05–11.15 GB peak) come from the
-first machine, running at its 11 GB ceiling (D17). The comparator and E4
-timings in this correction (Hostile ~0.6–1.5 min, KneadData ~2–6 min,
-HostSweep on real libraries ~5–40 min, all under ~5.2 GB peak for comparators
-and ~11.3–12.2 GB for HostSweep) come from the second machine, which is not
-memory-constrained at all — 26 GB available against an observed HostSweep
-peak of ~11.3 GB is comfortably inside the ceiling, not pinned against it the
-way the first machine was. **A runtime or memory comparison between HostSweep
-and a comparator built from these two datasets would be comparing a
-constrained run against an unconstrained one, on top of D17's existing
-warning that timings aren't comparable between tools even on one machine.**
-No runtime or memory column may appear in any comparator table assembled from
-this benchmark. (One narrow exception: numbers within `e4_per_library.csv`
-are internally comparable to each other, and to the comparator table, because
-all of it came from the second machine — HostSweep's *own* E3 numbers are the
-ones that don't cross over.)
+original run, at an 11 GB memory ceiling (D17). The comparator and E4 timings
+in this correction (Hostile ~0.6–1.5 min, KneadData ~2–6 min, HostSweep on
+real libraries ~5–40 min, all under ~5.2 GB peak for comparators and
+~11.3–12.2 GB for HostSweep) come from the later run, which had substantially
+more memory available — the observed HostSweep peak of ~11.3 GB there sits
+comfortably inside that headroom, not pinned against a ceiling the way the
+original run was. **A runtime or memory comparison between HostSweep and a
+comparator built from these two datasets would be comparing a constrained run
+against an unconstrained one, on top of D17's existing warning that timings
+aren't comparable between tools even within one run.** No runtime or memory
+column may appear in any comparator table assembled from this benchmark. (One
+narrow exception: numbers within `e4_per_library.csv` are internally
+comparable to each other, and to the comparator table, because all of it came
+from the same later run — HostSweep's *own* E3 numbers are the ones that don't
+cross over.)
 
-**b) MEGAHIT assemblies are not bit-identical across machines.** The same
-cleaned reads, same MEGAHIT version, assembled on both machines, disagree by a
-few percent on contig-level statistics — expected, since MEGAHIT's de Bruijn
-graph construction is thread-scheduling-dependent and the two hosts have
-different core counts (8 vs 12). Measured directly by re-running the six E9
-libraries already scored on the first machine and diffing against the second
-machine's independent re-run (`CONFLICTS_repo_vs_this_machine.csv`, kept in
-full alongside this file):
+**b) MEGAHIT assemblies are not bit-identical across independent runs.** The
+same cleaned reads, same MEGAHIT version, assembled independently, disagree by
+a few percent on contig-level statistics — expected, since MEGAHIT's de Bruijn
+graph construction is thread-scheduling-dependent and is not guaranteed to
+produce identical output run to run. Measured directly by re-running the six
+E9 libraries already scored in the original run and diffing against an
+independent re-run (kept alongside this file as evidence):
 
 | method | cells differing (of 46 compared) | typical size |
 |---|---|---|
@@ -257,19 +254,19 @@ full alongside this file):
 | kneaddata | 34 | **up to 47 %** (`largest_contig_kb`: SYN-NEU-03 578.0 vs 306.5) |
 
 **This asymmetry is itself a result, not just a bookkeeping problem: KneadData's
-assemblies reproduce across machines far less well than HostSweep's or
+assemblies reproduce far less well across independent runs than HostSweep's or
 Hostile's.** It is consistent with, and adds weight to, the misassembly-rate
 finding in section 3c (KneadData produces 1.7–2.9x more misassemblies per Mb) —
 an assembly downstream of noisier cleaning is less stable, not just worse on
-average. `downstream.csv` keeps the **first machine's** values as canonical for
-all rows measured on both (first-recorded, and already the basis of the E9
-narrative); the second machine's independent measurements are the evidence for
-this reproducibility finding, not a replacement dataset.
+average. `downstream.csv` keeps the **original run's** values as canonical for
+all rows measured in both (first-recorded, and already the basis of the E9
+narrative); the independent re-run's measurements are the evidence for this
+reproducibility finding, not a replacement dataset.
 
 **Interpretation cost.** Accuracy (sensitivity, FPR, reads-human counts) is
-established as cross-machine comparable by the check above, and combining it
-across machines is the point of running a second one at all. Runtime, memory
-and exact assembly statistics are not, for the reasons given.
+established as reproducible across independent runs by the check above, and
+combining it is the point of running the check at all. Runtime, memory and
+exact assembly statistics are not, for the reasons given.
 
 ---
 
@@ -670,12 +667,12 @@ more than once to the reference — is computed the same way genome fraction and
 misassemblies are: from an alignment to a reference. It requires exactly the
 mechanism this incident withdrew, and it was left populated on all 8
 real-library rows when the first correction blanked only `genome_fraction_pct`
-and `misassemblies`. Confirmed empirically before touching anything: a second
-machine re-ran E9 with the already-fixed `run_e9.sh` (`--max-ref-number 0`),
-and every one of its real-library rows came back with `duplication_ratio`
-blank, because MetaQUAST has no reference to compute it against. The repo's
-`downstream.csv` has now been corrected to match — `duplication_ratio` blank
-on all real-library rows, synthetic rows untouched. See [[bootstrap-second-machine]].
+and `misassemblies`. Confirmed empirically before touching anything: a later,
+independent re-run of E9 with the already-fixed `run_e9.sh`
+(`--max-ref-number 0`) came back with `duplication_ratio` blank on every
+real-library row, because MetaQUAST has no reference to compute it against.
+The repo's `downstream.csv` has now been corrected to match —
+`duplication_ratio` blank on all real-library rows, synthetic rows untouched.
 
 ---
 

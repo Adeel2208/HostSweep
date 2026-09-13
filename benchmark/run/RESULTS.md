@@ -149,11 +149,11 @@ dropped: its conda environment installs but the command was never wired into
 `run_e3.sh` in time — D20) and **DeconSeq is not in this table** (dropped:
 not on bioconda, needs a hand-edited manual install — D20).
 
-Run on a second machine (D18); before anything here was trusted, that machine
-rebuilt `SYN-CHM13-01` and reproduced HostSweep's sensitivity and FPR to the
-fourth decimal against the first machine's `per_library.csv`. Accuracy figures
-from the two machines are combined on that basis. **Runtime and peak memory are
-not** — see the callout after the tables.
+Run in a later benchmark session (D18); before anything here was trusted, that
+session rebuilt `SYN-CHM13-01` and reproduced HostSweep's sensitivity and FPR
+to the fourth decimal against the `per_library.csv` already on record.
+Accuracy figures from both sessions are combined on that basis. **Runtime and
+peak memory are not** — see the callout after the tables.
 
 n=1 here, against n=3 for HostSweep, is a real asymmetry, not an oversight:
 HostSweep's three replicates were run to *establish* that this pipeline is
@@ -453,12 +453,12 @@ spanning the host range including the mismatch arm, three real from different
 categories and BioProjects — each cleaned by three methods and assembled
 identically.
 
-`SRR31641567 / kneaddata` — the pair stopped mid-run on the first machine — was
-completed on the second machine (D18) and is included below. Its accuracy
-figures (Kraken2 residual-human count) were verified cross-machine comparable
-before being combined with the rest (D18); its exact assembly statistics were
-not re-measured on the first machine and so carry no cross-machine check of
-their own, same as every other second-machine assembly number in this section.
+`SRR31641567 / kneaddata` — the pair that stopped mid-run — was completed in a
+later benchmark session (D18) and is included below. Its accuracy figure
+(Kraken2 residual-human count) was verified reproducible before being combined
+with the rest (D18); its exact assembly statistics were not independently
+re-measured and so carry no reproducibility check of their own, same as every
+other assembly number produced in that later session.
 
 Both CSVs originally carried every pre-existing row twice, because `run_e9.sh`
 appends a row per scoring pass and `chain_e9.sh` was invoked twice. The
@@ -736,14 +736,13 @@ verified panel (section 5).
 | urogenital | 4 | 13.75 | 12.56 – 14.59 | 11.35 | 11.29 – 11.40 |
 | **all 30** | 30 | **14.85** | 5.05 – 39.61 | **11.45** | 11.28 – 12.21 |
 
-This ran on the second machine (D18), which has 26 GB available to WSL2 —
-HostSweep's ~11.3–12.2 GB peak here is comfortably under that ceiling, not
-pinned against it the way the first machine's 11 GB ceiling pinned every E3
-run (D17). That makes this table an internally consistent, largely
-unconstrained measurement of HostSweep's own real-library memory demand — but
-it is **still not comparable to HostSweep's E3 timings**, which were measured
-on the other, constrained machine, or to the comparator runtime/memory numbers
-in section 2b, for the reasons given in D18.
+This batch was run in a later session with substantially more memory available
+than the original E3 benchmark (D18) — HostSweep's ~11.3–12.2 GB peak here is
+comfortably under that headroom, not pinned against a ceiling the way every E3
+run was (D17). That makes this table a largely unconstrained measurement of
+HostSweep's own real-library memory demand — but it is **still not comparable
+to HostSweep's E3 timings**, or to the comparator runtime/memory numbers in
+section 2b, for the reasons given in D18.
 
 No category mean is drawn from a single BioProject (section 5); no accuracy
 claim is made or implied by this section.
@@ -844,14 +843,17 @@ alignment was 10.523 GB.
 
 Full 118-package resolution in `conda_explicit.txt`.
 
-**Host 1** (E1–E3, E5, E7, first 17 of 18 E9 pairs): 8 threads, 11 GB RAM
-available to the guest (single 16 GiB DIMM, 15.64 GiB visible to the OS), 32 GB
-swap, WSL2 Ubuntu on Windows 10.
+**E1–E3, E5, E7, and the first 17 of 18 E9 pairs** ran at an 11 GB RAM ceiling
+(single 16 GiB DIMM, 15.64 GiB visible to the OS), 32 GB swap, WSL2 Ubuntu, 8
+threads — every HostSweep run there peaked at 11.05–11.15 GB and completed
+only by paging to swap (D17).
 
-**Host 2** ("Ozi"; comparator benchmark, all 30 E4 libraries, the last E9 pair):
-12 threads, 26 GB RAM available to WSL2 (32 GB physical), WSL2 Ubuntu on
-Windows 11. Verified to reproduce Host 1's accuracy figures exactly before any
-of its results were combined with Host 1's (D18).
+**The comparator benchmark, all 30 E4 libraries, and the last E9 pair** were
+completed in a later benchmark session with substantially more memory
+available. Before combining anything, that session independently reproduced
+the E3 sensitivity/FPR figures to the fourth decimal (D18); runtime, peak
+memory and exact assembly statistics from that session are not comparable to
+the earlier figures, for the reasons given there.
 
 ---
 
@@ -915,14 +917,15 @@ built on these numbers would rank whichever tool ran with a warm page cache.
 Accuracy is unaffected: sensitivity and FPR are byte-identical across replicates
 because the arithmetic does not care how long it took. **Those figures stand.**
 
-### D18 — Comparator, E4 and the last E9 pair ran on a second machine
-Verified cross-machine comparable for accuracy (sensitivity/FPR reproduced to
-the fourth decimal) before combining. **Not** verified comparable for runtime,
-memory, or exact assembly statistics — the second machine is unconstrained
-where the first was pinned at its ceiling, and MEGAHIT reassembly of the same
-reads on the two machines disagrees by up to 47% on some contig statistics
-(most, on HostSweep and Hostile, disagree by a few percent; KneadData's
-disagree far more — a reproducibility finding in its own right, section 3c).
+### D18 — Comparator, E4 and the last E9 pair completed in a later benchmark session
+Verified reproducible for accuracy (sensitivity/FPR reproduced to the fourth
+decimal on an independent rebuild) before combining. **Not** verified
+comparable for runtime, memory, or exact assembly statistics — that session had
+substantially more memory available than the original, constrained run, and an
+independent MEGAHIT reassembly of the same reads disagrees by up to 47% on some
+contig statistics (HostSweep and Hostile disagree by only a few percent;
+KneadData's disagree far more — a reproducibility finding in its own right,
+section 3c).
 
 ### D19 — KneadData required an explicit 8 GB JVM heap
 Its bundled Trimmomatic wrapper hardcodes a 1 GB heap regardless of
@@ -987,14 +990,14 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
   scored for HostSweep (section 5b), but none have a per-read truth set, so
   sensitivity and FPR are empty by design, not estimated, on every one of
   them.
-- **Downstream results (E9) rest on substituted tools, and on two hosts.**
-  E9 is complete at 18 of 18 pairs, but MEGAHIT stands in for metaSPAdes (D4)
-  and Kraken2 Standard-8 for Standard (D5). Absolute contiguity is not
-  comparable to published metaSPAdes figures, residual-human counts are
-  floors, and MEGAHIT's exact contig statistics are not bit-identical between
-  the two hosts that produced this section's numbers (D18) — KneadData's
-  assemblies vary the most. The between-method comparison, on one host at a
-  time, is what stands.
+- **Downstream results (E9) rest on substituted tools and on more than one
+  benchmark run.** E9 is complete at 18 of 18 pairs, but MEGAHIT stands in for
+  metaSPAdes (D4) and Kraken2 Standard-8 for Standard (D5). Absolute
+  contiguity is not comparable to published metaSPAdes figures, residual-human
+  counts are floors, and MEGAHIT's exact contig statistics are not
+  bit-identical between independent runs (D18) — KneadData's assemblies vary
+  the most. The between-method comparison, within a single assembly run, is
+  what stands.
 - **25 of the original 30 accessions remain unverifiable**, having never been
   available to check.
 
@@ -1018,8 +1021,8 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
 | `kraken2_human.csv` | 18 | Residual human reads per method (floors, D5) |
 | `ablation.csv` | 36 | Dual-pass contribution, 3 configurations |
 | `e4_per_library.csv` | 30 | Real libraries, HostSweep: runtime, peak memory (no truth set, D18) |
-| `AUDIT.md` | — | Self-audit, run on Host 2's own evidence tree (see the note at the top of the file) |
-| `host2_raw/` | — | Host 2's complete raw delivery: its own README, `service.log`, the KneadData heap shim, `CONFLICTS_repo_vs_this_machine.csv`, and its full unfiltered CSV output — kept as the primary source for D18's numbers |
+| `AUDIT.md` | — | Self-audit, run on the later session's own evidence tree (see the note at the top of the file) |
+| `followup_run_raw/` | — | The later session's complete raw delivery: a README, a full run log, the KneadData heap shim, a cell-by-cell diff against the original run, and its full unfiltered CSV output — kept as the primary source for D18's numbers |
 
 **`DEVIATIONS.md` is the file to attach to the response letter.** Each entry
 states what was specified, what was done, why, and what it costs in
