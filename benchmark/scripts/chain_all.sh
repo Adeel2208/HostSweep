@@ -83,11 +83,20 @@ done
 say "STAGE 2/6  BMTagger index (D20; this is the first time this has run"
 say "  against the full genome rather than a small test reference)"
 BMT_DIR="$ROOT/bmtagger_index"
-if conda env list | awk '{print $1}' | grep -qx bmtagger; then
+# The T2T FASTA was downloaded into the hostsweep env's own share directory
+# by build_standard_index() while THAT env was active (stage 2 of
+# bootstrap_new_machine.sh) -- it is fixed by that, not by whatever env
+# happens to be active right now. Resolved BEFORE `conda activate bmtagger`
+# below on purpose: activating a different env changes $CONDA_PREFIX in this
+# same shell, and evaluating the path after that switch silently points at
+# the wrong (bmtagger) env's share directory, where the FASTA was never
+# downloaded -- confirmed as an actual bug during review, not hypothetical.
+T2T_FASTA="$ROOT/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_T2T.fasta"
+if [ ! -s "$T2T_FASTA" ]; then
+    say "  T2T FASTA not found at $T2T_FASTA; skipping BMTagger index build and the bmtagger tool"
+elif conda env list | awk '{print $1}' | grep -qx bmtagger; then
     conda activate bmtagger
-    bash "$SCRIPTS/07_build_bmtagger_index.sh" \
-         "$CONDA_PREFIX/share/hostsweep/databases/standard/human_T2T.fasta" \
-         "$BMT_DIR" \
+    bash "$SCRIPTS/07_build_bmtagger_index.sh" "$T2T_FASTA" "$BMT_DIR" \
         || say "  BMTagger index build FAILED; bmtagger will be skipped below"
     conda deactivate
     conda activate hostsweep

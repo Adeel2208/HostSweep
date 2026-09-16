@@ -35,7 +35,14 @@
 
 set -uo pipefail
 
-FASTA="${1:-$CONDA_PREFIX/share/hostsweep/databases/standard/human_T2T.fasta}"
+# The default below deliberately does NOT use $CONDA_PREFIX: this script's own
+# usage says `conda activate bmtagger` first, and by then $CONDA_PREFIX points
+# at the bmtagger env, not the hostsweep env the FASTA actually lives in
+# (found only by re-checking this during a pipeline review -- the same
+# ordering mistake was live in chain_all.sh's caller, and is exactly the kind
+# of thing this default would have reproduced for anyone invoking the script
+# by hand the way its own docstring says to).
+FASTA="${1:-$HOME/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_T2T.fasta}"
 DEST="${2:-$HOME/hostsweep/bmtagger_index}"
 THREADS="${THREADS:-8}"
 
