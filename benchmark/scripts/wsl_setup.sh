@@ -73,9 +73,11 @@ conda activate hostsweep || fail "conda activate hostsweep"
 # --- 4. Benchmark-only tools -----------------------------------------
 # art (read simulator) and sra-tools are not in environment.yml because they
 # are benchmark dependencies, not runtime dependencies of the pipeline.
+# pytest likewise -- only needed to run the unit test suite in step 6 below.
 NEED=()
 command -v art_illumina >/dev/null 2>&1 || NEED+=("art")
 command -v seqkit       >/dev/null 2>&1 || NEED+=("seqkit")
+python -c "import pytest" >/dev/null 2>&1 || NEED+=("pytest")
 if [ ${#NEED[@]} -gt 0 ]; then
     say "installing benchmark tools: ${NEED[*]}"
     conda install -q -y -c conda-forge -c bioconda "${NEED[@]}" \
@@ -83,11 +85,25 @@ if [ ${#NEED[@]} -gt 0 ]; then
 fi
 
 # --- 5. Editable install of HostSweep --------------------------------
-if python -c "import hostsweep" 2>/dev/null; then
-    say "hostsweep importable"
+# Checking bare `import hostsweep` here is not enough to prove the editable
+# install happened: on at least one real run this returned success in a
+# freshly created env where `pip install -e .` had never been run, and the
+# `hostsweep` CLI script and `hostsweep.database` submodule genuinely were
+# not installed -- stage 2 of bootstrap_new_machine.sh then failed with
+# `ModuleNotFoundError: No module named 'hostsweep.database'` despite this
+# step having printed "hostsweep importable" moments earlier. Root cause not
+# pinned down (no conflicting PyPI package by that name exists, so it is not
+# a name collision with something else); checking the actual submodule the
+# rest of this benchmark depends on, and always falling back to a real
+# install rather than trusting a bare `import`, closes the gap regardless of
+# the mechanism.
+if python -c "from hostsweep.database import DatabaseManager" 2>/dev/null; then
+    say "hostsweep.database importable -- editable install already in place"
 else
     say "pip install -e"
     (cd "$REPO" && pip install -q -e .) || fail "pip install -e"
+    python -c "from hostsweep.database import DatabaseManager" 2>/dev/null \
+        || fail "pip install -e reported success but hostsweep.database is still not importable -- something is wrong with this environment, not just missing the install step"
 fi
 
 # --- 6. Prove the toolchain ------------------------------------------
