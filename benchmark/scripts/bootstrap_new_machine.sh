@@ -88,6 +88,30 @@ while [ $# -gt 0 ]; do
 done
 run_stage() { [ "$1" -ge "$FROM" ] && [ "$1" -le "$STOP" ]; }
 
+# This must be a real Linux environment (WSL2 Ubuntu, or a native Linux host)
+# -- not Git Bash / MSYS2 / Cygwin on Windows. Those run bash and pass this
+# script's own syntax checks fine, but conda's Linux packages, flock, GNU
+# `time -v`, and every aligner this benchmark uses do not exist there. Check
+# for this explicitly and fail with a clear message, rather than let it die
+# partway through on a missing command that looks like something else went
+# wrong (a missing `flock` alone makes the very next line print "another
+# bootstrap_new_machine.sh is already running" -- it is not; flock just is
+# not installed).
+UNAME_S="$(uname -s 2>/dev/null || echo unknown)"
+case "$UNAME_S" in
+    Linux) : ;;  # WSL2 reports this too, which is what we want
+    *) fail "this is not a Linux shell (uname -s reported '$UNAME_S'). If you are
+on Windows, this must run inside a WSL2 Ubuntu shell -- open the 'Ubuntu' app
+from the Start menu, or run 'wsl -d Ubuntu' from PowerShell, NOT Git Bash /
+MINGW64 (that prompt looks like a normal bash shell but is not Linux). See
+benchmark/NEW_MACHINE.md Part 1 for the one-time WSL2 setup steps, then re-run
+this script from inside that Ubuntu shell -- not from Git Bash." ;;
+esac
+command -v flock >/dev/null 2>&1 || fail "flock not found. This confirms the shell above is not a real Linux
+environment (see the message this would have printed if that check had
+already failed) -- WSL2 Ubuntu ships flock by default, Git Bash does not.
+See benchmark/NEW_MACHINE.md Part 1."
+
 exec 8>"$ROOT/.bootstrap.lock"
 if ! flock -n 8; then fail "another bootstrap_new_machine.sh is already running on this host"; fi
 
