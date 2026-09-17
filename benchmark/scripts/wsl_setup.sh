@@ -93,17 +93,29 @@ fi
 # `ModuleNotFoundError: No module named 'hostsweep.database'` despite this
 # step having printed "hostsweep importable" moments earlier. Root cause not
 # pinned down (no conflicting PyPI package by that name exists, so it is not
-# a name collision with something else); checking the actual submodule the
-# rest of this benchmark depends on, and always falling back to a real
-# install rather than trusting a bare `import`, closes the gap regardless of
-# the mechanism.
-if python -c "from hostsweep.database import DatabaseManager" 2>/dev/null; then
-    say "hostsweep.database importable -- editable install already in place"
-else
-    say "pip install -e"
-    (cd "$REPO" && pip install -q -e .) || fail "pip install -e"
+# a name collision with something else).
+#
+# Checking the module alone is STILL not enough: on another real run, after
+# the fix below for that first problem, `hostsweep.database` was importable
+# but the `hostsweep` CLI script (setup.py's console_scripts entry point,
+# which every stage from here on invokes directly -- `hostsweep -1 ...`) was
+# absent from the env's bin/ -- almost certainly the leftover of a `pip
+# install -e .` interrupted partway (the tab running bootstrap was closed
+# mid-install on that machine). setup.py's entry_points are correctly
+# configured, so this is not a packaging bug; it is an install that did not
+# finish. Check for both what the module check would miss and what the
+# earlier module-only check missed, and force a real (re-)install if either
+# is absent, rather than trusting either signal alone.
+install_ok() {
     python -c "from hostsweep.database import DatabaseManager" 2>/dev/null \
-        || fail "pip install -e reported success but hostsweep.database is still not importable -- something is wrong with this environment, not just missing the install step"
+        && command -v hostsweep >/dev/null 2>&1
+}
+if install_ok; then
+    say "hostsweep.database importable and hostsweep CLI present -- editable install already in place"
+else
+    say "pip install -e (module and/or CLI script missing -- see step 5's comment)"
+    (cd "$REPO" && pip install -q -e .) || fail "pip install -e"
+    install_ok || fail "pip install -e reported success but hostsweep.database and/or the hostsweep CLI script are still missing -- something is wrong with this environment, not just an interrupted install"
 fi
 
 # --- 6. Prove the toolchain ------------------------------------------
