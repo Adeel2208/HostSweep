@@ -45,8 +45,11 @@ Usage:
 """
 import argparse
 import json
+import os
+import shutil
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 import zipfile
@@ -136,21 +139,76 @@ def ftp_url(accession, assembly_name):
             % (prefix, parts, stem, stem))
 
 
+FETCH_ATTEMPTS = 6
+
+
+def _fetch(url, gz):
+    """Download url to gz, resuming whatever partial file is already there.
+
+    NCBI's FTP host throttles hard from some networks (measured 4-6 KB/s on a
+    single stream, and a bare curl exited 56 -- connection dropped -- after
+    its own retries on the first ~1 GB assembly). aria2c with a few parallel
+    connections was measured ~6-8x faster on the same file, and its resume
+    state survives a dropped connection. The count is deliberately 4: NCBI
+    answered 16 simultaneous connections with a 503 on every one of them, and
+    4 was tolerated.
+
+    An outer loop re-runs the tool after a failure, because aria2c gives up
+    after its internal retries (it did, at 59%, on the T2T reference) and
+    the next run simply continues from the bytes already on disk. Falls back
+    to curl when aria2c is not installed.
+    """
+    ua = "HostSweep-benchmark/1.0"
+    if shutil.which("aria2c"):
+        cmd = ["aria2c", "-x4", "-s4", "-k1M", "-c", "--file-allocation=none",
+               "--allow-overwrite=true", "--auto-file-renaming=false",
+               "--retry-wait=30", "--max-tries=20", "--timeout=60",
+               "--connect-timeout=30", "--summary-interval=300",
+               "--user-agent=" + ua, "-d", str(gz.parent), "-o", gz.name, url]
+    else:
+        print("    aria2c not found; single-stream curl (much slower on a "
+              "throttled network)", flush=True)
+        cmd = ["curl", "-fsSL", "-C", "-", "--retry", "8", "--retry-delay", "5",
+               "--retry-all-errors", "--max-time", "3600",
+               "-H", "User-Agent: " + ua, url, "-o", str(gz)]
+    for attempt in range(1, FETCH_ATTEMPTS + 1):
+        rc = subprocess.run(cmd).returncode
+        if rc == 0:
+            return
+        print("    attempt %d/%d exited %d; %s" % (
+            attempt, FETCH_ATTEMPTS, rc,
+            "retrying in 60 s, resuming from the bytes already on disk"
+            if attempt < FETCH_ATTEMPTS else "giving up"), flush=True)
+        if attempt < FETCH_ATTEMPTS:
+            time.sleep(60)
+    raise RuntimeError("download failed after %d attempts: %s "
+                       "(the partial file is kept; re-running resumes it)"
+                       % (FETCH_ATTEMPTS, url))
+
+
 def download(accession, assembly_name, dest):
     """Download and decompress the genomic FASTA for an accession."""
     url = ftp_url(accession, assembly_name)
     gz = dest.with_suffix(".fna.gz")
     print("    downloading %s" % url, flush=True)
-    # -C - resumes a partial file; --retry-all-errors covers mid-transfer aborts.
-    subprocess.run(["curl", "-fsSL", "-C", "-", "--retry", "8",
-                    "--retry-delay", "5", "--retry-all-errors",
-                    "--max-time", "3600",
-                    "-H", "User-Agent: HostSweep-benchmark/1.0",
-                    url, "-o", str(gz)], check=True)
+    _fetch(url, gz)
     print("    decompressing (%.2f GB compressed)" % (gz.stat().st_size / 1e9),
           flush=True)
-    with open(dest, "wb") as out:
-        subprocess.run(["gzip", "-dc", str(gz)], check=True, stdout=out)
+    # Decompress to a temporary name and rename only on success. main() treats
+    # the existence of `dest` as "already downloaded", so writing there
+    # directly would let an interrupted decompression leave a truncated genome
+    # that every later run accepts as complete.
+    tmp = dest.with_suffix(".fna.tmp")
+    try:
+        with open(tmp, "wb") as out:
+            subprocess.run(["gzip", "-dc", str(gz)], check=True, stdout=out)
+    except subprocess.CalledProcessError:
+        # A corrupt archive would fail identically on every re-run; discard it
+        # so the next run downloads it afresh instead of looping forever.
+        tmp.unlink(missing_ok=True)
+        gz.unlink(missing_ok=True)
+        raise
+    os.replace(tmp, dest)
     gz.unlink()
     print("    wrote %s (%.2f GB)" % (dest.name, dest.stat().st_size / 1e9))
 
