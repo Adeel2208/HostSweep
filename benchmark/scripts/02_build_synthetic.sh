@@ -85,8 +85,30 @@ while IFS=$'\t' read -r ACC ORG ABUND REST; do
     # The NCBI Datasets download endpoint returns a zip containing the FASTA;
     # it does not require knowing the assembly-name component of the FTP path.
     URL="https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/${ACC}/download?include_annotation_type=GENOME_FASTA"
-    curl -fsSL --retry 3 -o "$WORK/${ACC}.zip" "$URL" || fail "download $ACC"
-    python3 - "$WORK/${ACC}.zip" "$OUT" <<'PYEOF' || fail "extract $ACC"
+    # This endpoint builds the zip on the fly and does not support byte
+    # ranges, so an interrupted transfer cannot be resumed -- it can only be
+    # retried whole. From a network where NCBI throttles to a few KB/s and
+    # drops connections, a single `curl --retry 3` aborted the whole build;
+    # so: several whole-file attempts, each verified as a complete zip before
+    # it is accepted (a truncated zip has no central directory and fails).
+    ok=0
+    for attempt in 1 2 3 4 5 6 7 8; do
+        if curl -fsSL --retry 2 --retry-all-errors --retry-delay 10 --max-time 1800 \
+                -o "$WORK/${ACC}.zip.part" "$URL" \
+           && python3 -c "import sys, zipfile; z = zipfile.ZipFile(sys.argv[1]); sys.exit(1 if z.testzip() else 0)" \
+                "$WORK/${ACC}.zip.part" 2>/dev/null; then
+            mv "$WORK/${ACC}.zip.part" "$WORK/${ACC}.zip"
+            ok=1
+            break
+        fi
+        say "    attempt $attempt/8 failed for $ACC; retrying in 30 s"
+        rm -f "$WORK/${ACC}.zip.part"
+        sleep 30
+    done
+    [ "$ok" = 1 ] || fail "download $ACC (8 attempts)"
+    # Extract to a temporary name and rename on success: the `[ -s "$OUT" ]`
+    # check above treats any existing non-empty file as complete.
+    python3 - "$WORK/${ACC}.zip" "$OUT.tmp" <<'PYEOF' || { rm -f "$OUT.tmp"; fail "extract $ACC"; }
 import sys, zipfile
 zp, out = sys.argv[1], sys.argv[2]
 with zipfile.ZipFile(zp) as z:
@@ -98,6 +120,7 @@ with zipfile.ZipFile(zp) as z:
         dst.write(src.read())
 print("extracted", names[0])
 PYEOF
+    mv "$OUT.tmp" "$OUT"
     rm -f "$WORK/${ACC}.zip"
 done < "$GENOMES_TSV"
 
