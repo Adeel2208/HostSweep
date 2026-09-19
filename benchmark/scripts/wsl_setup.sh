@@ -78,6 +78,10 @@ NEED=()
 command -v art_illumina >/dev/null 2>&1 || NEED+=("art")
 command -v seqkit       >/dev/null 2>&1 || NEED+=("seqkit")
 python -c "import pytest" >/dev/null 2>&1 || NEED+=("pytest")
+# aria2: parallel, resumable downloads for the large reference files (see
+# 06_fetch_kraken2_db.sh). Single-stream downloads were 6-20x slower on the
+# one network where this was measured.
+command -v aria2c       >/dev/null 2>&1 || NEED+=("aria2")
 if [ ${#NEED[@]} -gt 0 ]; then
     say "installing benchmark tools: ${NEED[*]}"
     conda install -q -y -c conda-forge -c bioconda "${NEED[@]}" \

@@ -36,10 +36,33 @@ if [ -s "$DEST/hash.k2d" ] && [ -s "$DEST/taxo.k2d" ]; then
     exit 0
 fi
 
-say "fetching $ARCHIVE (~8 GB, resumable)"
-if ! curl -fL --retry 8 --retry-all-errors -C - -o "$TMP/$ARCHIVE" "$URL"; then
-    say "download FAILED; leaving the partial file for a later resume"
-    exit 1
+# Parallel, resumable download when aria2c is available. Measured from a
+# network where international links are throttled per connection: one stream
+# to this S3 object ran at ~95 KB/s, eight parallel connections at ~595 KB/s
+# in aggregate (6x), so the 5.5 GiB archive drops from ~16 h to ~2.6 h. S3
+# does not reject parallel connections the way NCBI's servers do (16 at once
+# got every one of them a 503 there), so a high count is safe here.
+#   K2_CONNECTIONS   parallel connections, default 16
+# Resume state lives in <archive>.aria2 next to the partial file; re-running
+# this script continues rather than restarts. --auto-file-renaming=false
+# stops aria2c saving a resumed download under a new name (<archive>.1).
+CONNS="${K2_CONNECTIONS:-16}"
+say "fetching $ARCHIVE (5.5 GiB, resumable)"
+if command -v aria2c >/dev/null 2>&1; then
+    say "  aria2c, $CONNS parallel connections"
+    if ! aria2c -x"$CONNS" -s"$CONNS" -k4M -c --file-allocation=none \
+            --allow-overwrite=true --auto-file-renaming=false \
+            --retry-wait=10 --max-tries=30 --summary-interval=120 \
+            -d "$TMP" -o "$ARCHIVE" "$URL"; then
+        say "download FAILED; the partial file and its .aria2 state are kept -- re-run to resume"
+        exit 1
+    fi
+else
+    say "  aria2c not found; single-stream curl (roughly 6x slower on a throttled network)"
+    if ! curl -fL --retry 8 --retry-all-errors -C - -o "$TMP/$ARCHIVE" "$URL"; then
+        say "download FAILED; leaving the partial file for a later resume"
+        exit 1
+    fi
 fi
 
 say "downloaded $(du -h "$TMP/$ARCHIVE" | cut -f1); extracting"
