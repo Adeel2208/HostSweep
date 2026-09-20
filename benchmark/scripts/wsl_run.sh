@@ -90,6 +90,15 @@ case "$STAGE" in
         # form is mangled passing through PowerShell to wsl.exe and fails with
         # "source: filename argument required" -- silently, having done nothing.
         conda activate sra || { echo "sra env missing; install it first" >&2; exit 1; }
+        # Lean by default: E4 (all 30 real libraries, HostSweep) is already in
+        # the committed results, and what is still open -- E9's assemblies for
+        # BMTagger/CheckM2 -- needs only these three real libraries (~1.6 GB
+        # against 25-30 GB for the panel). MUST match REAL_LIBS in
+        # chain_e9.sh. FULL=1 fetches all 30. An explicit RUNS_ONLY wins.
+        if [ "${FULL:-0}" != 1 ] && [ -z "${RUNS_ONLY:-}" ]; then
+            export RUNS_ONLY="SRR40486826 ERR15898346 SRR31641567"
+            echo "[wsl_run] e4dl: lean mode -- the 3 real libraries E9 needs (FULL=1 for all 30)"
+        fi
         bash "$SCRIPTS/05_download_panel.sh" "${1:-$ROOT/e4_fastq}" "${2:-2}"
         ;;
     e4)

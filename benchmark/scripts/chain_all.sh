@@ -127,7 +127,12 @@ bash "$SCRIPTS/run_e3.sh" "$SYN" "$OUT/results" 1 "${COMPARATOR_TOOLS[@]}" \
 # reads out and retention, and leaves sensitivity and FPR EMPTY rather than
 # scoring against a ground truth that does not exist.
 say "STAGE 4/6  E4 real-library scoring, HostSweep on 30 libraries"
-if [ -d "$E4" ] && ls "$E4"/*_1.fastq.gz >/dev/null 2>&1; then
+if [ "${FULL:-0}" != 1 ]; then
+    # Lean default. E4 is already in the committed results; re-running it only
+    # re-measures the same 30 libraries, and it needs the full 25-30 GB panel
+    # downloaded. The three libraries E9 needs are downloaded by stage 8.
+    say "  lean mode: skipping the 30-library E4 re-run (FULL=1 to run it)"
+elif [ -d "$E4" ] && ls "$E4"/*_1.fastq.gz >/dev/null 2>&1; then
     bash "$SCRIPTS/run_e4.sh" "$E4" "$OUT/e4_results" 1 hostsweep \
         || say "E4 returned non-zero; continuing"
 else

@@ -44,6 +44,20 @@ FAILURES="$OUTDIR/failures.tsv"
 
 # Runs are the first column of the CSV, skipping comment lines and the header.
 mapfile -t RUNS < <(grep -v '^#' "$CSV" | tail -n +2 | cut -d, -f1 | grep -v '^$')
+
+# RUNS_ONLY="ACC1 ACC2" (or comma-separated) restricts the fetch to those panel
+# runs. Only accessions that are in the panel CSV are honoured, so a typo
+# cannot cause an arbitrary download.
+if [ -n "${RUNS_ONLY:-}" ]; then
+    declare -a KEEP=()
+    for r in "${RUNS[@]}"; do
+        for w in ${RUNS_ONLY//,/ }; do
+            [ "$r" = "$w" ] && KEEP+=("$r")
+        done
+    done
+    say "RUNS_ONLY set: ${#KEEP[@]} of ${#RUNS[@]} panel runs selected"
+    RUNS=("${KEEP[@]}")
+fi
 say "${#RUNS[@]} runs to fetch into $OUTDIR (max $JOBS concurrent)"
 
 fetch_one() {

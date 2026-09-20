@@ -33,7 +33,12 @@
 #                             this check fails, so it stops here rather than
 #                             continuing on a machine that measures
 #                             differently.
-#   8. real-library downloads all 30 SRA accessions (wsl_run.sh e4dl)
+#   8. real-library downloads the 3 real libraries E9 needs (~1.6 GB). E4 -- all
+#                             30 libraries, HostSweep -- is already in the
+#                             committed results, so re-running it is opt-in:
+#                                 FULL=1 bash bootstrap_new_machine.sh
+#                             fetches all 30 (~25-30 GB) and re-scores them.
+#                             (wsl_run.sh e4dl)
 #   9. everything left        finishes E9; builds the BMTagger index against
 #                             the full T2T genome and runs it (D20 -- this is
 #                             the first time that index has been built at
@@ -236,11 +241,15 @@ fi
 
 # --- stage 8: real-library downloads ----------------------------------------
 if run_stage 8; then
-    say "STAGE 8/9  downloading the 30-accession real-library panel from SRA"
+    if [ "${FULL:-0}" = 1 ]; then
+        say "STAGE 8/9  downloading ALL 30 real libraries from SRA (FULL=1)"
+    else
+        say "STAGE 8/9  downloading the 3 real libraries E9 needs (~1.6 GB); the 30-library E4 is already in the committed results -- FULL=1 to fetch all 30"
+    fi
     bash "$SCRIPTS/wsl_run.sh" e4dl "$ROOT/e4_fastq" 2 \
         2>&1 | tee -a "$LOGFILE" || say "  some accessions failed; see $ROOT/e4_fastq/failures.tsv -- continuing with what downloaded"
     N=$(ls "$ROOT/e4_fastq"/*_1.fastq.gz 2>/dev/null | wc -l)
-    say "  $N/30 real libraries present"
+    if [ "${FULL:-0}" = 1 ]; then say "  $N/30 real libraries present"; else say "  $N/3 required real libraries present"; fi
 fi
 
 # --- stage 9: everything that is still left ---------------------------------
