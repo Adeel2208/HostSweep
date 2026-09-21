@@ -40,9 +40,23 @@ create_env() {
         return 0
     fi
     say "creating env '$env': $*"
-    conda create -y -q -n "$env" --override-channels \
-        -c conda-forge -c bioconda "$@" 2>&1 | tail -5
-    return "${PIPESTATUS[0]}"
+    # Whole-command retries with longer conda timeouts: conda's defaults (9 s
+    # connect, 3 retries) turned a single dropped connection to conda-forge
+    # into a failed install on a real run ("CondaHTTPError: HTTP 000
+    # CONNECTION FAILED"), and a comparator that silently fails to install
+    # only shows up much later as a run that cannot activate its environment.
+    local attempt rc=1
+    for attempt in 1 2 3; do
+        CONDA_REMOTE_CONNECT_TIMEOUT_SECS=60 CONDA_REMOTE_READ_TIMEOUT_SECS=120 \
+        CONDA_REMOTE_MAX_RETRIES=5 \
+        conda create -y -q -n "$env" --override-channels \
+            -c conda-forge -c bioconda "$@" 2>&1 | tail -5
+        rc="${PIPESTATUS[0]}"
+        [ "$rc" -eq 0 ] && break
+        say "  '$env' attempt $attempt/3 failed (exit $rc)"
+        [ "$attempt" -lt 3 ] && sleep 30
+    done
+    return "$rc"
 }
 
 for tool in "${TOOLS[@]}"; do

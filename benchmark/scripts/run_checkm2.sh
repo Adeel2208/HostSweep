@@ -39,22 +39,49 @@ say() { echo "[checkm2 $(date -u +%H:%M:%S)] $*"; }
 # shellcheck disable=SC1090
 . "$CONDA_SH"
 
+# Conda's defaults (9 s connect timeout, 3 retries) are thin for a flaky link.
+# On a real run, one timeout fetching conda-forge's repodata.json
+# ("CondaHTTPError: HTTP 000 CONNECTION FAILED") ended the whole CheckM2
+# stage after 3.5 minutes. Longer timeouts here, plus whole-command retries.
+export CONDA_REMOTE_CONNECT_TIMEOUT_SECS="${CONDA_REMOTE_CONNECT_TIMEOUT_SECS:-60}"
+export CONDA_REMOTE_READ_TIMEOUT_SECS="${CONDA_REMOTE_READ_TIMEOUT_SECS:-120}"
+export CONDA_REMOTE_MAX_RETRIES="${CONDA_REMOTE_MAX_RETRIES:-5}"
+
+# retry <attempts> <seconds-between> <command...>
+retry() {
+    local n="$1" wait="$2" i; shift 2
+    for i in $(seq 1 "$n"); do
+        "$@" && return 0
+        say "  attempt $i/$n failed"
+        [ "$i" -lt "$n" ] && sleep "$wait"
+    done
+    return 1
+}
+
+ENVLOG="$HOME/hostsweep/logs/checkm2_env_create.log"
+mkdir -p "$(dirname "$ENVLOG")"
+create_checkm2_env() {
+    conda create -y -q -n checkm2 --override-channels -c conda-forge -c bioconda checkm2 \
+        > "$ENVLOG" 2>&1 || { tail -6 "$ENVLOG" | cut -c1-160; return 1; }
+}
+
 if ! conda env list | awk '{print $1}' | grep -qx checkm2; then
     say "creating checkm2 env (this pulls TensorFlow + CUDA packages even on"
     say "a CPU-only host -- several GB of download, budget time and disk)"
-    conda create -y -q -n checkm2 --override-channels -c conda-forge -c bioconda checkm2 \
-        2>&1 | tail -20
+    retry 5 60 create_checkm2_env
     conda env list | awk '{print $1}' | grep -qx checkm2 \
-        || { say "checkm2 install FAILED -- dropping, same as the original decision (D6)"; exit 1; }
+        || { say "checkm2 install FAILED after 5 attempts (see $ENVLOG) -- dropping, same as the original decision (D6)"; exit 1; }
 fi
 conda activate checkm2 || { say "cannot activate checkm2 env"; exit 1; }
 
 mkdir -p "$DB_DIR"
 DB_FILE=$(find "$DB_DIR" -name "*.dmnd" 2>/dev/null | head -1)
 if [ -z "$DB_FILE" ]; then
-    say "downloading CheckM2 reference database to $DB_DIR (several GB)"
-    checkm2 database --download --path "$DB_DIR" 2>&1 | tail -20 \
-        || { say "database download FAILED"; exit 1; }
+    say "downloading CheckM2 reference database to $DB_DIR (about 1.7 GB, from Zenodo)"
+    # The archive is not resumable, so a failed attempt restarts it; a few
+    # attempts still beat abandoning the stage over one dropped connection.
+    retry 3 60 checkm2 database --download --path "$DB_DIR" \
+        || { say "database download FAILED after 3 attempts"; exit 1; }
     DB_FILE=$(find "$DB_DIR" -name "*.dmnd" 2>/dev/null | head -1)
 fi
 [ -n "$DB_FILE" ] || { say "no .dmnd database file found under $DB_DIR after download attempt"; exit 1; }
