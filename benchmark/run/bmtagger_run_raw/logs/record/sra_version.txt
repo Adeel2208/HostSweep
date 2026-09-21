@@ -1,0 +1,4 @@
+fasterq-dump : 3.4.1
+
+prefetch : 3.4.1
+

@@ -1,0 +1,23 @@
+	Command being timed: "hostile clean --fastq1 /home/molien/hostsweep/bench/synthetic/SYN-CHM13-06_R1.fastq.gz --fastq2 /home/molien/hostsweep/bench/synthetic/SYN-CHM13-06_R2.fastq.gz --aligner bowtie2 --index /home/molien/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_bt2 --threads 12 --output /home/molien/hostsweep/out/results/SYN-CHM13-06/hostile_matched_run1.work"
+	User time (seconds): 160.93
+	System time (seconds): 28.15
+	Percent of CPU this job got: 1285%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:14.70
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3698728
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 45
+	Minor (reclaiming a frame) page faults: 66981
+	Voluntary context switches: 488596
+	Involuntary context switches: 87
+	Swaps: 0
+	File system inputs: 813272
+	File system outputs: 617176
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

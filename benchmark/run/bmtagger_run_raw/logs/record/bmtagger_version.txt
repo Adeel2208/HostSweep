@@ -1,0 +1,3 @@
+/home/molien/hostsweep/miniforge3/envs/bmtagger/bin/bmtagger.sh
+/home/molien/hostsweep/miniforge3/envs/bmtagger/bin/bmtool
+/home/molien/hostsweep/miniforge3/envs/bmtagger/bin/srprism

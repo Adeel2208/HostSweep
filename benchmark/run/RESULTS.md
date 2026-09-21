@@ -1,7 +1,7 @@
 # HostSweep benchmark — complete measured results
 
 **Manuscript:** BIOADV-2026-394, *Bioinformatics Advances*, major revision
-**Generated:** 2026-09-11
+**Generated:** 2026-09-11 · **Updated:** 2026-09-21 (BMTagger, E9 repeat)
 **Repository:** https://github.com/Adeel2208/HostSweep
 
 Every figure in this document was produced by a command run on the benchmark
@@ -44,7 +44,8 @@ per-run metrics JSON — is retained under `benchmark/run/logs/`.
 | E9 | Assembly and classification | **Complete** — 18 of 18 pairs | `downstream.csv`, `kraken2_human.csv` |
 | E5 | Dual-pass ablation | **Complete** | `ablation.csv` |
 | E8 | Labelling sensitivity | Not applicable | requires real-library truth set |
-| — | Comparator benchmark | **Complete for 3 of 5 tools** — `hostile_default`, `hostile_matched`, `kneaddata` (n=1, all 12 synthetic libraries). BMTagger is wired (index build + run_e3.sh support written and smoke-tested) but has not yet executed against the full genome/panel — queued for the next run (D20); DeconSeq dropped (not on bioconda — D20) | `per_library.csv` |
+| — | Comparator benchmark | **Complete for 4 of 5 tools** — `hostile_default`, `hostile_matched`, `kneaddata`, `bmtagger` (n=1, all 12 synthetic libraries each). BMTagger executed at full scale in a further session: 12 of 12 runs completed (D20). DeconSeq dropped (not on bioconda — D20). `hostile_default` could not be re-run in that further session (index download failed, D21); its results are from the earlier session | `per_library.csv` |
+| — | CheckM2 | **No result** — attempted in the further session; the environment install failed on a transient network error and a retry has been queued (D6) | — |
 
 ---
 
@@ -85,9 +86,9 @@ hifiasm v0.14, UCSC Genomics Institute — one assembly project and one assemble
 version across three populations, so *reference mismatch* is not confounded
 with *different assembler* or *different scaffolding*.
 
-### Complete per-run data (`per_library.csv`, HostSweep's 36 of 72 rows)
+### Complete per-run data (`per_library.csv`, HostSweep's 36 of 84 rows)
 
-The other 36 rows are the comparator benchmark — see section 2b.
+The other 48 rows are the comparator benchmark — see section 2b.
 
 Sensitivity and FPR are identical across the three runs of every library. The
 pipeline is deterministic, so replicate agreement is the expected result and
@@ -141,20 +142,22 @@ All libraries are 2.0 M pairs, tool `hostsweep`, tier `profiling`.
 
 ## 2b. Comparator benchmark — sensitivity and false positive rate
 
-**36 runs, 0 failures, n=1.** `hostile_default`, `hostile_matched` and
-`kneaddata`, each scored against the same truth labels, by the same
-`compute_metrics.py`, on all 12 synthetic libraries — the comparison this
-benchmark exists to make. **BMTagger is not in this table yet** (its command
-is now wired into `run_e3.sh` and its index-build script exists, but it has
-not yet been executed against the full genome or the panel — D20) and
-**DeconSeq is not in this table** (dropped: not on bioconda, needs a
-hand-edited manual install — D20).
+**48 runs, 0 failures, n=1.** `hostile_default`, `hostile_matched`,
+`kneaddata` and `bmtagger`, each scored against the same truth labels, by the
+same `compute_metrics.py`, on all 12 synthetic libraries — the comparison this
+benchmark exists to make. **DeconSeq is not in this table** (dropped: not on
+bioconda, needs a hand-edited manual install — D20).
 
-Run in a later benchmark session (D18); before anything here was trusted, that
-session rebuilt `SYN-CHM13-01` and reproduced HostSweep's sensitivity and FPR
-to the fourth decimal against the `per_library.csv` already on record.
-Accuracy figures from both sessions are combined on that basis. **Runtime and
-peak memory are not** — see the callout after the tables.
+The first three tools were run in a later benchmark session (D18); before
+anything there was trusted, that session rebuilt `SYN-CHM13-01` and reproduced
+HostSweep's sensitivity and FPR to the fourth decimal against the
+`per_library.csv` already on record. **BMTagger was run in a further session
+(D20).** That session regenerated the 12 synthetic libraries, re-ran
+`hostile_matched` and `kneaddata` on all of them alongside BMTagger, and
+reproduced their sensitivity and FPR **exactly (24 of 24 rows identical, all
+digits)** against the rows already in `per_library.csv`. Accuracy figures from
+all sessions are combined on that basis. **Runtime and peak memory are not** —
+see the callout after the tables.
 
 n=1 here, against n=3 for HostSweep, is a real asymmetry, not an oversight:
 HostSweep's three replicates were run to *establish* that this pipeline is
@@ -170,51 +173,71 @@ is reported, not what would ideally exist.
 | hostile_default | matched | 9 | 99.9998 % | 99.9990 – 100.0000 | **0.0000 %** | 0.0000 – 0.0000 |
 | hostile_matched | matched | 9 | 99.9998 % | 99.9990 – 100.0000 | **0.0000 %** | 0.0000 – 0.0000 |
 | kneaddata | matched | 9 | **100.0000 %** | 100.0000 – 100.0000 | 0.4255 % | 0.4216 – 0.4293 |
+| bmtagger | matched | 9 | 99.9999 % | 99.9995 – 100.0000 | 0.0002 % | 0.0002 – 0.0003 |
 | hostsweep | mismatch | 9 | 99.9698 % | 99.9600 – 99.9765 | 0.0147 % | 0.0142 – 0.0150 |
 | hostile_default | mismatch | 3 | 99.8665 % | 99.8150 – 99.9080 | **0.0000 %** | 0.0000 – 0.0000 |
 | hostile_matched | mismatch | 3 | 99.8646 % | 99.8100 – 99.9075 | **0.0000 %** | 0.0000 – 0.0000 |
 | kneaddata | mismatch | 3 | **99.9692 %** | 99.9550 – 99.9780 | 0.4268 % | 0.4233 – 0.4304 |
+| bmtagger | mismatch | 3 | 99.9456 % | 99.9250 – 99.9575 | 0.0002 % | 0.0001 – 0.0002 |
 
 ### Per-library sensitivity
 
-| library | host % | hostsweep | hostile_default | hostile_matched | kneaddata |
-|---|---|---|---|---|---|
-| SYN-CHM13-01 | 0.1 | 100.0 | 100.0 | 100.0 | 100.0 |
-| SYN-CHM13-02 | 0.5 | 100.0 | 100.0 | 100.0 | 100.0 |
-| SYN-CHM13-03 | 1.0 | 100.0 | 100.0 | 100.0 | 100.0 |
-| SYN-CHM13-04 | 5.0 | 100.0 | 100.0 | 100.0 | 100.0 |
-| SYN-CHM13-05 | 10.0 | 100.0 | 99.9995 | 99.9995 | 100.0 |
-| SYN-CHM13-06 | 20.0 | 100.0 | 99.9997 | 99.9997 | 100.0 |
-| SYN-CHM13-07 | 40.0 | 100.0 | 99.9997 | 99.9997 | 100.0 |
-| SYN-CHM13-08 | 5.0 | 100.0 | 99.9990 | 99.9990 | 100.0 |
-| SYN-CHM13-09 | 10.0 | 100.0 | 100.0 | 100.0 | 100.0 |
-| SYN-IND-01 (mismatch) | 1.0 | **99.9600** | 99.8150 | 99.8100 | 99.9550 |
-| SYN-NEU-02 (mismatch) | 10.0 | 99.9765 | 99.9080 | 99.9075 | **99.9780** |
-| SYN-NEU-03 (mismatch) | 20.0 | 99.9728 | 99.8765 | 99.8762 | **99.9745** |
+| library | host % | hostsweep | hostile_default | hostile_matched | kneaddata | bmtagger |
+|---|---|---|---|---|---|---|
+| SYN-CHM13-01 | 0.1 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-02 | 0.5 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-03 | 1.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-04 | 5.0 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+| SYN-CHM13-05 | 10.0 | 100.0 | 99.9995 | 99.9995 | 100.0 | 100.0 |
+| SYN-CHM13-06 | 20.0 | 100.0 | 99.9997 | 99.9997 | 100.0 | 99.9997 |
+| SYN-CHM13-07 | 40.0 | 100.0 | 99.9997 | 99.9997 | 100.0 | 99.9999 |
+| SYN-CHM13-08 | 5.0 | 100.0 | 99.9990 | 99.9990 | 100.0 | 100.0 |
+| SYN-CHM13-09 | 10.0 | 100.0 | 100.0 | 100.0 | 100.0 | 99.9995 |
+| SYN-IND-01 (mismatch) | 1.0 | **99.9600** | 99.8150 | 99.8100 | 99.9550 | 99.9250 |
+| SYN-NEU-02 (mismatch) | 10.0 | 99.9765 | 99.9080 | 99.9075 | **99.9780** | 99.9575 |
+| SYN-NEU-03 (mismatch) | 20.0 | 99.9728 | 99.8765 | 99.8762 | **99.9745** | 99.9543 |
 
 HostSweep's sensitivity is greater than or equal to both Hostile configurations
 on **12 of 12** libraries. Against KneadData it is greater or equal on **10 of
 12** — KneadData edges it out on two of the three mismatch-arm libraries
 (`SYN-NEU-02`, `SYN-NEU-03`), by 0.0015–0.0017 percentage points.
 
+Against BMTagger, HostSweep's sensitivity is greater than or equal on **12 of
+12** libraries, and strictly greater on 6 (`SYN-CHM13-06`, `-07`, `-09` by
+0.0001–0.0005 pp, and all three mismatch libraries by 0.0185–0.0350 pp). In
+absolute reads on the mismatch arm, BMTagger left 15, 85 and 183 human pairs
+in `SYN-IND-01`, `SYN-NEU-02` and `SYN-NEU-03` (of 20,000, 200,000 and
+400,000), against HostSweep's 8, 47 and 109 (section 2). BMTagger sits above
+both Hostile configurations and below KneadData and HostSweep on all three
+mismatch libraries.
+
 ### Per-library false positive rate
 
-| library | hostsweep | hostile_default | hostile_matched | kneaddata |
-|---|---|---|---|---|
-| SYN-CHM13-01 | 0.0142 | **0.0** | **0.0** | 0.4258 |
-| SYN-CHM13-02 | 0.0147 | **0.0** | **0.0** | 0.4276 |
-| SYN-CHM13-03 | 0.0146 | **0.0** | **0.0** | 0.4293 |
-| SYN-CHM13-04 | 0.0144 | **0.0** | **0.0** | 0.4221 |
-| SYN-CHM13-05 | 0.0137 | **0.0** | **0.0** | 0.4292 |
-| SYN-CHM13-06 | 0.0141 | **0.0** | **0.0** | 0.4246 |
-| SYN-CHM13-07 | 0.0144 | **0.0** | **0.0** | 0.4239 |
-| SYN-CHM13-08 | 0.0143 | **0.0** | **0.0** | 0.4251 |
-| SYN-CHM13-09 | 0.0133 | **0.0** | **0.0** | 0.4216 |
-| SYN-IND-01 (mismatch) | 0.0148 | **0.0** | **0.0** | 0.4267 |
-| SYN-NEU-02 (mismatch) | 0.0142 | **0.0** | **0.0** | 0.4233 |
-| SYN-NEU-03 (mismatch) | 0.0150 | **0.0** | **0.0** | 0.4304 |
+| library | hostsweep | hostile_default | hostile_matched | kneaddata | bmtagger |
+|---|---|---|---|---|---|
+| SYN-CHM13-01 | 0.0142 | **0.0** | **0.0** | 0.4258 | 0.0002 |
+| SYN-CHM13-02 | 0.0147 | **0.0** | **0.0** | 0.4276 | 0.0003 |
+| SYN-CHM13-03 | 0.0146 | **0.0** | **0.0** | 0.4293 | 0.0002 |
+| SYN-CHM13-04 | 0.0144 | **0.0** | **0.0** | 0.4221 | 0.0002 |
+| SYN-CHM13-05 | 0.0137 | **0.0** | **0.0** | 0.4292 | 0.0002 |
+| SYN-CHM13-06 | 0.0141 | **0.0** | **0.0** | 0.4246 | 0.0003 |
+| SYN-CHM13-07 | 0.0144 | **0.0** | **0.0** | 0.4239 | 0.0002 |
+| SYN-CHM13-08 | 0.0143 | **0.0** | **0.0** | 0.4251 | 0.0002 |
+| SYN-CHM13-09 | 0.0133 | **0.0** | **0.0** | 0.4216 | 0.0002 |
+| SYN-IND-01 (mismatch) | 0.0148 | **0.0** | **0.0** | 0.4267 | 0.0002 |
+| SYN-NEU-02 (mismatch) | 0.0142 | **0.0** | **0.0** | 0.4233 | 0.0001 |
+| SYN-NEU-03 (mismatch) | 0.0150 | **0.0** | **0.0** | 0.4304 | 0.0002 |
 
-### This table contains a result unfavourable to HostSweep
+### This table contains results unfavourable to HostSweep
+
+**BMTagger's FPR is 0.0001–0.0003 % on every library — 2 to 5 background
+reads removed in error out of 1.2–2.0 million — against HostSweep's
+0.0133–0.0150 %,** roughly two orders of magnitude lower, at sensitivity that
+is within 0.0005 pp of HostSweep's on all nine matched libraries. On
+specificity, BMTagger is therefore also strictly better than HostSweep on this
+panel; HostSweep's only edge over it is sensitivity on the mismatch arm
+(above), and that edge is 0.0185–0.0350 pp. BMTagger is not zero-FPR, so it is
+reported as measured, not rounded into the Hostile row.
 
 **Both Hostile configurations record exactly 0.0000 % FPR on every one of the
 12 libraries — zero background reads removed in error, at essentially the same
@@ -231,18 +254,33 @@ reads that resemble host sequence, which costs it specificity here and costs
 it assembly quality in section 3c.
 
 The honest summary: **on this panel, no single tool dominates on both axes.**
-HostSweep sits between the two — never the best on either sensitivity or
-specificity alone, but the only one of the three with zero FPR nowhere and zero
-sensitivity loss nowhere simultaneously extreme. Framing HostSweep as
-strictly superior to Hostile would not survive a reviewer reading this table.
+HostSweep never has the lowest FPR (Hostile 0.0000 %, BMTagger ~0.0002 %) and
+is best or tied-best on sensitivity against Hostile and BMTagger but not
+against KneadData on two mismatch libraries. Framing HostSweep as strictly
+superior to Hostile or BMTagger would not survive a reviewer reading this
+table.
 
-> **Runtime and peak memory in `per_library.csv` for these three tools are not
-> comparable to HostSweep's own E3 timings above.** They were measured on a
-> different, unconstrained machine (D18) — Hostile ~0.6–1.5 min / ~3.4–3.6 GB,
-> KneadData ~2–6 min / ~5.0–5.6 GB, against HostSweep's 15–70 min / ~11.0–11.2
-> GB from the first, memory-constrained machine. That gap reflects the two
-> hosts, not the three tools, and must not be presented as a performance
-> comparison in any form.
+> **Runtime and peak memory in `per_library.csv` for the comparator tools are
+> not comparable to HostSweep's own E3 timings above, and are not even
+> mutually comparable across the comparator rows.** The `hostile_*` and
+> `kneaddata` rows were timed in a later session with far more memory than
+> HostSweep's E3 runs (D18) — Hostile 0.5–9.6 min / 2.8–3.6 GB, KneadData
+> 1.8–6.2 min / 4.5–5.6 GB, against HostSweep's 12–134 min / 9.3–11.2 GB
+> under an 11 GB ceiling and swap (D17). The `bmtagger` rows were timed in a
+> further session. **The only like-for-like timing comparison is within that
+> further session, which timed `hostile_matched`, `kneaddata` and `bmtagger`
+> on the same libraries under the same conditions** (HostSweep is not in that
+> file): per-library runtime **BMTagger 4.9–6.4 min (median 6.0)**,
+> KneadData 0.8–2.0 min (median 1.0), Hostile 0.24–0.31 min (median 0.29);
+> peak memory BMTagger 8.00 GB (fixed by its 4^18-bit bitmask), KneadData
+> 5.1–6.2 GB, Hostile 3.5–3.6 GB. BMTagger's timed section excludes the
+> decompression of the input FASTQ it requires, and it used one CPU thread
+> (99 % CPU in all 12 `/usr/bin/time` records). Those same-session rows are in
+> `bmtagger_run_raw/csv/per_library.csv`; the earlier Hostile/KneadData timings
+> that remain in `per_library.csv` were from a different session and differ
+> from them by 1.9–4.8x for identical inputs, which is the reason none of this
+> may be presented as a performance comparison against HostSweep in any
+> form.
 
 ---
 
@@ -466,6 +504,36 @@ appends a row per scoring pass and `chain_e9.sh` was invoked twice. The
 duplicate copies were verified byte-identical before being collapsed; had any
 pair disagreed, the de-duplication would have been refused rather than
 silently picking one.
+
+### A repeat of E9 reproduces accuracy exactly and assembly statistics only approximately
+
+A further session re-ran the whole of E9 (18 of 18 pairs, same three methods
+and tools) on hardware unconstrained by memory. The committed `downstream.csv`
+and `kraken2_human.csv` were **not** replaced; the repeat is kept in
+`bmtagger_run_raw/csv/` and compared here cell by cell (committed value vs
+repeat value).
+
+- **Kraken2 residual-human counts: 18 of 18 rows identical, every cell.**
+- **Assembly statistics: 11 of 18 rows differ in at least one cell.**
+  - `hostsweep`: 2 rows, one cell each, in the last printed digit
+    (`SRR40486826` total length 90.4471 vs 90.4475 Mb; `SYN-NEU-03` genome
+    fraction 80.522 vs 80.521 %).
+  - `hostile`: 3 rows — `SRR31641567` total length 18.4978 vs 18.4975 Mb;
+    `SRR40486826` contigs >= 1 kb 18,389 vs 18,387 and assembled Mb >= 1 kb
+    57.5884 vs 57.5838; `SYN-CHM13-01` misassemblies 99 vs 100.
+  - **`kneaddata`: all 6 rows differ**, materially: for example
+    `SYN-CHM13-01` N50 15,076 vs 15,446, misassemblies 173 vs 151, genome
+    fraction 86.753 vs 86.363 %; `SYN-NEU-03` largest contig 578.0 vs 437.4 kb
+    and misassemblies 282 vs 306; `SRR31641567` N50 13,061 vs 13,514.
+- Both sets are measurements of the same reads; neither is a correction of
+  the other. Run-to-run differences of this size for KneadData mean its
+  assembly comparisons against the other two methods on these libraries
+  should be read cautiously. (A plausible cause is that KneadData's output
+  read order varies between runs and MEGAHIT is sensitive to read order; this
+  was not tested.) This is the second independent repeat: D18 reports an
+  earlier one, and for the same pair (`SYN-NEU-03` / KneadData) the three
+  independent MEGAHIT assemblies now give largest contigs of 578.0 (committed),
+  306.5 (D18 repeat) and 437.4 kb (this repeat).
 
 > **D4 applies to every number in this section.** MEGAHIT replaced metaSPAdes
 > because metaSPAdes needs 30–120 GB. MEGAHIT typically produces lower N50 and
@@ -835,7 +903,7 @@ alignment was 10.523 GB.
 | ART | 2.5.8 (Q Version, June 2016) |
 | hostile | **2.0.2** (2.x asserted before use) |
 | kneaddata | 0.12.4 (run with `_JAVA_OPTIONS=-Xmx8g`, D19) |
-| bmtagger / bmtool / srprism | environment installs; command wired, not yet executed at full scale (D20) |
+| bmtagger / bmtool / srprism | bioconda, executed at full scale (D20). Package version **not recorded** — only the binary paths were saved (`record/bmtagger_version.txt`); `bmtagger.sh` run with default parameters plus `-q 1 -X`, word size 18 |
 | MEGAHIT | 1.2.9 |
 | QUAST / MetaQUAST | 5.3.0 |
 | Kraken2 | 2.17.1 |
@@ -855,6 +923,12 @@ available. Before combining anything, that session independently reproduced
 the E3 sensitivity/FPR figures to the fourth decimal (D18); runtime, peak
 memory and exact assembly statistics from that session are not comparable to
 the earlier figures, for the reasons given there.
+
+**BMTagger, and a repeat E9 run,** were completed in a further session on
+memory-unconstrained hardware (D20, D21). That session reproduced the
+`hostile_matched` and `kneaddata` sensitivity/FPR exactly on all 24 rows, and
+its repeat of E9 differs from the committed `downstream.csv` on assembly
+statistics only (section 3c).
 
 ---
 
@@ -888,13 +962,18 @@ Capping drops minimizers, so a capped database detects **less** human sequence.
 **The residual-human figure is a floor, not an estimate**, and cannot support a
 claim that residual human content is below any threshold.
 
-### D6 — CheckM2 dropped, now re-attempted
+### D6 — CheckM2 dropped, re-attempted, still no result
 Originally dropped: needs ~15 GB RAM plus its database, over the original
-host's ceiling. `run_checkm2.sh` now exists and is wired into `chain_all.sh`;
-its install, database download and CLI were smoke-tested successfully
-end-to-end (confirmed `Completeness`/`Contamination` columns parse correctly),
-but it has not yet run against an actual E9 assembly. No completeness or
-contamination statistics for this benchmark exist yet.
+host's ceiling. `run_checkm2.sh` exists and is wired into `chain_all.sh`; its
+install, database download and CLI were smoke-tested successfully end-to-end
+(confirmed `Completeness`/`Contamination` columns parse correctly). In the
+further session (D20) the full-scale attempt **failed at environment
+installation** on a transient `CondaHTTPError: HTTP 000 CONNECTION FAILED`
+fetching conda-forge's `repodata.json`, so it never reached an E9 assembly.
+Retries with longer timeouts were added and a second attempt started; **no
+completeness or contamination statistic for this benchmark exists.** CheckM2
+scores single genomes, so on a metagenomic co-assembly it would be an
+assembly-level proxy at best.
 
 ### D7 — Category names changed to match SRA taxonomy
 The exact terms `"human urogenital metagenome"` and
@@ -932,17 +1011,40 @@ contig statistics (HostSweep and Hostile disagree by only a few percent;
 KneadData's disagree far more — a reproducibility finding in its own right,
 section 3c).
 
+A further session repeated E9 in full: accuracy (Kraken2 residual-human) was
+identical on all 18 rows, and assembly statistics differed on 11 of 18 rows
+(KneadData on all six), as described in section 3c. The committed tables were
+left unchanged. The E4 real-library scoring was **not** repeated in that
+session; it downloaded only the three real libraries E9 needs, not the
+30-library panel.
+
 ### D19 — KneadData required an explicit 8 GB JVM heap
 Its bundled Trimmomatic wrapper hardcodes a 1 GB heap regardless of
 `--max-memory`. Fixed with a `_JAVA_OPTIONS=-Xmx8g` shim. No effect on
 KneadData's reported accuracy or assembly figures; affects only whether the
 run completes.
 
-### D20 — Comparator table ships with 3 tools, not 5
-BMTagger's environment installs but was not wired into `run_e3.sh` in time —
-deferred, not attempted-and-failed. DeconSeq is dropped: not on bioconda, needs
-a manual install. Report the comparison as "Hostile (two configurations) and
-KneadData," not as "the comparator suite."
+### D20 — Comparator table ships with 4 tools, not 5
+BMTagger ran at full scale in a further session: the index was built against
+T2T-CHM13v2.0 (bitmask word size 18, srprism index, BLAST database) and all 12
+synthetic libraries completed with exit 0 (`bmtagger_run_raw/`). `bmtagger.sh`
+was used with default parameters plus `-q 1 -X`, one thread, on decompressed
+FASTQ (it does not accept gzip). It is not zero-FPR, and on the mismatch arm it
+misses more human reads than HostSweep (section 2b). Its package version was
+not recorded. DeconSeq is dropped: not on bioconda, needs a manual install.
+Report the comparison as "Hostile (two configurations), KneadData and
+BMTagger," not as "the comparator suite" — DeconSeq's absence must be stated.
+
+### D21 — `hostile_default` was not re-run in the latest session
+Its 12 attempts all exited 1: Hostile tried to download its T2T+HLA index from
+`objectstorage.uk-london-1.oraclecloud.com` and the download failed
+(`httpx.HTTPError`). Those FAILED rows are **not** in `per_library.csv`
+(they would collide with the existing measured rows for the same keys and would
+be read as a Hostile failure rather than a network failure); they and their
+stderr are in `bmtagger_run_raw/`. The `hostile_default` rows in
+`per_library.csv` are the earlier session's measurements, unchanged, n=1. The
+self-audit in that session's raw delivery reports "12/48 rows have no metrics
+JSON" for the same reason — an expected consequence, not a data problem.
 
 ### I1 — Concurrent writers corrupted one synthetic library (detected, discarded)
 Two `mix_spikein.py` processes were found writing the same output prefix after a
@@ -975,23 +1077,29 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
   mismatch arm at ~30x the FPR. See section 2b. Any claim of the form
   "HostSweep outperforms existing tools" needs to specify on which axis, for
   which comparator, because the direction changes depending on which one.
-- **BMTagger and DeconSeq are not in the comparator table.** BMTagger's
-  command is now wired and its index-build script exists, but neither has
-  executed against the full genome or the synthetic panel yet — that is
-  queued, not failed; DeconSeq needs a manual, non-bioconda install and was
-  dropped per the original instruction. A "five-tool comparison" cannot be
-  claimed; a "three-tool comparison, with BMTagger and DeconSeq's absence
-  stated" can. See D20.
+- **No claim that HostSweep is more specific than BMTagger or Hostile.** On
+  this panel BMTagger removes 2–5 background reads per library (FPR ~0.0002 %)
+  against HostSweep's ~0.014 %, and Hostile removes none. HostSweep's measured
+  advantage over BMTagger is sensitivity on the three mismatch libraries
+  (0.0185–0.0350 pp), and KneadData still edges HostSweep there. See section
+  2b.
+- **DeconSeq is not in the comparator table.** It needs a manual,
+  non-bioconda install and was dropped per the original instruction. A
+  "five-tool comparison" cannot be claimed; a "four-tool comparison with
+  DeconSeq's absence stated" can. `hostile_default` rests on the earlier
+  session alone (D21). See D20.
+- **No CheckM2 result exists** (D6).
 - **The dual-pass sensitivity claim is refuted, not merely unmeasured.**
   The second pass's marginal contribution over Bowtie2 alone is 0.0001 pp
   matched and 0.0036 pp on the mismatch library. The architecture must be
   defended on the paired assembly tier it uniquely produces, not on
   sensitivity. See section 3b.
-- **No cross-machine runtime or memory claim, on top of the existing
-  single-machine one (D17).** The comparator, E4 and second-machine E9 numbers
-  come from a different, unconstrained host than HostSweep's own E3 timings.
-  Comparing them would compound D17's warning with a hardware confound. See
-  D18.
+- **No cross-session runtime or memory claim, on top of the existing
+  constrained-run one (D17).** The comparator, E4 and later E9 numbers were
+  measured in later sessions with far more memory than HostSweep's own E3
+  timings, and identical inputs timed 1.9–4.8x apart between comparator
+  sessions. Comparing them would compound D17's warning with a hardware
+  confound. See D18.
 - **No real-library accuracy.** All 30 real libraries are downloaded and
   scored for HostSweep (section 5b), but none have a per-read truth set, so
   sensitivity and FPR are empty by design, not estimated, on every one of
@@ -1001,9 +1109,9 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
   metaSPAdes (D4) and Kraken2 Standard-8 for Standard (D5). Absolute
   contiguity is not comparable to published metaSPAdes figures, residual-human
   counts are floors, and MEGAHIT's exact contig statistics are not
-  bit-identical between independent runs (D18) — KneadData's assemblies vary
-  the most. The between-method comparison, within a single assembly run, is
-  what stands.
+  bit-identical between independent runs (D18, section 3c) — KneadData's
+  assemblies vary the most. The between-method comparison, within a single
+  assembly run, is what stands.
 - **25 of the original 30 accessions remain unverifiable**, having never been
   available to check.
 
@@ -1013,7 +1121,7 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
 
 | File | Rows | Contents |
 |---|---|---|
-| `per_library.csv` | 72 | Sensitivity, FPR, runtime, peak memory — hostsweep (36, n=3) + hostile_default/hostile_matched/kneaddata (36, n=1) |
+| `per_library.csv` | 84 | Sensitivity, FPR, runtime, peak memory — hostsweep (36, n=3) + hostile_default/hostile_matched/kneaddata/bmtagger (48, n=1) |
 | `synthetic_manifest.csv` | 12 | Realised fractions, seeds, source accessions |
 | `threshold_sweep.csv` | 75 | Entropy × length grid, three libraries |
 | `equivalence_check.txt` | 2 | Proof the Step-8 caching shortcut is exact |
@@ -1021,13 +1129,14 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
 | `verification_log.txt` | — | Per-category study counts, exact queries, UID counts |
 | `genomes_verified.tsv` | 10 | Background community, verified at NCBI |
 | `human_sources_provenance.json` | 3 | Mismatch-arm assembly provenance and composition |
-| `DEVIATIONS.md` | 22 | 20 deviations + 2 integrity incidents |
+| `DEVIATIONS.md` | 23 | 21 deviations + 2 integrity incidents |
 | `STATUS.md` | — | What ran, what failed, what was skipped |
 | `downstream.csv` | 18 | N50, misassemblies, assembled Mb ≥1 kb, per method |
 | `kraken2_human.csv` | 18 | Residual human reads per method (floors, D5) |
 | `ablation.csv` | 36 | Dual-pass contribution, 3 configurations |
 | `e4_per_library.csv` | 30 | Real libraries, HostSweep: runtime, peak memory (no truth set, D18) |
 | `AUDIT.md` | — | Self-audit, run on the later session's own evidence tree (see the note at the top of the file) |
+| `bmtagger_run_raw/` | — | The further session's unfiltered delivery: BMTagger metrics/time/stderr for all 12 libraries, the `hostile_default` FAILED records (D21), its E9 repeat CSVs, `MANIFEST.txt`, logs and tool-version records — primary source for D20/D21 and the E9 repeat in section 3c |
 | `followup_run_raw/` | — | The later session's complete raw delivery: a README, a full run log, the KneadData heap shim, a cell-by-cell diff against the original run, and its full unfiltered CSV output — kept as the primary source for D18's numbers |
 
 **`DEVIATIONS.md` is the file to attach to the response letter.** Each entry

@@ -1,0 +1,81 @@
+ 67.32	2413090	2413090	U	0	unclassified
+ 32.68	1171460	31877	R	1	root
+ 31.79	1139583	888	R1	131567	  cellular organisms
+ 31.77	1138695	40863	D	2	    Bacteria
+ 21.22	760656	3490	K	3379134	      Pseudomonadati
+ 18.37	658395	15367	P	1224	        Pseudomonadota
+ 17.94	643028	21052	C	1236	          Gammaproteobacteria
+ 14.53	520788	46242	O	91347	            Enterobacterales
+ 13.24	474545	368722	F	543	              Enterobacteriaceae
+  2.73	97992	97283	G	590	                Salmonella
+  0.02	709	683	S	28901	                  Salmonella enterica
+  0.00	26	25	S1	59201	                    Salmonella enterica subsp. enterica
+  0.00	1	1	S2	90370	                      Salmonella enterica subsp. enterica serovar Typhi
+  0.22	7826	4018	G	561	                Escherichia
+  0.11	3804	3800	S	562	                  Escherichia coli
+  0.00	2	1	S1	83334	                    Escherichia coli O157:H7
+  0.00	1	1	S2	155864	                      Escherichia coli O157:H7 str. EDL933
+  0.00	1	1	S1	83333	                    Escherichia coli K-12
+  0.00	1	1	S1	2773705	                    Escherichia coli O18ac:H14
+  0.00	3	3	S	208962	                  Escherichia albertii
+  0.00	1	1	S	564	                  Escherichia fergusonii
+  0.00	4	1	G	620	                Shigella
+  0.00	2	2	S	621	                  Shigella boydii
+  0.00	1	1	S	623	                  Shigella flexneri
+  0.00	1	1	G	579	                Kluyvera
+  0.00	1	0	F	1903414	              Morganellaceae
+  0.00	1	0	G	626	                Xenorhabdus
+  0.00	1	0	S	40577	                  Xenorhabdus poinarii
+  0.00	1	1	S1	1354304	                    Xenorhabdus poinarii G6
+  2.82	101187	114	O	72274	            Pseudomonadales
+  2.82	101073	12860	F	135621	              Pseudomonadaceae
+  2.46	88213	85590	G	286	                Pseudomonas
+  0.07	2623	291	G1	136841	                  Pseudomonas aeruginosa group
+  0.07	2332	2332	S	287	                    Pseudomonas aeruginosa
+  0.00	1	0	O	135624	            Aeromonadales
+  0.00	1	0	F	84642	              Aeromonadaceae
+  0.00	1	0	G	642	                Aeromonas
+  0.00	1	1	S	644	                  Aeromonas hydrophila
+  2.76	98771	3	K1	1783270	        FCB group
+  2.76	98768	34	K2	68336	          Bacteroidota/Chlorobiota group
+  2.75	98734	686	P	976	            Bacteroidota
+  2.74	98048	55	C	200643	              Bacteroidia
+  2.73	97993	4468	O	171549	                Bacteroidales
+  2.61	93525	1314	F	815	                  Bacteroidaceae
+  2.57	92211	28531	G	816	                    Bacteroides
+  1.78	63674	63672	S	818	                      Bacteroides thetaiotaomicron
+  0.00	2	2	S1	226186	                        Bacteroides thetaiotaomicron VPI-5482
+  0.00	3	3	S	674529	                      Bacteroides faecis
+  0.00	3	3	S	371601	                      Bacteroides xylanisolvens
+  9.41	337176	806	K	1783272	      Bacillati
+  7.29	261159	782	P	1239	        Bacillota
+  7.26	260377	1205	C	91061	          Bacilli
+  6.16	220807	3126	O	1385	            Bacillales
+  4.21	150811	2924	F	186817	              Bacillaceae
+  4.13	147887	147855	G	1386	                Bacillus
+  0.00	29	20	G1	653685	                  Bacillus subtilis group
+  0.00	8	8	S	1423	                    Bacillus subtilis
+  0.00	1	1	S	483913	                    Bacillus inaquosorum
+  0.00	2	2	S	2487276	                  Bacillus cabrialesii
+  0.00	1	0	G1	185979	                  unclassified Bacillus (in: firmicutes)
+  0.00	1	1	S	1127744	                    Bacillus sp. JS
+  1.87	66870	800	F	90964	              Staphylococcaceae
+  1.84	66070	65848	G	1279	                Staphylococcus
+  0.01	222	222	S	1280	                  Staphylococcus aureus
+  1.07	38365	208	O	186826	            Lactobacillales
+  1.06	38157	847	F	33958	              Lactobacillaceae
+  1.04	37310	5661	G	1578	                Lactobacillus
+  0.88	31649	31649	S	1579	                  Lactobacillus acidophilus
+  2.10	75211	161	P	201174	        Actinomycetota
+  2.09	75050	2888	C	1760	          Actinomycetes
+  1.24	44469	877	O	85007	            Mycobacteriales
+  1.22	43592	2385	F	1762	              Mycobacteriaceae
+  1.15	41207	7954	G	1763	                Mycobacterium
+  0.93	33253	32950	G1	77643	                  Mycobacterium tuberculosis complex
+  0.01	303	302	S	1773	                    Mycobacterium tuberculosis
+  0.00	1	1	S1	747368	                      Mycobacterium tuberculosis X122
+  0.77	27693	0	O	85004	            Bifidobacteriales
+  0.77	27693	127	F	31953	              Bifidobacteriaceae
+  0.77	27566	18949	G	1678	                Bifidobacterium
+  0.24	8616	8616	S	216816	                  Bifidobacterium longum
+  0.00	1	1	S	1685	                  Bifidobacterium breve

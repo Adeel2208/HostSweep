@@ -1,0 +1,23 @@
+	Command being timed: "kneaddata --input1 /home/molien/hostsweep/bench/synthetic/SYN-CHM13-05_R1.fastq.gz --input2 /home/molien/hostsweep/bench/synthetic/SYN-CHM13-05_R2.fastq.gz --reference-db /home/molien/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_bt2 --output /home/molien/hostsweep/out/results/SYN-CHM13-05/kneaddata_run1.work --threads 12 --bypass-trf --remove-intermediate-output"
+	User time (seconds): 59.73
+	System time (seconds): 18.62
+	Percent of CPU this job got: 118%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:05.87
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 5777288
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 61
+	Minor (reclaiming a frame) page faults: 1608177
+	Voluntary context switches: 22453
+	Involuntary context switches: 90
+	Swaps: 0
+	File system inputs: 979312
+	File system outputs: 7530440
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

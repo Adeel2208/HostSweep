@@ -71,3 +71,15 @@ SYN-NEU-02,synthetic,synthetic_mismatch,kneaddata,1,2.0,10.0,99.978,0.4233,3.065
 SYN-NEU-03,synthetic,synthetic_mismatch,hostile_default,1,2.0,20.0,99.8765,0.0,0.6832,3.6154
 SYN-NEU-03,synthetic,synthetic_mismatch,hostile_matched,1,2.0,20.0,99.8762,0.0,1.2072,3.5283
 SYN-NEU-03,synthetic,synthetic_mismatch,kneaddata,1,2.0,20.0,99.9745,0.4304,4.2272,4.9681
+SYN-CHM13-01,synthetic,synthetic_matched,bmtagger,1,2.0,0.1,100.0,0.0002,6.3368,8.0031
+SYN-CHM13-02,synthetic,synthetic_matched,bmtagger,1,2.0,0.5,100.0,0.0003,6.032,8.0021
+SYN-CHM13-03,synthetic,synthetic_matched,bmtagger,1,2.0,1.0,100.0,0.0002,6.3262,8.0031
+SYN-CHM13-04,synthetic,synthetic_matched,bmtagger,1,2.0,5.0,100.0,0.0002,6.2398,8.003
+SYN-CHM13-05,synthetic,synthetic_matched,bmtagger,1,2.0,10.0,100.0,0.0002,5.8405,8.003
+SYN-CHM13-06,synthetic,synthetic_matched,bmtagger,1,2.0,20.0,99.9997,0.0003,5.699,8.0031
+SYN-CHM13-07,synthetic,synthetic_matched,bmtagger,1,2.0,40.0,99.9999,0.0002,4.9253,8.0021
+SYN-CHM13-08,synthetic,synthetic_matched,bmtagger,1,2.0,5.0,100.0,0.0002,5.9312,8.0021
+SYN-CHM13-09,synthetic,synthetic_matched,bmtagger,1,2.0,10.0,99.9995,0.0002,5.7402,8.003
+SYN-IND-01,synthetic,synthetic_mismatch,bmtagger,1,2.0,1.0,99.925,0.0002,6.3322,8.0011
+SYN-NEU-02,synthetic,synthetic_mismatch,bmtagger,1,2.0,10.0,99.9575,0.0001,6.4115,8.0021
+SYN-NEU-03,synthetic,synthetic_mismatch,bmtagger,1,2.0,20.0,99.9543,0.0002,5.8798,8.003

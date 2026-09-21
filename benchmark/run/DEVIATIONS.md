@@ -123,7 +123,7 @@ threshold.
 
 ---
 
-### D6. CheckM2 dropped, now re-attempted where more RAM is available
+### D6. CheckM2 dropped, re-attempted where more RAM is available, still no result
 
 **Specified.** "Add CheckM2 completeness/contamination if you can run it; if
 not, say so explicitly."
@@ -156,6 +156,21 @@ different and harder input than one clean bacterial genome, and has not been
 tried. If the install or a run fails at that scale, or RAM is still
 insufficient wherever this next runs, the script records `FAILED` rows and
 does not block anything else in the chain.
+
+**Outcome of the full-scale attempt (further session, September 2026).** The run
+failed at environment installation, before any E9 assembly was reached:
+`conda create` of the `checkm2` environment ended with
+`CondaHTTPError: HTTP 000 CONNECTION FAILED` for
+`https://conda.anaconda.org/conda-forge/linux-64/repodata.json` after about
+3.5 minutes, and the script recorded `checkm2 install FAILED -- dropping, same
+as the original decision (D6)`. Nothing was estimated in its place. The failure
+was a transient network error on that machine's link, not a CheckM2 or memory
+limit. `run_checkm2.sh` and `install_comparators.sh` were then changed to use
+longer conda timeouts (60 s connect, 120 s read, 5 retries) and to retry
+environment creation (5 attempts) and the ~1.7 GB database download (3
+attempts) — commit `8cf930c` — and a second attempt was started. **As of this
+entry no CheckM2 completeness or contamination statistic exists.** If the
+second attempt also fails, the D6 dropping stands.
 
 **Interpretation cost.** Until it runs against a real E9 assembly: no
 completeness or contamination statistics for this benchmark are reported, as
@@ -288,6 +303,25 @@ average. `downstream.csv` keeps the **original run's** values as canonical for
 all rows measured in both (first-recorded, and already the basis of the E9
 narrative); the independent re-run's measurements are the evidence for this
 reproducibility finding, not a replacement dataset.
+
+**Further repeat of E9 (further session, September 2026).** A third independent E9 run, on
+all 18 pairs, was compared cell by cell against the committed `downstream.csv`
+and `kraken2_human.csv` (neither was changed; the repeat is in
+`bmtagger_run_raw/csv/`). Kraken2 residual-human counts: **18 of 18 rows
+identical**. Assembly statistics: 11 of 18 rows differ — hostsweep 2 rows (one
+cell each, last digit: `SRR40486826` total length 90.4471 vs 90.4475 Mb;
+`SYN-NEU-03` genome fraction 80.522 vs 80.521 %), hostile 3 rows
+(`SRR31641567` total length 18.4978 vs 18.4975 Mb; `SRR40486826` contigs ≥ 1 kb
+18,389 vs 18,387 and assembled Mb ≥ 1 kb 57.5884 vs 57.5838; `SYN-CHM13-01`
+misassemblies 99 vs 100), **kneaddata all 6 rows**, materially (`SYN-CHM13-01`
+N50 15,076 vs 15,446, misassemblies 173 vs 151, genome fraction 86.753 vs
+86.363 %; `SYN-NEU-03` largest contig 578.0 vs 437.4 kb, misassemblies 282 vs
+306; `SRR31641567` N50 13,061 vs 13,514). This confirms the asymmetry above
+with an independent third measurement: for `SYN-NEU-03` / KneadData the
+largest contig is now 578.0 (committed), 306.5 (first repeat) and 437.4 kb.
+That session's E4 scoring was **not** repeated: it downloaded only the three
+real libraries E9 needs (`SRR40486826`, `ERR15898346`, `SRR31641567`), not the
+30-library panel, so `e4_per_library.csv` is unchanged.
 
 **Interpretation cost.** Accuracy (sensitivity, FPR, reads-human counts) is
 established as reproducible across independent runs by the check above, and
@@ -492,22 +526,23 @@ then real arm and downstream as hardware and time permit.
 
 ---
 
-### D20. Comparator benchmark ships with three tools, not five (at time of writing): BMTagger wired but not yet executed, DeconSeq dropped
+### D20. Comparator benchmark ships with four tools, not five: BMTagger executed at full scale, DeconSeq dropped
 
 **Specified.** Five-tool comparator table: `hostile_matched`, `hostile_default`,
 `kneaddata`, `bmtagger`, `deconseq`, dropping a tool only if it will not
 install, and only with a documented reason.
 
-**Done so far.** `hostile_matched`, `hostile_default` and `kneaddata` are
-scored against truth on all 12 synthetic libraries (n=1; see
-`per_library.csv`). BMTagger's code is now written and wired in but has not
-yet produced a result; DeconSeq is dropped outright.
+**Done.** `hostile_matched`, `hostile_default` and `kneaddata` were scored
+against truth on all 12 synthetic libraries in the earlier session (n=1).
+**BMTagger was then executed at full scale in a further session (September 2026):
+12 of 12 libraries completed, exit status 0, zero failures** (`per_library.csv`;
+primary evidence in `bmtagger_run_raw/`). DeconSeq is dropped outright.
 
-**BMTagger — wired, awaiting its first real-scale execution.** Its conda
-environment installs cleanly (`bmtagger`, `bmtool`, `srprism`, all bioconda).
-The exact command line was first smoke-tested against a small reference
-(*E. coli*, `GCF_000005845.2`) to nail down the real invocation before writing
-anything against the full genome:
+**BMTagger — how it was run.** Environment `bmtagger` from bioconda
+(`bmtagger`, `srprism`; package version **not recorded** — only the binary paths
+were saved to `record/bmtagger_version.txt`). Index built once against the
+full T2T-CHM13v2.0 genome, the same reference used by `hostile_matched` and
+HostSweep:
 ```
 bmtool      -d ref.fasta -o ref.bitmask -w 18
 srprism mkindex -i ref.fasta -o ref.srprism --memory <MB>
@@ -515,23 +550,39 @@ makeblastdb -in ref.fasta -dbtype nucl -out ref.seqdb
 bmtagger.sh -b ref.bitmask -x ref.srprism -d ref.seqdb \
             -q 1 -1 r1.fastq -2 r2.fastq -o out -T tmpdir -X
 ```
-Two things learned from that smoke test and now built into the code:
-**bmtagger.sh does not accept gzipped FASTQ** (confirmed directly: given one,
-it reads the compressed bytes as sequence and either errors or hangs —
-`run_e3.sh` decompresses to a temp file first, outside the timed section), and
-its `-X` output is plain-text `<out>_1.fastq` / `<out>_2.fastq` containing the
-*non*-matching (human-free) reads directly.
+No parameter other than `-q 1` (FASTQ input) and `-X` (write the non-matching
+reads) was set; BMTagger's defaults were used, and no tuning was attempted for
+this panel. The command line was first smoke-tested on a small reference
+(*E. coli*, `GCF_000005845.2`), which established two things built into
+`run_e3.sh`: **`bmtagger.sh` does not accept gzipped FASTQ**, so each pair is
+decompressed to a temporary file first, *outside* the timed section; and its
+`-X` output is plain-text `<out>_1.fastq` / `<out>_2.fastq` containing the
+human-free reads directly. Every run used one CPU thread (99 % CPU in all 12
+`/usr/bin/time` records) and a peak of 8.00 GB, fixed by the bitmask size.
 
-This is now implemented in `07_build_bmtagger_index.sh` (builds the bitmask,
-srprism index and BLAST seqdb against the full T2T-CHM13v2.0 genome) and in
-`run_e3.sh`'s `bmtagger` case, and `chain_all.sh` runs both automatically. **It
-has not yet actually run against the full genome or the synthetic panel** —
-the bitmask is a fixed ~8.1 GB regardless of reference size (`4^18` bits for
-word size 18, confirmed), but the srprism index scales with reference size and
-was only ever built against a 4.7 Mb test genome (129 MB there); its real size
-and build time against a 3.1 Gb genome are unmeasured. `chain_all.sh` builds it
-once and reuses it, records a clear failure if the build or the run does not
-complete, and does not block the rest of the chain either way.
+**Result (section 2b of RESULTS.md).** Matched arm: sensitivity 99.9995–100.0000 %
+(mean 99.9999 %), FPR 0.0002–0.0003 %. Mismatch arm: sensitivity 99.9250,
+99.9575, 99.9543 %, FPR 0.0001–0.0002 %. Background reads removed in error:
+2–5 per library. Human read pairs left: 15 of 20,000 (`SYN-IND-01`), 85 of
+200,000 (`SYN-NEU-02`), 183 of 400,000 (`SYN-NEU-03`), against HostSweep's 8,
+47 and 109. **This is unfavourable to HostSweep on specificity** (BMTagger's FPR
+is roughly two orders of magnitude lower than HostSweep's 0.013–0.015 %) and
+favourable to HostSweep on mismatch-arm sensitivity (HostSweep is greater or
+equal on 12 of 12 libraries, strictly greater on 6). Both facts are reported.
+
+**Check before it was trusted.** The same session regenerated the synthetic
+libraries and re-ran `hostile_matched` and `kneaddata` on all 12. Their
+sensitivity and FPR are **identical in every digit to the committed rows on 24
+of 24** (BMTagger's rows are new; nothing was compared for them). The
+regenerated `synthetic_manifest.csv` is also identical to the committed one.
+
+**Timing is not comparable to the other rows of the table (D17/D18).** The
+BMTagger rows were timed in that further session; the other comparator rows in
+`per_library.csv` were timed in an earlier one. The same-session numbers for
+the three tools re-run together are in `bmtagger_run_raw/csv/per_library.csv`
+(BMTagger 4.9–6.4 min, KneadData 0.8–2.0, Hostile 0.24–0.31). Against the
+earlier session's timings for the same tools and libraries these differ by
+1.9–4.8x, so no runtime column should be built across the two.
 
 **DeconSeq — dropped, per the original instruction.** Not on bioconda; the
 project's own install path is a manual download plus a hand-edited
@@ -539,19 +590,46 @@ project's own install path is a manual download plus a hand-edited
 databases. Given the instruction to drop rather than hand-roll a fragile
 install, it is excluded rather than attempted.
 
-**Interpretation cost.** The comparator table in this benchmark has three
-tools. A claim of the form "HostSweep versus every requested comparator" is
-not supportable until BMTagger is either scored or formally dropped with the
-same standard applied to DeconSeq. Until then, describe the comparison as
-"Hostile (two configurations) and KneadData" explicitly, not as "the
-comparator suite" unqualified.
-
-**Interpretation cost.** Any arm not completed is reported as absent, never
-estimated. `STATUS.md` records exactly what ran. Row counts in the CSVs reflect
-what was attempted; failures appear as `FAILED` rows with their exit status,
-not as omissions.
+**Interpretation cost.** The comparator table has four tools. A claim of the
+form "HostSweep versus every requested comparator" is not supportable: DeconSeq
+is absent and must be named as absent. Describe the comparison as "Hostile (two
+configurations), KneadData and BMTagger," not as "the comparator suite." Any arm
+not completed is reported as absent, never estimated. `STATUS.md` records what
+ran; failures appear as `FAILED` rows with their exit status, not as omissions
+(with the one exception recorded in D21, where the rows are kept out of
+`per_library.csv` to avoid colliding with measured rows, but preserved
+unaltered in `bmtagger_run_raw/`).
 
 ---
+
+### D21. `hostile_default` could not be re-run in the further session (index download failed); earlier measurements stand
+
+**Specified.** Re-run every comparator on the regenerated libraries alongside
+BMTagger.
+
+**Done.** `hostile_matched` and `kneaddata` were re-run and reproduced. All 12
+`hostile_default` attempts **failed with exit status 1**: `hostile` (v2.0.2)
+tries to download its default T2T+HLA index, and the request to
+`https://objectstorage.uk-london-1.oraclecloud.com/n/lrbvkel2wjot/b/human-genome-bucket/o/human-t2t-hla.tar`
+raised `httpx.HTTPError: Failed to download ... Ensure you are connected to the
+internet, or provide a valid path to a local index`. The failure is a network
+failure on that machine's link, not a Hostile fault.
+
+**Handling.** Nothing was substituted and nothing estimated. The 12 FAILED
+records (`hostile_default_run1.failed`, `.stderr`, `.time`) are preserved
+unaltered in `bmtagger_run_raw/evidence/results/<library>/`. They were **not**
+appended to `per_library.csv`: that file already holds a measured
+`hostile_default` row for every one of these (library, run) keys from the
+earlier session, and adding FAILED duplicates would make the file
+self-contradictory. The measured rows are unchanged. That session's
+self-audit accordingly reports "12/48 rows have no metrics JSON" — an expected
+consequence, and it is preserved with the raw delivery (`bmtagger_run_raw/csv/AUDIT.md`).
+
+**Interpretation cost.** `hostile_default` rests on a single (earlier)
+session, n=1, and was not independently reproduced. Its sibling
+`hostile_matched` was reproduced exactly on all 12 libraries, and the two
+configurations were identical or near-identical on every library, but that is
+an inference and not a re-measurement of `hostile_default` itself.
 
 ---
 

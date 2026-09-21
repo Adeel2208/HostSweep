@@ -1,0 +1,24 @@
+bundle:   results_bundle_20260921T152333Z
+built:    20260921T152333Z
+commit:   8cf930ccfb36ab106f156fec87b4c2530316c7cd
+
+metrics JSON per tool (run 1):
+     12 bmtagger_run1.json
+     12 hostile_matched_run1.json
+     12 kneaddata_run1.json
+
+failed runs:
+results/SYN-CHM13-01/hostile_default_run1.failed
+results/SYN-CHM13-02/hostile_default_run1.failed
+results/SYN-CHM13-03/hostile_default_run1.failed
+results/SYN-CHM13-04/hostile_default_run1.failed
+results/SYN-CHM13-05/hostile_default_run1.failed
+results/SYN-CHM13-06/hostile_default_run1.failed
+results/SYN-CHM13-07/hostile_default_run1.failed
+results/SYN-CHM13-08/hostile_default_run1.failed
+results/SYN-CHM13-09/hostile_default_run1.failed
+results/SYN-IND-01/hostile_default_run1.failed
+results/SYN-NEU-02/hostile_default_run1.failed
+results/SYN-NEU-03/hostile_default_run1.failed
+
+NOT included: FASTQ, contigs, alignments, indexes, work trees.
