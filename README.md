@@ -39,7 +39,12 @@ custodian and their governance framework.
 
 ## Benchmarks
 
-Benchmark results will be published with the revised manuscript.
+Measured benchmark results for the revised manuscript are in
+[`benchmark/run/RESULTS.md`](benchmark/run/RESULTS.md), with every departure from the
+specified protocol logged in [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md).
+They include results that do not favour HostSweep (for example, Hostile and BMTagger
+have lower false positive rates on the synthetic panel); read the deviations file
+before quoting any figure.
 
 ---
 
@@ -241,8 +246,9 @@ The two passes exploit complementary algorithmic strengths:
   recovers divergent, partially aligning, and polymorphic or low-complexity
   reads that minimizer seeding misses.
 
-The size of the second pass's contribution, and the runtime it costs, will be
-published with the revised manuscript.
+The size of the second pass's contribution has been measured on the synthetic panel;
+see section 3b of [`benchmark/run/RESULTS.md`](benchmark/run/RESULTS.md). Runtime is
+not reported as a comparison, for the reasons given in deviation D17.
 
 ---
 
@@ -296,14 +302,19 @@ incomplete.
 
 ### Benchmark datasets
 
-**Real SRA libraries** — the panel is being rebuilt and verified against SRA; see [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md).
+**Real SRA libraries (30)** — verified against SRA metadata, see [`benchmark/run/accessions_verified.csv`](benchmark/run/accessions_verified.csv) and [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md). There is no per-read truth set for real libraries, so no accuracy figures are reported for them.
 
 **Synthetic controlled-truth libraries (12)** built from ART-simulated human
 reads from T2T-CHM13v2.0 over CAMI II-style microbial backgrounds, at exact
 spike-in fractions of 0.1%, 0.5%, 1%, 5%, 10%, 20% and 40%, plus libraries
 covering non-European haplotype diversity from 1000 Genomes.
 
-Benchmark results will be published with the revised manuscript.
+Measured benchmark results for the revised manuscript are in
+[`benchmark/run/RESULTS.md`](benchmark/run/RESULTS.md), with every departure from the
+specified protocol logged in [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md).
+They include results that do not favour HostSweep (for example, Hostile and BMTagger
+have lower false positive rates on the synthetic panel); read the deviations file
+before quoting any figure.
 
 ---
 
