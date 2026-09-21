@@ -24,7 +24,13 @@
 #     is what E9 (chain_e9.sh / run_e9.sh) produces for every (library,
 #     method) pair -- this script walks that same tree.
 #
-# Environment:  THREADS  default 8
+# Environment:  THREADS     default 8
+#               ASSEMBLER   megahit (default): <lib>/<method>/megahit/final.contigs.fa
+#                           metaspades (R3):   <lib>/<method>/metaspades_rep<REP>/contigs.fasta
+#               REP         which metaSPAdes replicate to score, default 1
+#               MIN_CONTIG  keep only contigs at least this long before scoring,
+#                           default 0 (all); R3 uses 1000, matching the MetaQUAST
+#                           1 kb threshold
 
 set -uo pipefail
 
@@ -32,6 +38,14 @@ RESULTS="${1:?usage: run_checkm2.sh <downstream_results_dir> <out_csv> [db_dir]}
 OUT_CSV="${2:?usage: run_checkm2.sh <downstream_results_dir> <out_csv> [db_dir]}"
 DB_DIR="${3:-$HOME/hostsweep/checkm2_db}"
 THREADS="${THREADS:-8}"
+ASSEMBLER="${ASSEMBLER:-megahit}"
+REP="${REP:-1}"
+MIN_CONTIG="${MIN_CONTIG:-0}"
+case "$ASSEMBLER" in
+    megahit)    CONTIG_GLOB="$RESULTS/*/*/megahit/final.contigs.fa" ;;
+    metaspades) CONTIG_GLOB="$RESULTS/*/*/metaspades_rep${REP}/contigs.fasta" ;;
+    *) echo "unknown ASSEMBLER '$ASSEMBLER' (megahit|metaspades)" >&2; exit 1 ;;
+esac
 CONDA_SH="${CONDA_SH:-$HOME/hostsweep/miniforge3/etc/profile.d/conda.sh}"
 
 say() { echo "[checkm2 $(date -u +%H:%M:%S)] $*"; }
@@ -106,7 +120,7 @@ sys.exit(1)
 
 shopt -s nullglob
 N=0
-for CONTIGS in "$RESULTS"/*/*/megahit/final.contigs.fa; do
+for CONTIGS in $CONTIG_GLOB; do
     [ -s "$CONTIGS" ] || continue
     METHOD_DIR="$(dirname "$(dirname "$CONTIGS")")"
     LIB_DIR="$(dirname "$METHOD_DIR")"
@@ -119,13 +133,47 @@ for CONTIGS in "$RESULTS"/*/*/megahit/final.contigs.fa; do
     fi
 
     WD="$METHOD_DIR/checkm2.work"
-    rm -rf "$WD"
+    rm -rf "$WD"; mkdir -p "$WD"
+    INPUT_FA="$WD/input.fa"
+    # Length filter (R3: contigs >= 1 kb). The counts are written next to the
+    # result so the number of contigs actually scored is visible.
+    python3 - "$CONTIGS" "$INPUT_FA" "$MIN_CONTIG" > "$METHOD_DIR/checkm2.filter.txt" <<'PYEOF'
+import sys
+src, dst, minlen = sys.argv[1], sys.argv[2], int(sys.argv[3])
+kept = total = kept_bp = all_bp = 0
+with open(src) as fh, open(dst, "w") as out:
+    name, seq = None, []
+    def flush():
+        global kept, total, kept_bp, all_bp
+        if name is None:
+            return
+        s = "".join(seq)
+        total += 1
+        all_bp += len(s)
+        if len(s) >= minlen:
+            kept += 1
+            kept_bp += len(s)
+            out.write(name + "\n")
+            for i in range(0, len(s), 80):
+                out.write(s[i:i + 80] + "\n")
+    for line in fh:
+        line = line.rstrip("\n")
+        if line.startswith(">"):
+            flush()
+            name, seq = line, []
+        else:
+            seq.append(line)
+    flush()
+print("contigs_total=%d bp_total=%d min_contig=%d contigs_scored=%d bp_scored=%d"
+      % (total, all_bp, minlen, kept, kept_bp))
+PYEOF
+    say "$LIB/$METHOD: $(cat "$METHOD_DIR/checkm2.filter.txt")"
     say "$LIB/$METHOD: running checkm2 predict"
-    checkm2 predict --threads "$THREADS" --input "$CONTIGS" \
-        --output-directory "$WD" --database_path "$DB_FILE" -x fa \
+    checkm2 predict --threads "$THREADS" --input "$INPUT_FA" \
+        --output-directory "$WD/out" --database_path "$DB_FILE" -x fa \
         > "$METHOD_DIR/checkm2.stdout" 2> "$METHOD_DIR/checkm2.stderr"
     RC=$?
-    REPORT="$WD/quality_report.tsv"
+    REPORT="$WD/out/quality_report.tsv"
 
     python3 - "$REPORT" "$LIB" "$COND" "$METHOD" "$OUT_CSV" "$RC" <<'PYEOF'
 import csv, os, sys

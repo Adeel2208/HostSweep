@@ -64,6 +64,26 @@ SOURCES = {
     "NA19240": {"accession": "GCA_018503275.1", "population": "Yoruban (YRI)"},
 }
 
+# R5: extra mismatch-arm donors, from populations the first three do not cover
+# (Kinh, Mende, Colombian). Fetched only with --extra, so a normal bootstrap
+# does not download three more ~0.9 GB assemblies.
+#
+# Each accession is pinned to VERSION .1 on purpose. These BioSamples carry a
+# later release of the same GCA number (.2/.3, "hprc_f2": hifiasm v0.19.9,
+# chromosome level) that is a different assembly with a different method. The
+# .1 versions were checked against NCBI on 2026-09-21 and match the criteria
+# of the original three exactly:
+#     HG02080.pri.mat.f1_v2     Scaffold  Hifiasm v. 0.14  UCSC Genomics Institute
+#     HG03098.pri.mat.f1_v2     Contig    Hifiasm v. 0.14  UCSC Genomics Institute
+#     HG01358.pri.mat.f1_v2.1   Scaffold  Hifiasm v. 0.14  UCSC Genomics Institute
+# provenance() below re-checks all of that at run time and refuses to go on
+# if any of it has changed.
+EXTRA_SOURCES = {
+    "HG02080": {"accession": "GCA_018504085.1", "population": "Kinh in Ho Chi Minh City (KHV)"},
+    "HG03098": {"accession": "GCA_018506165.1", "population": "Mende in Sierra Leone (MSL)"},
+    "HG01358": {"accession": "GCA_018469865.1", "population": "Colombian in Medellin (CLM)"},
+}
+
 # Sample whose best-known assembly (Han1, JHU) contains CHM13 v1.1 gap-fill.
 # Nothing in this benchmark may use it.
 FORBIDDEN_SAMPLES = {"HG00621"}
@@ -103,7 +123,13 @@ def provenance(accession):
     reps = d.get("reports")
     if not reps:
         return None
-    rep = reps[0]
+    # Ask for the exact version requested. A query for GCA_x.1 could in
+    # principle return several versions; taking the first would silently pick
+    # a different assembly.
+    matching = [r for r in reps if r.get("accession") == accession]
+    if not matching:
+        return None
+    rep = matching[0]
     info = rep.get("assembly_info", {})
     bios = info.get("biosample", {}) or {}
     attrs = {a.get("name"): a.get("value") for a in (bios.get("attributes") or [])}
@@ -254,14 +280,18 @@ def main():
     ap.add_argument("--refs", required=True)
     ap.add_argument("--verify-only", action="store_true")
     ap.add_argument("--report", default=None)
+    ap.add_argument("--extra", action="store_true",
+                    help="process the R5 extra donors (EXTRA_SOURCES) instead of "
+                         "the original three")
     args = ap.parse_args()
+    sources = EXTRA_SOURCES if args.extra else SOURCES
 
     refs = Path(args.refs)
     refs.mkdir(parents=True, exist_ok=True)
     findings = []
     problems = []
 
-    for sample, spec in SOURCES.items():
+    for sample, spec in sources.items():
         acc = spec["accession"]
         print("=" * 78)
         print("%s  %s  (%s)" % (sample, acc, spec["population"]))

@@ -785,6 +785,57 @@ The repo's `downstream.csv` has now been corrected to match —
 
 ---
 
+### I3. Kraken2 `reads_total` and `pct_human` were mis-computed in `kraken2_human.csv` (detected, corrected)
+
+**What happened.** For each (library, method) pair `run_e9.sh` reduced the Kraken2
+report to `reads_total`, `reads_human` and `pct_human`. Kraken2 writes the
+unclassified reads on their own `U` line, and the `root` line's clade count covers
+**classified** reads only, so the number of reads that went in is the sum of the
+two. The parser did
+
+    total = max(total, root_clade)     # on the root line
+    total += unclassified              # on the U line
+
+in the order the lines appear (U first), which leaves `total` equal to whichever of
+the two counts is larger. On these libraries that is the unclassified count, about
+67 % of the true total on the synthetic libraries and 78-86 % on the real ones.
+`reads_total` was therefore wrong in every row, and `pct_human = reads_human /
+reads_total` was too high by a factor of 1.2 to 1.5. `reads_human` (the Homo
+sapiens clade) was correct throughout.
+
+**How it was caught.** Not by inspecting the results. While writing a test for the
+Kraken2 step of the full-Standard run (R4), the test's expected total for a fake
+report with 100 unclassified and 900 in the root was 1,000; the parser returned 900.
+Reading the real reports confirmed the same fault: `SYN-CHM13-01` / hostile has
+2,687,272 unclassified and 1,308,728 in the root, and the committed `reads_total`
+was 2,687,272.
+
+**Check on the fix.** With total = unclassified + root, `SYN-CHM13-01` / hostile is
+3,996,000 = 2 x 1,998,000, exactly the number of read pairs that library has left
+after cleaning (2,000,000 pairs less the 2,000 human pairs it was built with).
+
+**Consequence before detection.** `kraken2_human.csv` and the "Residual human
+content" table in RESULTS.md carried the wrong `reads total` and `% human` columns.
+No claim in the text depended on them: every comparison (KneadData leaves fewer
+human reads than HostSweep on five of six libraries; HostSweep 27x fewer than
+Hostile on the blood library; and so on) is made on the `reads_human` counts, which
+were correct.
+
+**Action.** The parser is now `kraken2_report_to_csv.py`, used by both the E9 step
+and the new R4 step, and `run_e9.sh`'s inline copy was corrected the same way.
+`kraken2_human.csv` was recomputed from the 18 `k2.report` files kept as evidence
+(all 18 `reads_human` values and all 18 `db_build_date` values identical to the
+committed ones; only `reads_total` and `pct_human` changed) and the RESULTS.md table
+was rewritten from it. The uncorrected file is kept unchanged as
+`kraken2_human_uncorrected_I3.csv`, and the raw delivery in `bmtagger_run_raw/`
+still contains the uncorrected `kraken2_human.csv` exactly as the run wrote it.
+
+**Interpretation cost.** Anything quoted from the old `% human` column should be
+replaced by the corrected value. The direction of every comparison is unchanged
+because it depends on counts.
+
+---
+
 *No entry in this file describes a number that was estimated, interpolated or
 carried over. Where a measurement does not exist, the corresponding cell is
 absent or `FAILED`.*

@@ -15,11 +15,21 @@
 # continues a partial archive.
 #
 # Usage:  bash 06_fetch_kraken2_db.sh [build_date] [dest]
+#
+#   K2_FLAVOR=standard_08gb   (default) the capped 8 GB build, D5
+#   K2_FLAVOR=standard        the FULL Standard database (R4): a ~72 GB archive
+#                             and roughly twice that on disk while extracting.
+#                             Default destination ~/hostsweep/k2_standard_full.
 set -uo pipefail
 
 BUILD="${1:-20250402}"
-DEST="${2:-$HOME/hostsweep/k2_standard_08gb}"
-ARCHIVE="k2_standard_08gb_${BUILD}.tar.gz"
+K2_FLAVOR="${K2_FLAVOR:-standard_08gb}"
+case "$K2_FLAVOR" in
+    standard_08gb) DEFAULT_DEST="$HOME/hostsweep/k2_standard_08gb"; ARCHIVE="k2_standard_08gb_${BUILD}.tar.gz"; NEED_GB=20 ;;
+    standard)      DEFAULT_DEST="$HOME/hostsweep/k2_standard_full";  ARCHIVE="k2_standard_${BUILD}.tar.gz";      NEED_GB=190 ;;
+    *) echo "unknown K2_FLAVOR '$K2_FLAVOR' (standard_08gb|standard)" >&2; exit 1 ;;
+esac
+DEST="${2:-$DEFAULT_DEST}"
 URL="https://genome-idx.s3.amazonaws.com/kraken/${ARCHIVE}"
 TMP="$HOME/hostsweep/dl"
 
@@ -47,7 +57,21 @@ fi
 # this script continues rather than restarts. --auto-file-renaming=false
 # stops aria2c saving a resumed download under a new name (<archive>.1).
 CONNS="${K2_CONNECTIONS:-16}"
-say "fetching $ARCHIVE (5.5 GiB, resumable)"
+
+# Disk check before starting a download that can run for days: the archive and
+# the extracted database coexist until extraction finishes.
+mkdir -p "$TMP" "$(dirname "$DEST")"
+FREE_GB="$(df -Pk "$TMP" | awk 'NR==2 {print int($4/1048576)}')"
+# A partly downloaded archive already occupies its share; count it, or a resume
+# would refuse to start after most of the download is done. du reports real
+# blocks used, not the sparse size aria2c reserves.
+PART_GB="$(du -k "$TMP/$ARCHIVE" 2>/dev/null | awk '{print int($1/1048576)}')"
+FREE_GB=$(( FREE_GB + ${PART_GB:-0} ))
+if [ "$FREE_GB" -lt "$NEED_GB" ]; then
+    say "only ${FREE_GB} GB free in $TMP; $K2_FLAVOR needs about ${NEED_GB} GB (archive + extracted). Not starting."
+    exit 1
+fi
+say "fetching $ARCHIVE (resumable; ${FREE_GB} GB free, need about ${NEED_GB} GB)"
 if command -v aria2c >/dev/null 2>&1; then
     say "  aria2c, $CONNS parallel connections"
     if ! aria2c -x"$CONNS" -s"$CONNS" -k4M -c --file-allocation=none \
@@ -89,4 +113,4 @@ fi
 echo "$BUILD" > "$DEST/.build_date"
 rm -f "$TMP/$ARCHIVE"
 say "ready: $DEST ($(du -sh "$DEST" | cut -f1)), build $BUILD"
-say "REMINDER: Standard-8 is capped; residual-human counts are a floor (D5)."
+[ "$K2_FLAVOR" = standard_08gb ] && say "REMINDER: Standard-8 is capped; residual-human counts are a floor (D5)."

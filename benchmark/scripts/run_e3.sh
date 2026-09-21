@@ -26,11 +26,20 @@
 #     BMTAGGER_SRPRISM  srprism index prefix,   .../human.srprism
 #     BMTAGGER_SEQDB    blast seqdb prefix,      .../human.seqdb
 #     (build all three with 07_build_bmtagger_index.sh)
+#     KEEP_CLEANED      default 1. Set 0 to skip copying run 1's cleaned reads
+#                       (timing runs do not need them and they are ~1 GB per
+#                       tool per library)
+#     WARM_INPUT        default 0. Set 1 to read each library's FASTQ once
+#                       before its runs, so the first tool to touch a library
+#                       does not pay a cold-disk penalty the others do not
+#                       (timing runs only)
 #
 # Outputs, per (library, tool, run):
 #     <results_dir>/<library>/metrics_<tool>_run<N>.json    scored by compute_metrics.py
 #     <results_dir>/<library>/<tool>_run<N>.time            GNU time -v
 #     <results_dir>/<library>/<tool>_run<N>.stdout/.stderr  raw output
+#     <results_dir>/<library>/<tool>_run<N>.swap            pages swapped in/out
+#                       while the run was going, from /proc/vmstat (deltas)
 #
 # A failed run writes a .failed marker carrying the exit status and leaves no
 # metrics JSON, so Stage 9 provenance checks see the gap rather than a value.
@@ -156,6 +165,8 @@ for R1 in "${LIBS[@]}"; do
     [ -s "$R2" ] || { say "missing mate for $LIB, skipping"; continue; }
     DIR="$RESULTS/$LIB"; mkdir -p "$DIR"
 
+    if [ "${WARM_INPUT:-0}" = 1 ]; then cat "$R1" "$R2" > /dev/null 2>&1; fi
+
     for TOOL in "${TOOLS[@]}"; do
         for N in $(seq 1 "$RUNS"); do
             MJ="$DIR/metrics_${TOOL}_run${N}.json"
@@ -163,7 +174,16 @@ for R1 in "${LIBS[@]}"; do
 
             say "$LIB / $TOOL / run $N"
             STATUS=0
+            # System-wide swap counters either side of the run. Zero here,
+            # together with "Swaps: 0" in the .time file, is the evidence
+            # that a runtime was not inflated by paging (D17).
+            SW0="$(awk '/^pswpin|^pswpout/ {printf "%s ", $2}' /proc/vmstat 2>/dev/null)"
             run_one "$TOOL" "$LIB" "$N" "$R1" "$R2" "$DIR" || STATUS=$?
+            SW1="$(awk '/^pswpin|^pswpout/ {printf "%s ", $2}' /proc/vmstat 2>/dev/null)"
+            if [ -n "$SW0" ] && [ -n "$SW1" ]; then
+                read -r I0 O0 <<< "$SW0"; read -r I1 O1 <<< "$SW1"
+                echo "pswpin_pages=$((I1-I0)) pswpout_pages=$((O1-O0))" > "$DIR/${TOOL}_run${N}.swap"
+            fi
 
             WD="$DIR/${TOOL}_run${N}.work"
             if [ "$STATUS" -ne 0 ]; then
@@ -194,7 +214,7 @@ for R1 in "${LIBS[@]}"; do
             # them later costs a full pipeline run per library. Only run 1 is
             # kept -- the pipeline is deterministic, so runs 2 and 3 produce
             # identical reads and storing them three times buys nothing.
-            if [ "$N" = "1" ] && [ ${#CLEAN[@]} -gt 0 ]; then
+            if [ "$N" = "1" ] && [ ${#CLEAN[@]} -gt 0 ] && [ "${KEEP_CLEANED:-1}" = 1 ]; then
                 KEEP="$DIR/cleaned_run1"
                 mkdir -p "$KEEP"
                 for f in "${CLEAN[@]}"; do

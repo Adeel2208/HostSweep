@@ -300,6 +300,10 @@ checks that the new machine reproduces the old machine's numbers before
 trusting it with anything else, and then runs whatever experiments are still
 incomplete.
 
+The clean timing run, the metaSPAdes downstream arm, CheckM2, the full Kraken2
+Standard classification and the extra reference-mismatch donors run with one
+command: see [`benchmark/REMAINING.md`](benchmark/REMAINING.md).
+
 ### Benchmark datasets
 
 **Real SRA libraries (30)** — verified against SRA metadata, see [`benchmark/run/accessions_verified.csv`](benchmark/run/accessions_verified.csv) and [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md). There is no per-read truth set for real libraries, so no accuracy figures are reported for them.

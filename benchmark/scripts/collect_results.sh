@@ -29,18 +29,28 @@ mkdir -p "$B/csv" "$B/evidence" "$B/logs"
 # 1. result tables and the audit
 cp -f "$OUT"/*.csv "$B/csv/" 2>/dev/null
 cp -f "$OUT"/AUDIT.md "$B/csv/" 2>/dev/null
+# tables from the remaining-experiment stages (R1-R5), kept in their own folders
+for d in r1 r2 r3 r4 r5; do
+    if [ -d "$OUT/$d" ]; then
+        mkdir -p "$B/csv/$d"
+        cp -f "$OUT/$d"/*.csv "$OUT/$d"/*.txt "$OUT/$d"/*.tsv "$B/csv/$d/" 2>/dev/null
+    fi
+done
+cp -f "$OUT"/r5_panel.tsv "$OUT"/r5_donor_provenance.json "$B/csv/" 2>/dev/null
 say "tables: $(ls "$B/csv" | tr '\n' ' ')"
 
 # 2. per-run evidence, with paths kept relative to $OUT
 cd "$OUT" || exit 1
-find results downstream_results e4_results 2>/dev/null \( \
+EVDIRS=(results downstream_results e4_results r1_results r2_results r4 r5_results)
+find "${EVDIRS[@]}" 2>/dev/null \( \
         -name 'metrics_*.json' -o -name '*.time' -o -name '*.failed' \
         -o -name 'k2.report' -o -name 'checkm2.stdout' -o -name 'checkm2.stderr' \
-        -o -name 'megahit.stdout' -o -name 'report.tsv' \) -type f -print0 \
+        -o -name 'megahit.stdout' -o -name 'report.tsv' \
+        -o -name '*.swap' -o -name '*.k2.report' -o -name 'checkm2.filter.txt' \) -type f -print0 \
     | xargs -0 -r cp --parents -t "$B/evidence"
 
 # a failed run's stderr says WHY it failed -- keep it, and only it
-find results downstream_results e4_results -name '*.failed' -type f 2>/dev/null | while read -r f; do
+find "${EVDIRS[@]}" -name '*.failed' -type f 2>/dev/null | while read -r f; do
     s="${f%.failed}.stderr"
     [ -f "$s" ] && cp --parents "$s" "$B/evidence"
 done

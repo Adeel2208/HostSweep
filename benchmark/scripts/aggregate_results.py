@@ -37,12 +37,21 @@ HUMAN_SOURCE = {
     "SYN-NEU-02": ("HG00733", "GCA_018506975.1"),   # Puerto Rican
     "SYN-NEU-03": ("NA19240", "GCA_018503275.1"),   # Yoruban
 }
+# R5 extra donors (03_fetch_human_sources.py EXTRA_SOURCES, pinned to version .1).
+# Library names are SYN-<population>-<host %>, e.g. SYN-KHV-10.
+for _pop, _donor, _acc in (("KHV", "HG02080", "GCA_018504085.1"),
+                           ("MSL", "HG03098", "GCA_018506165.1"),
+                           ("CLM", "HG01358", "GCA_018469865.1")):
+    for _pct in ("01", "10", "20"):
+        HUMAN_SOURCE["SYN-%s-%s" % (_pop, _pct)] = (_donor, _acc)
+
+MISMATCH_PREFIXES = ("SYN-NEU", "SYN-IND", "SYN-KHV", "SYN-MSL", "SYN-CLM")
 
 
 def condition_of(library):
     if library.startswith("SYN-CHM13"):
         return "synthetic_matched"
-    if library.startswith("SYN-NEU") or library.startswith("SYN-IND"):
+    if library.startswith(MISMATCH_PREFIXES):
         return "synthetic_mismatch"
     return "real"
 

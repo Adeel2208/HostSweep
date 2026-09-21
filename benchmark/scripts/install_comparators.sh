@@ -140,6 +140,14 @@ SHIM
             say "sra-tools -> $(grep -m1 -i 'version' "$RECORD/sra_version.txt" || echo '?')"
             conda deactivate
             ;;
+        spades)
+            # R2: metaSPAdes replaces MEGAHIT for the downstream arm (D4).
+            create_env spades spades || { say "spades install FAILED"; continue; }
+            conda activate spades
+            metaspades.py --version > "$RECORD/spades_version.txt" 2>&1
+            say "metaspades -> $(head -1 "$RECORD/spades_version.txt")"
+            conda deactivate
+            ;;
         kraken2)
             # D5: Standard-8 capped database replaces Standard.
             create_env kraken2 kraken2 || { say "kraken2 install FAILED"; continue; }

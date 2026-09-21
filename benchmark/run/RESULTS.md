@@ -619,30 +619,43 @@ synthetic misassembly result without depending on a reference.
 
 | library | method | reads total | reads human | % human |
 |---|---|---|---|---|
-| `SYN-CHM13-01` | hostsweep | 2,686,838 | **2** | 7.4e-05 % |
-| `SYN-CHM13-01` | hostile | 2,687,272 | **11** | 0.000409 % |
-| `SYN-CHM13-01` | kneaddata | 2,677,396 | **0** | 0.0 % |
-| `SYN-CHM13-05` | hostsweep | 2,422,066 | **139** | 0.005739 % |
-| `SYN-CHM13-05` | hostile | 2,422,243 | **10** | 0.000413 % |
-| `SYN-CHM13-05` | kneaddata | 2,413,090 | **0** | 0.0 % |
-| `SYN-NEU-03` | hostsweep | 2,153,571 | **231** | 0.010726 % |
-| `SYN-NEU-03` | hostile | 2,154,280 | **227** | 0.010537 % |
-| `SYN-NEU-03` | kneaddata | 2,145,547 | **50** | 0.00233 % |
-| `SRR40486826` | hostsweep | 7,641,137 | **5** | 6.5e-05 % |
-| `SRR40486826` | hostile | 7,836,297 | **103** | 0.001314 % |
-| `SRR40486826` | kneaddata | 7,418,809 | **0** | 0.0 % |
-| `ERR15898346` | hostsweep | 7,384,654 | **0** | 0.0 % |
-| `ERR15898346` | hostile | 7,395,001 | **0** | 0.0 % |
-| `ERR15898346` | kneaddata | 7,296,246 | **0** | 0.0 % |
-| `SRR31641567` | hostsweep | 1,818,549 | **224** | 0.012318 % |
-| `SRR31641567` | hostile | 1,940,560 | **5,987** | 0.308519 % |
-| `SRR31641567` | kneaddata | 1,340,525 | **45** | 0.003357 % |
+| `SYN-CHM13-01` | hostsweep | 3,995,514 | **2** | 5e-05 % |
+| `SYN-CHM13-01` | hostile | 3,996,000 | **11** | 0.000275 % |
+| `SYN-CHM13-01` | kneaddata | 3,978,984 | **0** | 0.0 % |
+| `SYN-CHM13-05` | hostsweep | 3,599,926 | **139** | 0.003861 % |
+| `SYN-CHM13-05` | hostile | 3,600,002 | **10** | 0.000278 % |
+| `SYN-CHM13-05` | kneaddata | 3,584,550 | **0** | 0.0 % |
+| `SYN-NEU-03` | hostsweep | 3,200,250 | **231** | 0.007218 % |
+| `SYN-NEU-03` | hostile | 3,200,990 | **227** | 0.007092 % |
+| `SYN-NEU-03` | kneaddata | 3,186,430 | **50** | 0.001569 % |
+| `SRR40486826` | hostsweep | 9,824,456 | **5** | 5.1e-05 % |
+| `SRR40486826` | hostile | 9,927,850 | **103** | 0.001037 % |
+| `SRR40486826` | kneaddata | 9,470,160 | **0** | 0.0 % |
+| `ERR15898346` | hostsweep | 9,472,386 | **0** | 0.0 % |
+| `ERR15898346` | hostile | 9,484,140 | **0** | 0.0 % |
+| `ERR15898346` | kneaddata | 9,373,730 | **0** | 0.0 % |
+| `SRR31641567` | hostsweep | 2,124,388 | **224** | 0.010544 % |
+| `SRR31641567` | hostile | 2,258,674 | **5,987** | 0.265067 % |
+| `SRR31641567` | kneaddata | 1,609,012 | **45** | 0.002797 % |
 
 > **D5 applies to every figure in this table.** Standard-8 is a capped
 > database; capping drops minimizers, so it detects **less** human sequence
 > than Standard. Every `reads_human` count here is a **floor, not an
 > estimate**, and cannot support a claim that residual human content is below
 > any threshold. Database build `20250402`.
+
+> **CORRECTION (I3).** The `reads total` and `% human` columns of the first
+> version of this table were wrong, and are corrected here. Kraken2's report
+> lists unclassified reads on their own line and its `root` line counts
+> classified reads only, so the number of reads in is the sum of the two. The
+> parser used the larger of the two instead, so `reads total` was in practice the
+> *unclassified* count (about 67 % of the true total on the synthetic libraries)
+> and `% human` was too high by a factor of 1.2–1.5 in every row. The
+> `reads human` counts were correct, and **every comparison in the text below
+> uses those counts and is unchanged.** The check: for `SYN-CHM13-01` / hostile
+> the corrected total is 3,996,000 = 2 x the 1,998,000 read pairs that library
+> has left after cleaning. Recomputed from the 18 `k2.report` files on disk; the
+> uncorrected table is kept as `kraken2_human_uncorrected_I3.csv`.
 
 ### This table contains a result unfavourable to HostSweep
 
@@ -1066,6 +1079,16 @@ it cannot recur. A second reference-based column, `duplication_ratio`, was
 missed in the first correction and has since been blanked too — it was left
 populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
 
+### I3 — Kraken2 `reads_total` and `pct_human` were mis-computed (detected, corrected)
+The parser took `max(root clade, unclassified)` instead of their sum, so
+`reads_total` reported the unclassified count and `pct_human` was too high by
+1.2–1.5x in all 18 rows of `kraken2_human.csv`. `reads_human` was right. Found
+while writing a test for the Kraken2 step of R4, which expected 1,000 reads from
+a report with 100 unclassified and 900 in the root and got 900. Corrected from
+the reports on disk; the parser is now one script
+(`kraken2_report_to_csv.py`), used by both the E9 step and R4. Full account in
+`DEVIATIONS.md`.
+
 ---
 
 ## 9. What the paper cannot yet claim
@@ -1129,10 +1152,11 @@ populated from the same pre-fix runs. Full account in `DEVIATIONS.md`.
 | `verification_log.txt` | — | Per-category study counts, exact queries, UID counts |
 | `genomes_verified.tsv` | 10 | Background community, verified at NCBI |
 | `human_sources_provenance.json` | 3 | Mismatch-arm assembly provenance and composition |
-| `DEVIATIONS.md` | 23 | 21 deviations + 2 integrity incidents |
+| `DEVIATIONS.md` | 24 | 21 deviations + 3 integrity incidents |
 | `STATUS.md` | — | What ran, what failed, what was skipped |
 | `downstream.csv` | 18 | N50, misassemblies, assembled Mb ≥1 kb, per method |
-| `kraken2_human.csv` | 18 | Residual human reads per method (floors, D5) |
+| `kraken2_human.csv` | 18 | Residual human reads per method (floors, D5); `reads_total` and `pct_human` corrected in I3 |
+| `kraken2_human_uncorrected_I3.csv` | 18 | The table as first produced, before I3 was corrected; kept unchanged for traceability |
 | `ablation.csv` | 36 | Dual-pass contribution, 3 configurations |
 | `e4_per_library.csv` | 30 | Real libraries, HostSweep: runtime, peak memory (no truth set, D18) |
 | `AUDIT.md` | — | Self-audit, run on the later session's own evidence tree (see the note at the top of the file) |

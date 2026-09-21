@@ -64,7 +64,7 @@ K2CSV="$RESULTS/kraken2_human.csv"
 condition_of() {
     case "$1" in
         SYN-CHM13-*) echo synthetic_matched ;;
-        SYN-NEU-*|SYN-IND-*) echo synthetic_mismatch ;;
+        SYN-NEU-*|SYN-IND-*|SYN-KHV-*|SYN-MSL-*|SYN-CLM-*) echo synthetic_mismatch ;;
         *) echo real ;;
     esac
 }
@@ -225,7 +225,7 @@ PYEOF
             python3 - "$OUT/k2.report" "$LIB" "$METHOD" "$K2_DATE" "$K2CSV" <<'PYEOF'
 import csv, os, sys
 rep, lib, method, dbdate, out = sys.argv[1:6]
-total = human = 0
+unclassified = root = human = 0
 if os.path.exists(rep):
     with open(rep) as fh:
         for line in fh:
@@ -237,12 +237,16 @@ if os.path.exists(rep):
             except ValueError:
                 continue
             rank, taxid, name = f[3].strip(), f[4].strip(), f[5].strip()
-            if rank == "R" and name == "root":
-                total = max(total, clade)
+            # I3: the root clade counts CLASSIFIED reads only; unclassified
+            # reads are their own "U" line. Total = both. (This used to be
+            # total = max(root, unclassified), which reported one of them.)
             if rank == "U":
-                total += clade
+                unclassified += clade
+            elif rank == "R" and name == "root":
+                root = clade
             if taxid == "9606":
                 human = clade
+total = unclassified + root
 pct = round(100.0 * human / total, 6) if total else ""
 existing = set()
 if os.path.exists(out):
