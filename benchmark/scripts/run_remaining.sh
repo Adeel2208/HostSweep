@@ -29,7 +29,14 @@
 #
 # Environment (all optional):
 #     THREADS                 threads per run in the TIMED stages R1/R5 (default 8)
-#     ASM_THREADS             threads for R2/R3/R4 (default min(nproc, 32))
+#     ASM_THREADS             threads for R3/R4 (default min(nproc, 32))
+#     SPADES_THREADS          starting thread count for R2's metaSPAdes calls
+#                             (default min(ASM_THREADS, 16)). Kept lower than
+#                             ASM_THREADS on purpose: spades-hammer segfaults
+#                             intermittently at high thread counts (I4), and
+#                             each attempt already halves on retry, so a high
+#                             starting point mostly means a higher chance of
+#                             needing that retry at all.
 #     SKIP_HOSTILE_DEFAULT=1  leave hostile_default out (see r_common.sh)
 #     HOSTILE_INDEX_TAR=path  a local copy of Hostile's human-t2t-hla.tar
 #     R5_FRACTIONS            default "0.10 0.20" (six libraries); add 0.01 for nine
@@ -86,13 +93,14 @@ exec > >(tee -a "$LOGFILE") 2>&1
 NPROC="$(nproc)"
 export THREADS="${THREADS:-8}"
 export ASM_THREADS="${ASM_THREADS:-$(( NPROC < 32 ? NPROC : 32 ))}"
+export SPADES_THREADS="${SPADES_THREADS:-$(( ASM_THREADS < 16 ? ASM_THREADS : 16 ))}"
 MEM_GB=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo) / 1048576 ))
 AVAIL_GB=$(( $(awk '/MemAvailable/ {print $2}' /proc/meminfo) / 1048576 ))
 FREE_GB="$(df -Pk "$ROOT" | awk 'NR==2 {print int($4/1048576)}')"
 
 say "log: $LOGFILE"
 say "machine: $NPROC CPUs, ${MEM_GB} GB RAM (${AVAIL_GB} GB available), ${FREE_GB} GB free on $(df -P "$ROOT" | awk 'NR==2{print $1}')"
-say "threads: timed stages $THREADS, assembly/classification stages $ASM_THREADS"
+say "threads: timed stages $THREADS, R2 metaSPAdes starts at $SPADES_THREADS (I4), R3/R4 at $ASM_THREADS"
 
 # Refresh the checkout so the scripts run are the ones on GitHub.
 REPO="$ROOT/HostSweep"
@@ -257,7 +265,7 @@ stage_r2() {
     ensure_e9_inputs || return 1
     env_present spades || bash "$SCRIPTS/install_comparators.sh" spades
     env_present spades || { say "spades env could not be installed"; return 1; }
-    THREADS="$ASM_THREADS" bash "$SCRIPTS/run_metaspades_e9.sh" "$E9_CLEAN" "$OUT/r2_results" "$OUT/e9_refs" "${E9_LIBS[@]}"
+    THREADS="$SPADES_THREADS" bash "$SCRIPTS/run_metaspades_e9.sh" "$E9_CLEAN" "$OUT/r2_results" "$OUT/e9_refs" "${E9_LIBS[@]}"
     mkdir -p "$OUT/r2"
     cp -f "$OUT/r2_results"/downstream_metaspades*.csv "$OUT/r2_results/inputs_sha256.txt" "$OUT/r2/" 2>/dev/null
     # complete = every pair has a row for replicate 1 that is not FAILED
