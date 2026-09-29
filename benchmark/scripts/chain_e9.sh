@@ -188,6 +188,15 @@ for f in "$REFS"/GCF_*.fna; do
 done
 say "MetaQUAST reference set: $(ls "$MQ_REFS" | wc -l) genomes"
 
+# CLEAN_ONLY=1: stop once the cleaned reads and the reference set exist. The
+# metaSPAdes and full-Standard stages (run_remaining.sh) start from exactly
+# these files and do their own assembly / classification, so the MEGAHIT and
+# Standard-8 steps below are not needed for them.
+if [ "${CLEAN_ONLY:-0}" = 1 ]; then
+    say "CLEAN_ONLY=1: cleaned reads staged under $CLEAN_ROOT; not assembling"
+    exit 0
+fi
+
 # --- assemble and score ------------------------------------------------
 say "running E9 over $(ls "$CLEAN_ROOT" | wc -l) staged libraries"
 bash "$SCRIPTS/run_e9.sh" "$CLEAN_ROOT" "$E9_RESULTS" "$MQ_REFS" "${ALL_LIBS[@]}"

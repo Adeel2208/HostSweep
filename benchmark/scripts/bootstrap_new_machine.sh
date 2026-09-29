@@ -63,6 +63,14 @@
 #     bash bootstrap_new_machine.sh                 # run everything
 #     bash bootstrap_new_machine.sh --from-stage 8   # skip 1-7 (already done)
 #     bash bootstrap_new_machine.sh --stop-after 6   # stop after stage 6
+#     bash bootstrap_new_machine.sh --skip-stage 4,9 # skip stages 4 and 9
+#
+# For a brand-new machine that is going to run the remaining experiments
+# (benchmark/REMAINING.md), the right invocation is
+#     bash bootstrap_new_machine.sh --skip-stage 4 --stop-after 8
+# (stage 4, the Standard-8 database, is only needed by the old MEGAHIT arm; stage
+# 9 repeats work that is already in the committed results). run_remaining.sh
+# does this by itself when the toolchain is missing.
 #
 # A stage number with no flag runs everything from stage 1 through the end.
 
@@ -84,14 +92,19 @@ fail() { echo "[bootstrap FAILED] $*" | tee -a "$LOGFILE" >&2; exit 1; }
 
 FROM=1
 STOP=99
+SKIP=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --from-stage) FROM="$2"; shift 2 ;;
         --stop-after) STOP="$2"; shift 2 ;;
+        --skip-stage) SKIP="$2"; shift 2 ;;   # comma list, e.g. 4,9
         *) fail "unknown argument: $1" ;;
     esac
 done
-run_stage() { [ "$1" -ge "$FROM" ] && [ "$1" -le "$STOP" ]; }
+run_stage() {
+    [ "$1" -ge "$FROM" ] && [ "$1" -le "$STOP" ] || return 1
+    ! echo ",$SKIP," | grep -q ",$1,"
+}
 
 # This must be a real Linux environment (WSL2 Ubuntu, or a native Linux host)
 # -- not Git Bash / MSYS2 / Cygwin on Windows. Those run bash and pass this

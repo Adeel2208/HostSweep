@@ -73,7 +73,10 @@ fail() { say "STOP: $*"; exit 1; }
 [ "$(uname -s)" = Linux ] || fail "not a Linux shell (uname says '$(uname -s)'). On Windows open the Ubuntu (WSL2) app, not Git Bash."
 command -v flock >/dev/null 2>&1 || fail "flock missing: this is not a normal Linux shell"
 [ -x /usr/bin/time ] || fail "/usr/bin/time missing (sudo apt-get install time); peak memory cannot be recorded without it"
-[ -f "$ROOT/miniforge3/etc/profile.d/conda.sh" ] || fail "conda not set up under $ROOT (run benchmark/scripts/bootstrap_new_machine.sh first)"
+CONDA_SH="$ROOT/miniforge3/etc/profile.d/conda.sh"
+# On a brand-new machine conda is not there yet; ensure_toolchain below runs the
+# bootstrap, which installs it. So this is a note, not a stop.
+[ -f "$CONDA_SH" ] || echo "[REMAINING] conda is not installed yet: the setup stages will install it"
 
 exec 5>"$OUT/.remaining.lock"
 flock -n 5 || fail "another run_remaining.sh is already running (lock: $OUT/.remaining.lock)"
@@ -116,17 +119,43 @@ if [ "$DRY" = 1 ]; then
 fi
 
 # -------------------------------------------------------- toolchain present?
-# shellcheck disable=SC1091
-. "$ROOT/miniforge3/etc/profile.d/conda.sh"
 env_present() { conda env list | awk '{print $1}' | grep -qx "$1"; }
 
+e9_cleaned_complete() {
+    local lib m
+    for lib in "${E9_LIBS[@]}"; do for m in hostsweep kneaddata hostile; do
+        [ -s "$E9_CLEAN/$lib/${m}_R1.fastq.gz" ] || return 1
+    done; done
+}
+
 ensure_toolchain() {
-    local missing=0
-    for e in hostsweep hostile kneaddata bmtagger megahit kraken2; do env_present "$e" || { say "  conda env '$e' missing"; missing=1; }; done
+    local missing=0 lib
+    if [ ! -f "$CONDA_SH" ]; then
+        say "  conda not installed"; missing=1
+    else
+        # shellcheck disable=SC1090
+        . "$CONDA_SH"
+        for e in hostsweep hostile kneaddata bmtagger megahit kraken2; do env_present "$e" || { say "  conda env '$e' missing"; missing=1; }; done
+    fi
     ls "$ROOT/bench/synthetic"/*_R1.fastq.gz >/dev/null 2>&1 || { say "  synthetic panel missing"; missing=1; }
+    # The three real libraries are only needed if the cleaned E9 reads are not there yet.
+    if { selected R2 || selected R3 || selected R4; } && ! e9_cleaned_complete; then
+        for lib in SRR40486826 ERR15898346 SRR31641567; do
+            [ -s "$ROOT/e4_fastq/${lib}_1.fastq.gz" ] || { say "  real library $lib not downloaded"; missing=1; }
+        done
+    fi
     if [ "$missing" = 1 ]; then
-        say "toolchain incomplete: running the bootstrap stages that build it (1-6)"
-        bash "$SCRIPTS/bootstrap_new_machine.sh" --stop-after 6 || fail "bootstrap stages 1-6 failed"
+        # Stages 1-8: toolchain, index, comparators, mismatch sources, synthetic
+        # panel, the cross-machine determinism check, and the three real
+        # libraries. Stage 4 (Standard-8) is skipped -- only the old MEGAHIT arm
+        # uses it -- and stage 9 (everything the committed results already
+        # contain) is not run. If the cross-machine check fails, the bootstrap
+        # stops and so does this.
+        say "setup incomplete: running bootstrap stages 1-8 (skipping 4). This is the long one-time part."
+        bash "$SCRIPTS/bootstrap_new_machine.sh" --skip-stage 4 --stop-after 8 || fail "bootstrap failed (see its log under $LOGS); nothing else was started"
+        [ -f "$CONDA_SH" ] || fail "conda still missing after the bootstrap"
+        # shellcheck disable=SC1090
+        . "$CONDA_SH"
     fi
     if [ ! -s "$ROOT/bmtagger_index/human.bitmask" ] || [ ! -s "$ROOT/bmtagger_index/human.seqdb.nsq" ]; then
         say "BMTagger index missing: building it (once)"
@@ -140,14 +169,15 @@ ensure_toolchain
 
 # E9 inputs (cleaned reads for the 6 libraries x 3 methods) -- reused, not redone.
 ensure_e9_inputs() {
-    local need=0 lib m
-    for lib in "${E9_LIBS[@]}"; do for m in hostsweep kneaddata hostile; do
-        [ -s "$E9_CLEAN/$lib/${m}_R1.fastq.gz" ] || need=1
-    done; done
-    if [ "$need" = 1 ]; then
-        say "cleaned E9 reads incomplete: running chain_e9.sh to produce them (idempotent)"
-        bash "$SCRIPTS/chain_e9.sh" || say "  chain_e9.sh returned non-zero"
+    local lib m f
+    if ! e9_cleaned_complete; then
+        say "cleaned E9 reads incomplete: cleaning the 6 libraries with 3 methods (chain_e9.sh, cleaning only)"
+        CLEAN_ONLY=1 bash "$SCRIPTS/chain_e9.sh" || say "  chain_e9.sh returned non-zero"
     fi
+    # The ten-genome reference set MetaQUAST scores the synthetic libraries against.
+    mkdir -p "$OUT/e9_refs"
+    for f in "$ROOT"/bench/refs/GCF_*.fna; do [ -e "$f" ] && cp -n "$f" "$OUT/e9_refs/" 2>/dev/null; done
+    [ "$(ls "$OUT/e9_refs" 2>/dev/null | wc -l)" -ge 10 ] || say "  WARNING: only $(ls "$OUT/e9_refs" 2>/dev/null | wc -l) reference genomes in $OUT/e9_refs (10 expected)"
     for lib in "${E9_LIBS[@]}"; do for m in hostsweep kneaddata hostile; do
         [ -s "$E9_CLEAN/$lib/${m}_R1.fastq.gz" ] || { say "  still missing: $lib / $m"; return 1; }
     done; done
