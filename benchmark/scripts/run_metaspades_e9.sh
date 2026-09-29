@@ -117,6 +117,22 @@ for REP in $(seq 1 "$REPS"); do
             CONTIGS="$D/contigs.fasta"
             mkdir -p "$RESULTS/$LIB/$METHOD"
 
+            # Clear any row already recorded for this exact key before deciding
+            # what to do. Without this, a pair that previously exhausted its
+            # retries and got a FAILED row -- then succeeds on a later restart
+            # -- has its fresh, real result silently dropped: parse_metaquast.py
+            # and the FAILED-row writer below both treat "a row already exists
+            # for this key" as "already recorded, nothing to do", which was
+            # meant for true reruns of a still-good result, not for replacing a
+            # stale failure. Confirmed by test: a pair seeded with a FAILED row
+            # that then succeeds keeps showing FAILED without this.
+            if [ -s "$DS" ]; then
+                grep -v "^$LIB,$COND,$METHOD," "$DS" > "$DS.tmp" && mv "$DS.tmp" "$DS"
+            fi
+            if [ -s "$REPS_CSV" ]; then
+                grep -v "^$LIB,$COND,$METHOD,$REP," "$REPS_CSV" > "$REPS_CSV.tmp" && mv "$REPS_CSV.tmp" "$REPS_CSV"
+            fi
+
             if [ -s "$CONTIGS" ] && grep -q "Thank you for using SPAdes" "$D/spades.log" 2>/dev/null; then
                 say "$LIB/$METHOD rep$REP: assembly present"
                 ASM_THREADS_USED="$THREADS"
