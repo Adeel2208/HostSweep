@@ -36,9 +36,22 @@
 #                  recorded in the replicates CSV; if it is below 120, say so
 #                  in the Methods (the specification asked for -m 120).
 #     REPS         default 2
+#     SPADES_MAX_ATTEMPTS  default 3 (I4, see below)
 #
 # Idempotent: a finished assembly (SPAdes' own "Thank you for using SPAdes"
 # line in spades.log) is not redone.
+#
+# I4: spades-hammer (metaSPAdes' BayesHammer error-correction step) segfaults
+# intermittently at high thread counts -- confirmed non-deterministic: the same
+# command on the same pair crashed in 3 minutes on one attempt and ran to
+# completion (6+ hours, no crash) on another. The crash is inside libgomp
+# (OpenMP) during the second multithreaded k-mer-counting pass, with memory use
+# nowhere near the -m limit -- a threading race, not a resource limit. Each
+# (library, method, replicate) therefore gets up to SPADES_MAX_ATTEMPTS tries,
+# halving the thread count each retry (floor 4) -- fewer threads means fewer
+# possible races, the standard mitigation for this class of bug. Only marked
+# FAILED if every attempt fails; each failed attempt's stderr and spades.log
+# are kept (metaspades_rep<N>.attempt<k>_<threads>t.*) as evidence.
 
 set -uo pipefail
 
@@ -106,19 +119,42 @@ for REP in $(seq 1 "$REPS"); do
 
             if [ -s "$CONTIGS" ] && grep -q "Thank you for using SPAdes" "$D/spades.log" 2>/dev/null; then
                 say "$LIB/$METHOD rep$REP: assembly present"
+                ASM_THREADS_USED="$THREADS"
             else
-                say "$LIB/$METHOD rep$REP: metaspades.py"
-                rm -rf "$D"
-                conda activate spades
-                /usr/bin/time -v -o "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.time" \
-                    metaspades.py -1 "$R1" -2 "$R2" -t "$THREADS" -m "$SPADES_MEM" -o "$D" \
-                    > "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stdout" \
-                    2> "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stderr"
-                RC=$?
-                conda deactivate
+                MAX_ATTEMPTS="${SPADES_MAX_ATTEMPTS:-3}"
+                ATT_THREADS="$THREADS"
+                ATTEMPT=1
+                RC=1
+                while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
+                    say "$LIB/$METHOD rep$REP: metaspades.py (attempt $ATTEMPT/$MAX_ATTEMPTS, $ATT_THREADS threads)"
+                    rm -rf "$D"
+                    conda activate spades
+                    /usr/bin/time -v -o "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.time" \
+                        metaspades.py -1 "$R1" -2 "$R2" -t "$ATT_THREADS" -m "$SPADES_MEM" -o "$D" \
+                        > "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stdout" \
+                        2> "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stderr"
+                    RC=$?
+                    conda deactivate
+                    if [ "$RC" -eq 0 ] && [ -s "$CONTIGS" ]; then
+                        break
+                    fi
+                    # Evidence from this attempt, kept before the next attempt overwrites $D.
+                    SUF=".attempt${ATTEMPT}_${ATT_THREADS}t"
+                    cp -f "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stderr" \
+                        "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.stderr" 2>/dev/null
+                    [ -f "$D/spades.log" ] && cp -f "$D/spades.log" \
+                        "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.spades.log"
+                    SEGV=""
+                    grep -qi "segmentation fault" "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.spades.log" 2>/dev/null \
+                        && SEGV=" -- segfault in spades-hammer (I4)"
+                    say "  attempt $ATTEMPT failed (exit $RC)$SEGV"
+                    ATTEMPT=$((ATTEMPT+1))
+                    ATT_THREADS=$(( ATT_THREADS / 2 )); [ "$ATT_THREADS" -lt 4 ] && ATT_THREADS=4
+                done
+                ASM_THREADS_USED="$ATT_THREADS"
                 if [ "$RC" -ne 0 ] || [ ! -s "$CONTIGS" ]; then
-                    say "  metaSPAdes FAILED (exit $RC); see metaspades_rep$REP.stderr and $D/spades.log"
-                    echo "exit_status=$RC" > "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.failed"
+                    say "  metaSPAdes FAILED after $MAX_ATTEMPTS attempts (last exit $RC); see metaspades_rep$REP.attempt*.spades.log"
+                    echo "exit_status=$RC attempts=$MAX_ATTEMPTS" > "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.failed"
                     # A failed assembly is a FAILED row, never an omission.
                     if [ "$REP" = 1 ] && ! grep -q "^$LIB,$COND,$METHOD," "$DS" 2>/dev/null; then
                         [ -s "$DS" ] || printf 'library,condition,method,n50,total_length_mb,contigs_ge_1kb,largest_contig_kb,genome_fraction_pct,misassemblies,assembled_mb_ge_1kb,duplication_ratio\n' > "$DS"
@@ -126,10 +162,11 @@ for REP in $(seq 1 "$REPS"); do
                     fi
                     if ! grep -q "^$LIB,$COND,$METHOD,$REP," "$REPS_CSV" 2>/dev/null; then
                         [ -s "$REPS_CSV" ] || printf 'library,condition,method,replicate,n50,total_length_mb,contigs_ge_1kb,largest_contig_kb,genome_fraction_pct,misassemblies,assembled_mb_ge_1kb,duplication_ratio,assembly_wall_min,assembly_peak_mem_gb,threads,spades_mem_limit_gb\n' > "$REPS_CSV"
-                        printf '%s,%s,%s,%s,FAILED,FAILED,FAILED,FAILED,,FAILED,FAILED,FAILED,,,%s,%s\n' "$LIB" "$COND" "$METHOD" "$REP" "$THREADS" "$SPADES_MEM" >> "$REPS_CSV"
+                        printf '%s,%s,%s,%s,FAILED,FAILED,FAILED,FAILED,,FAILED,FAILED,FAILED,,,%s,%s\n' "$LIB" "$COND" "$METHOD" "$REP" "$ATT_THREADS" "$SPADES_MEM" >> "$REPS_CSV"
                     fi
                     continue
                 fi
+                say "  succeeded on attempt $ATTEMPT/$MAX_ATTEMPTS ($ATT_THREADS threads)"
                 rm -f "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.failed"
                 # Bulky intermediates: the contigs and logs are the evidence.
                 rm -rf "$D/corrected" "$D/tmp" "$D/misc" "$D"/K*/ 2>/dev/null
@@ -178,7 +215,7 @@ PY
             python3 "$SCRIPT_DIR/parse_metaquast.py" "$MQ" "$LIB" "$COND" "$METHOD" "$DS" \
                 --replicate "$REP" --replicates-csv "$REPS_CSV" \
                 --wall-min "${WALL_MIN:-}" --peak-mem-gb "${PEAK_GB:-}" \
-                --threads "$THREADS" --mem-limit-gb "$SPADES_MEM" \
+                --threads "$ASM_THREADS_USED" --mem-limit-gb "$SPADES_MEM" \
                 || say "  no MetaQUAST report found for $LIB/$METHOD rep$REP"
         done
     done

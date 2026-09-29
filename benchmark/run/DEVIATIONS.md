@@ -836,6 +836,42 @@ because it depends on counts.
 
 ---
 
+### I4. `spades-hammer` segfaults intermittently at high thread counts (mitigated with retries)
+
+**What happened.** During R2 (the metaSPAdes downstream arm, D4), several
+(library, method) assemblies failed with exit 255. The `spades.log` for these
+showed a segmentation fault inside `spades-hammer` (metaSPAdes' BayesHammer
+error-correction step), always at the same point: the second multithreaded pass
+over the R2 reads during k-mer counting. Memory use at the crash point was
+trivial (~500 MB against a 111 GB limit) and disk had hundreds of GB free, so
+this is not a resource-limit failure. The stack trace runs through `libgomp`
+(OpenMP), consistent with a threading race in BayesHammer's multithreaded k-mer
+counting rather than a data problem.
+
+**Why it is treated as non-deterministic, not a per-library fault.** The same
+command, same input, same thread count (`-t 32`), on the identical
+(library, method, replicate) that had crashed in 3 minutes on one attempt ran to
+completion without error on a later attempt. A deterministic cause (e.g. a
+specific input) would fail the same way every time; this did not.
+
+**Action.** `run_metaspades_e9.sh` now retries a failed assembly attempt up to
+`SPADES_MAX_ATTEMPTS` times (default 3), halving the thread count each retry
+(floor 4) — fewer threads means fewer possible races, the standard mitigation
+for this class of bug. Every failed attempt's `spades.log` and stderr are kept
+as evidence (`metaspades_rep<N>.attempt<k>_<threads>t.*`); the thread count
+actually used by the attempt that produced the result (success or the final
+failure) is what is recorded in `downstream_metaspades_replicates.csv`'s
+`threads` column, not the originally requested count. Only marked `FAILED` if
+every attempt fails.
+
+**Interpretation cost.** Where a retry succeeded at a reduced thread count, that
+assembly's `threads` column will read lower than the run's nominal setting —
+this is measured, not estimated, and the per-attempt evidence shows why. Any
+`downstream_metaspades.csv` row still marked `FAILED` exhausted all
+`SPADES_MAX_ATTEMPTS` attempts; its per-attempt logs are the evidence for why.
+
+---
+
 *No entry in this file describes a number that was estimated, interpolated or
 carried over. Where a measurement does not exist, the corresponding cell is
 absent or `FAILED`.*
