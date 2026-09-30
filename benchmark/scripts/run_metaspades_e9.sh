@@ -37,21 +37,31 @@
 #                  in the Methods (the specification asked for -m 120).
 #     REPS         default 2
 #     SPADES_MAX_ATTEMPTS  default 3 (I4, see below)
+#     SPADES_TIMEOUT       per-attempt wall-clock limit in seconds, default
+#                          10800 (3 hours). A hung attempt does not exit on its
+#                          own, so it would never reach the retry logic below
+#                          without this -- observed directly: one attempt ran
+#                          20+ hours with no crash and no progress (I4).
 #
 # Idempotent: a finished assembly (SPAdes' own "Thank you for using SPAdes"
 # line in spades.log) is not redone.
 #
-# I4: spades-hammer (metaSPAdes' BayesHammer error-correction step) segfaults
-# intermittently at high thread counts -- confirmed non-deterministic: the same
-# command on the same pair crashed in 3 minutes on one attempt and ran to
-# completion (6+ hours, no crash) on another. The crash is inside libgomp
-# (OpenMP) during the second multithreaded k-mer-counting pass, with memory use
-# nowhere near the -m limit -- a threading race, not a resource limit. Each
-# (library, method, replicate) therefore gets up to SPADES_MAX_ATTEMPTS tries,
+# I4: spades-hammer (metaSPAdes' BayesHammer error-correction step) fails
+# intermittently at high thread counts, in two different ways -- confirmed
+# non-deterministic, since the identical command on the identical pair showed
+# both: (a) a segfault, inside libgomp/OpenMP during the second multithreaded
+# k-mer-counting pass, anywhere from 3 minutes to ~13 hours in, and (b) a run
+# that produced no crash and no progress for 20+ hours -- a hang, not a slow
+# success. Memory use at the point of failure is nowhere near the -m limit in
+# every case observed, ruling out a resource-limit crash. Mitigated two ways:
+# each (library, method, replicate) gets up to SPADES_MAX_ATTEMPTS tries,
 # halving the thread count each retry (floor 4) -- fewer threads means fewer
-# possible races, the standard mitigation for this class of bug. Only marked
-# FAILED if every attempt fails; each failed attempt's stderr and spades.log
-# are kept (metaspades_rep<N>.attempt<k>_<threads>t.*) as evidence.
+# possible races, the standard mitigation for this class of bug -- and each
+# attempt is wrapped in SPADES_TIMEOUT, so a hang is force-killed and counted
+# as a failed attempt rather than blocking the whole run indefinitely. Only
+# marked FAILED if every attempt fails or times out; each failed attempt's
+# stderr and spades.log are kept (metaspades_rep<N>.attempt<k>_<threads>t.*)
+# as evidence.
 
 set -uo pipefail
 
@@ -141,16 +151,29 @@ for REP in $(seq 1 "$REPS"); do
                 ATT_THREADS="$THREADS"
                 ATTEMPT=1
                 RC=1
+                TIMEOUT_S="${SPADES_TIMEOUT:-10800}"
                 while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
-                    say "$LIB/$METHOD rep$REP: metaspades.py (attempt $ATTEMPT/$MAX_ATTEMPTS, $ATT_THREADS threads)"
+                    say "$LIB/$METHOD rep$REP: metaspades.py (attempt $ATTEMPT/$MAX_ATTEMPTS, $ATT_THREADS threads, timeout ${TIMEOUT_S}s)"
                     rm -rf "$D"
                     conda activate spades
                     /usr/bin/time -v -o "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.time" \
+                        timeout -k 60 "$TIMEOUT_S" \
                         metaspades.py -1 "$R1" -2 "$R2" -t "$ATT_THREADS" -m "$SPADES_MEM" -o "$D" \
                         > "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stdout" \
                         2> "$RESULTS/$LIB/$METHOD/metaspades_rep$REP.stderr"
                     RC=$?
                     conda deactivate
+                    # `timeout` sends its signal only to metaspades.py itself; the
+                    # C++ binaries it launches (spades-hammer, spades-core, ...) are
+                    # not guaranteed to receive it and were observed surviving a kill
+                    # of their python parent. Clean up anything still referencing this
+                    # exact output directory before deciding the attempt is over.
+                    pkill -9 -f "$D/corrected" 2>/dev/null
+                    pkill -9 -f "$D/K[0-9]" 2>/dev/null
+                    TIMED_OUT=""
+                    if [ "$RC" -eq 124 ] || [ "$RC" -eq 137 ]; then
+                        TIMED_OUT=" -- timed out after ${TIMEOUT_S}s, killed (I4)"
+                    fi
                     if [ "$RC" -eq 0 ] && [ -s "$CONTIGS" ]; then
                         break
                     fi
@@ -160,8 +183,8 @@ for REP in $(seq 1 "$REPS"); do
                         "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.stderr" 2>/dev/null
                     [ -f "$D/spades.log" ] && cp -f "$D/spades.log" \
                         "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.spades.log"
-                    SEGV=""
-                    grep -qi "segmentation fault" "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.spades.log" 2>/dev/null \
+                    SEGV="$TIMED_OUT"
+                    [ -z "$SEGV" ] && grep -qi "segmentation fault" "$RESULTS/$LIB/$METHOD/metaspades_rep$REP$SUF.spades.log" 2>/dev/null \
                         && SEGV=" -- segfault in spades-hammer (I4)"
                     say "  attempt $ATTEMPT failed (exit $RC)$SEGV"
                     ATTEMPT=$((ATTEMPT+1))
