@@ -82,11 +82,6 @@ For more information: https://github.com/Adeel2208/HostSweep
                        help='BBDuk minimum length filter (default: 50)')
     parser.add_argument('--stringent-minlen', dest='stringent_min_length', type=int, default=90,
                        help='High-stringency output minimum read length (default: 90)')
-    # Deprecated spelling, retained so existing scripts keep working. argparse
-    # assigns a default only for the first action bound to a dest, so the
-    # default above is the one that applies.
-    parser.add_argument('--gdpr-minlen', dest='stringent_min_length', type=int,
-                       help=argparse.SUPPRESS)
 
     # ── Misc ─────────────────────────────────────────────
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -96,10 +91,6 @@ For more information: https://github.com/Adeel2208/HostSweep
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
 
     args = parser.parse_args()
-
-    if any(a == '--gdpr-minlen' or a.startswith('--gdpr-minlen=') for a in sys.argv[1:]):
-        print("Warning: --gdpr-minlen is deprecated; use --stringent-minlen instead.",
-              file=sys.stderr)
 
     # ── Handle --lx (list indices) ───────────────────────
     if args.list_index:
