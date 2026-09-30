@@ -1,0 +1,24 @@
+Command exited with non-zero status 255
+	Command being timed: "metaspades.py -1 /home/molien/hostsweep/out/e9_cleaned/SYN-CHM13-05/hostsweep_R1.fastq.gz -2 /home/molien/hostsweep/out/e9_cleaned/SYN-CHM13-05/hostsweep_R2.fastq.gz -t 32 -m 111 -o /home/molien/hostsweep/out/r2_results/SYN-CHM13-05/hostsweep/metaspades_rep1"
+	User time (seconds): 1323180.58
+	System time (seconds): 38808.91
+	Percent of CPU this job got: 3199%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 11:49:28
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 530552
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 3
+	Minor (reclaiming a frame) page faults: 229677
+	Voluntary context switches: 2325028
+	Involuntary context switches: 538146
+	Swaps: 0
+	File system inputs: 336
+	File system outputs: 1008
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 255

@@ -1,0 +1,100 @@
+10:54:30 INFO: Hostile v2.0.2. Mode: paired short read (Bowtie2)
+10:54:32 INFO: Fetching standard index human-t2t-hla (https://objectstorage.uk-london-1.oraclecloud.com/n/lrbvkel2wjot/b/human-genome-bucket/o/human-t2t-hla.tar)
+  0%|          | 0.00/3.66G [00:00<?, ?B/s]  0%|          | 31.0k/3.66G [00:00<8:21:12, 131kB/s]  0%|          | 47.0k/3.66G [00:00<20:45:31, 52.6kB/s]  0%|          | 63.0k/3.66G [00:01<25:25:25, 43.0kB/s]  0%|          | 79.0k/3.66G [00:01<28:05:45, 38.9kB/s]  0%|          | 95.0k/3.66G [00:02<31:54:50, 34.2kB/s]  0%|          | 111k/3.66G [00:03<41:03:07, 26.6kB/s]   0%|          | 127k/3.66G [00:04<44:54:42, 24.3kB/s]  0%|          | 143k/3.66G [00:06<73:56:28, 14.8kB/s]  0%|          | 159k/3.66G [00:08<96:08:52, 11.4kB/s]  0%|          | 176k/3.66G [00:09<80:27:47, 13.6kB/s]  0%|          | 192k/3.66G [00:09<66:16:23, 16.5kB/s]  0%|          | 208k/3.66G [00:10<62:40:26, 17.4kB/s]  0%|          | 224k/3.66G [00:10<52:25:10, 20.8kB/s]  0%|          | 240k/3.66G [00:11<57:55:27, 18.9kB/s]  0%|          | 256k/3.66G [00:12<54:07:52, 20.2kB/s]  0%|          | 272k/3.66G [00:14<68:29:10, 16.0kB/s]  0%|          | 288k/3.66G [00:15<69:05:24, 15.8kB/s]  0%|          | 304k/3.66G [00:16<82:17:11, 13.3kB/s]  0%|          | 320k/3.66G [00:19<103:56:04, 10.5kB/s]  0%|          | 336k/3.66G [00:20<92:41:54, 11.8kB/s]   0%|          | 352k/3.66G [00:21<92:50:42, 11.8kB/s]  0%|          | 368k/3.66G [00:22<84:53:02, 12.9kB/s]  0%|          | 384k/3.66G [00:23<75:42:46, 14.4kB/s]  0%|          | 400k/3.66G [00:23<63:45:22, 17.1kB/s]  0%|          | 416k/3.66G [00:24<62:20:16, 17.5kB/s]  0%|          | 432k/3.66G [00:25<65:06:38, 16.8kB/s]  0%|          | 448k/3.66G [00:26<55:58:15, 19.5kB/s]  0%|          | 464k/3.66G [00:27<54:04:12, 20.2kB/s]  0%|          | 480k/3.66G [00:28<59:08:46, 18.5kB/s]  0%|          | 496k/3.66G [00:29<61:15:24, 17.8kB/s]  0%|          | 512k/3.66G [00:30<59:13:34, 18.4kB/s]  0%|          | 528k/3.66G [00:30<49:56:52, 21.9kB/s]  0%|          | 544k/3.66G [00:31<49:51:05, 21.9kB/s]  0%|          | 560k/3.66G [00:32<54:51:28, 19.9kB/s]  0%|          | 576k/3.66G [00:32<48:19:34, 22.6kB/s]  0%|          | 592k/3.66G [00:33<43:45:45, 25.0kB/s]  0%|          | 608k/3.66G [00:34<50:28:57, 21.6kB/s]  0%|          | 624k/3.66G [00:35<57:36:45, 19.0kB/s]  0%|          | 640k/3.66G [00:36<64:20:05, 17.0kB/s]  0%|          | 656k/3.66G [00:37<55:50:35, 19.6kB/s]  0%|          | 672k/3.66G [00:38<58:57:38, 18.5kB/s]  0%|          | 688k/3.66G [00:38<56:09:36, 19.5kB/s]  0%|          | 704k/3.66G [00:39<57:22:46, 19.0kB/s]  0%|          | 720k/3.66G [00:40<56:49:47, 19.2kB/s]  0%|          | 736k/3.66G [00:40<49:42:30, 22.0kB/s]  0%|          | 752k/3.66G [00:41<44:43:30, 24.4kB/s]  0%|          | 768k/3.66G [00:42<47:39:20, 22.9kB/s]  0%|          | 784k/3.66G [00:42<41:54:34, 26.1kB/s]  0%|          | 800k/3.66G [00:43<44:13:39, 24.7kB/s]  0%|          | 816k/3.66G [00:44<47:28:23, 23.0kB/s]  0%|          | 832k/3.66G [00:45<49:28:27, 22.1kB/s]  0%|          | 848k/3.66G [00:46<63:05:02, 17.3kB/s]  0%|          | 864k/3.66G [00:47<59:02:23, 18.5kB/s]  0%|          | 880k/3.66G [00:48<61:09:17, 17.9kB/s]  0%|          | 896k/3.66G [00:49<58:31:57, 18.7kB/s]  0%|          | 912k/3.66G [00:49<55:51:43, 19.6kB/s]  0%|          | 928k/3.66G [00:50<49:02:12, 22.3kB/s]  0%|          | 944k/3.66G [00:51<49:15:28, 22.2kB/s]  0%|          | 960k/3.66G [00:51<50:39:21, 21.6kB/s]  0%|          | 976k/3.66G [00:53<66:47:51, 16.4kB/s]  0%|          | 992k/3.66G [00:54<71:45:03, 15.2kB/s]  0%|          | 0.98M/3.66G [00:55<65:21:07, 16.7kB/s]  0%|          | 1.00M/3.66G [00:55<55:48:31, 19.6kB/s]  0%|          | 1.02M/3.66G [00:57<79:24:42, 13.8kB/s]  0%|          | 1.03M/3.66G [00:59<84:34:16, 12.9kB/s]  0%|          | 1.05M/3.66G [01:02<116:25:58, 9.38kB/s]  0%|          | 1.06M/3.66G [01:04<116:54:54, 9.34kB/s]  0%|          | 1.08M/3.66G [01:06<139:46:27, 7.82kB/s]  0%|          | 1.09M/3.66G [01:08<133:13:00, 8.20kB/s]  0%|          | 1.11M/3.66G [01:09<119:29:49, 9.14kB/s]  0%|          | 1.12M/3.66G [01:10<102:06:26, 10.7kB/s]  0%|          | 1.14M/3.66G [01:12<101:15:23, 10.8kB/s]  0%|          | 1.16M/3.66G [01:13<95:47:34, 11.4kB/s]   0%|          | 1.17M/3.66G [01:14<92:05:16, 11.9kB/s]  0%|          | 1.19M/3.66G [01:16<96:32:33, 11.3kB/s]  0%|          | 1.20M/3.66G [01:17<87:34:17, 12.5kB/s]  0%|          | 1.22M/3.66G [01:18<76:18:36, 14.3kB/s]  0%|          | 1.23M/3.66G [01:18<63:24:05, 17.2kB/s]  0%|          | 1.25M/3.66G [01:19<60:49:12, 18.0kB/s]  0%|          | 1.27M/3.66G [01:20<51:13:15, 21.3kB/s]  0%|          | 1.28M/3.66G [01:20<55:13:31, 19.8kB/s]  0%|          | 1.30M/3.66G [01:23<84:30:27, 12.9kB/s]  0%|          | 1.31M/3.66G [01:23<69:04:28, 15.8kB/s]  0%|          | 1.33M/3.66G [01:25<74:30:15, 14.7kB/s]  0%|          | 1.34M/3.66G [01:27<100:59:07, 10.8kB/s]  0%|          | 1.36M/3.66G [01:29<100:56:10, 10.8kB/s]  0%|          | 1.38M/3.66G [01:30<109:43:11, 9.96kB/s]  0%|          | 1.39M/3.66G [01:32<107:01:51, 10.2kB/s]  0%|          | 1.41M/3.66G [01:34<111:52:13, 9.77kB/s]  0%|          | 1.42M/3.66G [01:37<131:35:58, 8.30kB/s]  0%|          | 1.44M/3.66G [01:38<121:04:59, 9.02kB/s]  0%|          | 1.45M/3.66G [01:42<165:15:30, 6.61kB/s]  0%|          | 1.47M/3.66G [01:43<140:32:37, 7.77kB/s]  0%|          | 1.48M/3.66G [01:45<141:01:22, 7.75kB/s]  0%|          | 1.50M/3.66G [01:46<118:33:56, 9.21kB/s]  0%|          | 1.52M/3.66G [01:47<102:48:37, 10.6kB/s]  0%|          | 1.53M/3.66G [01:48<81:53:39, 13.3kB/s]   0%|          | 1.55M/3.66G [01:49<72:14:01, 15.1kB/s]  0%|          | 1.56M/3.66G [01:50<71:42:35, 15.2kB/s]  0%|          | 1.58M/3.66G [01:52<104:07:52, 10.5kB/s]  0%|          | 1.59M/3.66G [01:54<103:28:05, 10.6kB/s]  0%|          | 1.61M/3.66G [01:56<112:51:08, 9.68kB/s]  0%|          | 1.62M/3.66G [01:57<107:21:09, 10.2kB/s]  0%|          | 1.64M/3.66G [01:58<97:15:30, 11.2kB/s]   0%|          | 1.66M/3.66G [02:00<102:06:57, 10.7kB/s]  0%|          | 1.66M/3.66G [02:05<79:00:27, 13.8kB/s] 
+Traceback (most recent call last):
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 127, in __iter__
+    for part in self._httpcore_stream:
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 407, in __iter__
+    raise exc from None
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 403, in __iter__
+    for part in self._stream:
+                ^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 342, in __iter__
+    raise exc
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 334, in __iter__
+    for chunk in self._connection._receive_response_body(**kwargs):
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 203, in _receive_response_body
+    event = self._receive_event(timeout=timeout)
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 217, in _receive_event
+    data = self._network_stream.read(
+        self.READ_NUM_BYTES, timeout=timeout
+    )
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_backends/sync.py", line 126, in read
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadTimeout: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/util.py", line 177, in download
+    for chunk in response.iter_bytes():
+                 ~~~~~~~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_models.py", line 897, in iter_bytes
+    for raw_bytes in self.iter_raw():
+                     ~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_models.py", line 951, in iter_raw
+    for raw_stream_bytes in self.stream:
+                            ^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_client.py", line 153, in __iter__
+    for chunk in self._stream:
+                 ^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 126, in __iter__
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadTimeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/bin/hostile", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/cli.py", line 170, in main
+    defopt.run(
+    ~~~~~~~~~~^
+        {
+        ^
+    ...<9 lines>...
+        cli_options="has_default",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/defopt.py", line 308, in run
+    return bind(
+           ~~~~~
+    ...<2 lines>...
+        no_negated_flags=no_negated_flags, version=version,
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        argparse_kwargs=argparse_kwargs, intermixed=intermixed, argv=argv)()
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/cli.py", line 71, in clean
+    stats = lib.clean_paired_fastqs(
+        [(fastq1, fastq2)],
+    ...<10 lines>...
+        airplane=airplane,
+    )
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/lib.py", line 278, in clean_paired_fastqs
+    index_path = aligner.value.check_index(index, airplane=airplane)
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/aligner.py", line 65, in check_index
+    util.download(f"{file_url}", tmp_path)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/util.py", line 185, in download
+    raise httpx.HTTPError(
+    ...<3 lines>...
+    )
+httpx.HTTPError: Failed to download https://objectstorage.uk-london-1.oraclecloud.com/n/lrbvkel2wjot/b/human-genome-bucket/o/human-t2t-hla.tar. Ensure you are connected to the internet, or provide a valid path to a local index

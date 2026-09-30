@@ -1,0 +1,100 @@
+16:08:17 INFO: Hostile v2.0.2. Mode: paired short read (Bowtie2)
+16:08:20 INFO: Fetching standard index human-t2t-hla (https://objectstorage.uk-london-1.oraclecloud.com/n/lrbvkel2wjot/b/human-genome-bucket/o/human-t2t-hla.tar)
+  0%|          | 0.00/3.66G [00:00<?, ?B/s]  0%|          | 31.0k/3.66G [00:00<17:54:16, 61.0kB/s]  0%|          | 47.0k/3.66G [00:01<32:02:11, 34.1kB/s]  0%|          | 63.0k/3.66G [00:01<28:12:08, 38.7kB/s]  0%|          | 79.0k/3.66G [00:02<36:17:44, 30.1kB/s]  0%|          | 95.0k/3.66G [00:03<41:17:21, 26.5kB/s]  0%|          | 111k/3.66G [00:04<47:19:38, 23.1kB/s]   0%|          | 127k/3.66G [00:05<59:20:23, 18.4kB/s]  0%|          | 143k/3.66G [00:06<58:11:39, 18.8kB/s]  0%|          | 159k/3.66G [00:07<70:31:12, 15.5kB/s]  0%|          | 176k/3.66G [00:09<81:15:39, 13.4kB/s]  0%|          | 192k/3.66G [00:10<77:22:30, 14.1kB/s]  0%|          | 208k/3.66G [00:13<110:31:35, 9.89kB/s]  0%|          | 224k/3.66G [00:14<103:06:21, 10.6kB/s]  0%|          | 240k/3.66G [00:16<113:20:27, 9.64kB/s]  0%|          | 256k/3.66G [00:19<129:46:23, 8.42kB/s]  0%|          | 272k/3.66G [00:21<130:53:55, 8.35kB/s]  0%|          | 288k/3.66G [00:22<126:15:28, 8.66kB/s]  0%|          | 304k/3.66G [00:24<113:59:09, 9.59kB/s]  0%|          | 320k/3.66G [00:28<162:46:31, 6.71kB/s]  0%|          | 336k/3.66G [00:29<139:35:45, 7.83kB/s]  0%|          | 352k/3.66G [00:29<107:58:32, 10.1kB/s]  0%|          | 368k/3.66G [00:31<101:10:47, 10.8kB/s]  0%|          | 384k/3.66G [00:31<83:18:42, 13.1kB/s]   0%|          | 400k/3.66G [00:32<71:23:57, 15.3kB/s]  0%|          | 416k/3.66G [00:33<60:13:48, 18.1kB/s]  0%|          | 432k/3.66G [00:33<55:34:00, 19.7kB/s]  0%|          | 448k/3.66G [00:34<49:10:28, 22.2kB/s]  0%|          | 464k/3.66G [00:34<42:57:14, 25.4kB/s]  0%|          | 480k/3.66G [00:35<49:05:08, 22.3kB/s]  0%|          | 496k/3.66G [00:36<54:19:35, 20.1kB/s]  0%|          | 512k/3.66G [00:37<58:11:52, 18.8kB/s]  0%|          | 528k/3.66G [00:39<81:12:29, 13.5kB/s]  0%|          | 544k/3.66G [00:41<85:50:15, 12.7kB/s]  0%|          | 560k/3.66G [00:42<93:52:15, 11.6kB/s]  0%|          | 576k/3.66G [00:45<129:44:25, 8.42kB/s]  0%|          | 592k/3.66G [00:47<122:58:19, 8.89kB/s]  0%|          | 608k/3.66G [00:48<105:09:31, 10.4kB/s]  0%|          | 624k/3.66G [00:49<88:58:27, 12.3kB/s]   0%|          | 640k/3.66G [00:50<79:41:55, 13.7kB/s]  0%|          | 656k/3.66G [00:51<76:15:56, 14.3kB/s]  0%|          | 672k/3.66G [00:51<68:44:48, 15.9kB/s]  0%|          | 688k/3.66G [00:53<77:49:02, 14.0kB/s]  0%|          | 704k/3.66G [00:54<82:54:46, 13.2kB/s]  0%|          | 720k/3.66G [00:56<97:51:37, 11.2kB/s]  0%|          | 736k/3.66G [00:58<103:10:22, 10.6kB/s]  0%|          | 752k/3.66G [00:59<92:42:41, 11.8kB/s]   0%|          | 768k/3.66G [01:00<90:29:56, 12.1kB/s]  0%|          | 784k/3.66G [01:02<103:04:03, 10.6kB/s]  0%|          | 800k/3.66G [01:05<118:14:53, 9.24kB/s]  0%|          | 800k/3.66G [01:10<93:35:48, 11.7kB/s] 
+Traceback (most recent call last):
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 127, in __iter__
+    for part in self._httpcore_stream:
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 407, in __iter__
+    raise exc from None
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/connection_pool.py", line 403, in __iter__
+    for part in self._stream:
+                ^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 342, in __iter__
+    raise exc
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 334, in __iter__
+    for chunk in self._connection._receive_response_body(**kwargs):
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 203, in _receive_response_body
+    event = self._receive_event(timeout=timeout)
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_sync/http11.py", line 217, in _receive_event
+    data = self._network_stream.read(
+        self.READ_NUM_BYTES, timeout=timeout
+    )
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_backends/sync.py", line 126, in read
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadTimeout: The read operation timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/util.py", line 177, in download
+    for chunk in response.iter_bytes():
+                 ~~~~~~~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_models.py", line 897, in iter_bytes
+    for raw_bytes in self.iter_raw():
+                     ~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_models.py", line 951, in iter_raw
+    for raw_stream_bytes in self.stream:
+                            ^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_client.py", line 153, in __iter__
+    for chunk in self._stream:
+                 ^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 126, in __iter__
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadTimeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/bin/hostile", line 10, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/cli.py", line 170, in main
+    defopt.run(
+    ~~~~~~~~~~^
+        {
+        ^
+    ...<9 lines>...
+        cli_options="has_default",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/defopt.py", line 308, in run
+    return bind(
+           ~~~~~
+    ...<2 lines>...
+        no_negated_flags=no_negated_flags, version=version,
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        argparse_kwargs=argparse_kwargs, intermixed=intermixed, argv=argv)()
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/cli.py", line 71, in clean
+    stats = lib.clean_paired_fastqs(
+        [(fastq1, fastq2)],
+    ...<10 lines>...
+        airplane=airplane,
+    )
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/lib.py", line 278, in clean_paired_fastqs
+    index_path = aligner.value.check_index(index, airplane=airplane)
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/aligner.py", line 65, in check_index
+    util.download(f"{file_url}", tmp_path)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/molien/hostsweep/miniforge3/envs/hostile/lib/python3.13/site-packages/hostile/util.py", line 185, in download
+    raise httpx.HTTPError(
+    ...<3 lines>...
+    )
+httpx.HTTPError: Failed to download https://objectstorage.uk-london-1.oraclecloud.com/n/lrbvkel2wjot/b/human-genome-bucket/o/human-t2t-hla.tar. Ensure you are connected to the internet, or provide a valid path to a local index

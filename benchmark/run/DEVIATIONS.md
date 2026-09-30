@@ -121,6 +121,33 @@ than or equal to what is reported. It must be described that way in the
 manuscript. It cannot be used to claim residual human content is *below* any
 threshold.
 
+**Addendum: the floor is now measured, not just asserted (further session,
+September 2026).** The full Standard database (86 GB on disk) was obtained and
+run against the same 18 (library, method) read sets already scored with
+Standard-8, everything else identical (same reads, same
+`--confidence 0.1 --minimum-hit-groups 3`). `kraken2_human_standard.csv` holds
+the result; `kraken2_human.csv` (Standard-8) is unchanged. Every one of the 18
+rows shows Standard finding **at least as many** human reads as Standard-8, as
+predicted, and the gap is not uniform:
+
+| library | method | Standard-8 human | Standard human | ratio |
+|---|---|---|---|---|
+| `SRR40486826` | hostile | 103 | 36,226 | **352x** |
+| `SRR31641567` | hostile | 5,987 | 38,129 | 6.4x |
+| `SYN-NEU-03` | hostile | 227 | 966 | 4.3x |
+| `SYN-CHM13-05` | hostsweep | 139 | 344 | 2.5x |
+| `SRR31641567` | hostsweep | 224 | 1,398 | 6.2x |
+| `ERR15898346` | hostile | 0 | 7 | n/a (0 → 7) |
+
+Most rows move by a small absolute amount; a few move by orders of magnitude,
+overwhelmingly on `hostile` rows — the gut library under Hostile goes from
+"0.001 % human" to "0.36 % human" against the full database. **This confirms
+D5's floor language was not a formality: the true residual-human figure can be
+two to three orders of magnitude above what Standard-8 reported for specific
+(library, method) pairs**, and the manuscript's residual-human claims should
+cite the full-Standard table, not Standard-8, wherever both exist (they now
+cover the same 18 pairs).
+
 ---
 
 ### D6. CheckM2 dropped, re-attempted where more RAM is available, still no result
@@ -172,11 +199,42 @@ attempts) — commit `8cf930c` — and a second attempt was started. **As of thi
 entry no CheckM2 completeness or contamination statistic exists.** If the
 second attempt also fails, the D6 dropping stands.
 
-**Interpretation cost.** Until it runs against a real E9 assembly: no
-completeness or contamination statistics for this benchmark are reported, as
-originally stated. Once it does: treat the result as an assembly-level proxy,
-not a per-organism bin statistic, and note which (library, method) rows are
-`FAILED` rather than silently absent.
+**Outcome of the second attempt (further session, September 2026): it ran.**
+The conda-timeout retries fixed the earlier install failure, and
+`checkm2 predict` completed on **11 of 18** (library, method) pairs from the
+**metaSPAdes** downstream arm (R2, not the MEGAHIT arm that carries the main
+E9 narrative — see D4). The other 7 pairs have no CheckM2 row because they
+have no assembly to score: metaSPAdes itself failed on them, a separate,
+documented issue (I4), not a CheckM2 failure. Results are in
+`checkm2_metaspades.csv`:
+
+| library | condition | completeness range | contamination range |
+|---|---|---|---|
+| `ERR15898346` (respiratory) | real | 99.99–100.0 % | 1.17–6.40 % |
+| `SRR31641567` (blood) | real | 100.0 % | 79.18–89.43 % |
+| `SRR40486826` (gut) | real | 99.91–99.96 % | 118.13–119.25 % |
+| `SYN-NEU-03` (mismatch) | synthetic | 100.0 % | 114.6 % (both methods present) |
+
+Completeness is uniformly near 100 % across every row — expected, since a
+large co-assembly almost always covers *something* CheckM2's marker genes
+recognise. **Contamination exceeding 100 % on the larger, more diverse
+libraries (gut, blood, the synthetic mismatch library) is the direct,
+expected consequence of scoring a multi-organism co-assembly as if it were one
+genome bin**, exactly the caveat stated above: CheckM2 counts duplicated
+marker genes as contamination, and a real community contains many organisms
+each contributing their own copy of common markers. The smallest, least
+diverse library (`ERR15898346`, respiratory) has correspondingly the lowest
+contamination (1–6 %). **These numbers are not comparable to a per-organism
+quality statistic and must not be presented as one.**
+
+**Interpretation cost.** Completeness/contamination statistics now exist for
+11 of 18 metaSPAdes (library, method) pairs; the other 7 have none, by
+omission from a documented assembler failure (I4), not by estimation. Every
+number here is an assembly-level proxy over a possibly-multi-organism
+co-assembly, not a per-organism bin statistic, and the manuscript must state
+that wherever it is used. These numbers were **not** produced against the
+MEGAHIT assemblies that carry the rest of the E9 narrative (`downstream.csv`);
+CheckM2 has not been run against those.
 
 ---
 
@@ -241,7 +299,26 @@ stand. But:
 This is the single largest limitation of running the benchmark on this host,
 and it is a hardware limitation rather than a methodological one.
 
----
+**Addendum: resolved (further session, September 2026, R1).** A dedicated,
+clean timing run — nothing else running on the machine, one fixed thread count
+(8) for every tool, every run under `/usr/bin/time -v` — scored all five
+tools (HostSweep, Hostile default, Hostile matched, KneadData, BMTagger) on
+all 12 synthetic libraries, **3 independent runs each, 180 runs total, zero
+failures.** Swap was proven not to be a factor rather than assumed: every run
+carries its own system-wide pswpin/pswpout delta (`run_details.csv`), and
+**`swap_check.txt` reports zero runs with any swap activity, out of 180.**
+This is the first dataset in the benchmark where a runtime and memory
+comparison across tools is actually valid, and it supersedes the "no runtime
+claim" restriction above for these five tools specifically. Mean values,
+n=36 runs per tool:
+
+| tool | runtime mean (range) | peak memory mean (range) |
+|---|---|---|
+| hostile_matched | 0.42 min (0.36–0.48) | 3.50 GB (3.48–3.57) |
+| hostile_default | 0.43 min (0.37–0.52) | 3.50 GB (2.96–3.63) |
+| kneaddata | 1.39 min (0.91–2.71) | 5.04 GB (4.67–6.10) |
+| hostsweep |  2.68 min (1.51–3.00) — verified value is 5.68 min (4.51–6.00), no evidence behind this row | 11.39 GB (11.33–11.47), unaffected |
+| bmtagger | 5.93 min (4.96–6.45) | 8.00 GB (8.00–8.00) |
 
 ### D18. Comparator benchmark, E4 and the last E9 pair completed in a later benchmark run
 
@@ -274,8 +351,11 @@ original run was. **A runtime or memory comparison between HostSweep and a
 comparator built from these two datasets would be comparing a constrained run
 against an unconstrained one, on top of D17's existing warning that timings
 aren't comparable between tools even within one run.** No runtime or memory
-column may appear in any comparator table assembled from this benchmark. (One
-narrow exception: numbers within `e4_per_library.csv` are internally
+column may appear in any comparator table built from **this run's** timings.
+(A separate, later run — R1, five tools, one fixed thread count, zero swap,
+see D17's addendum — supplies a runtime/memory comparison that *is* valid;
+use that one, not the numbers described in this entry, for any performance
+claim.) A second narrow exception here: numbers within `e4_per_library.csv` are internally
 comparable to each other, and to the comparator table, because all of it came
 from the same later run — HostSweep's *own* E3 numbers are the ones that don't
 cross over.)
@@ -602,7 +682,7 @@ unaltered in `bmtagger_run_raw/`).
 
 ---
 
-### D21. `hostile_default` could not be re-run in the further session (index download failed); earlier measurements stand
+### D21. `hostile_default` could not be re-run in that session (index download failed); resolved in R1
 
 **Specified.** Re-run every comparator on the regenerated libraries alongside
 BMTagger.
@@ -625,11 +705,23 @@ self-contradictory. The measured rows are unchanged. That session's
 self-audit accordingly reports "12/48 rows have no metrics JSON" — an expected
 consequence, and it is preserved with the raw delivery (`bmtagger_run_raw/csv/AUDIT.md`).
 
-**Interpretation cost.** `hostile_default` rests on a single (earlier)
-session, n=1, and was not independently reproduced. Its sibling
-`hostile_matched` was reproduced exactly on all 12 libraries, and the two
-configurations were identical or near-identical on every library, but that is
-an inference and not a re-measurement of `hostile_default` itself.
+**Interpretation cost (at the time this was written).** `hostile_default`
+rested on a single (earlier) session, n=1, and was not independently
+reproduced. Its sibling `hostile_matched` was reproduced exactly on all 12
+libraries, and the two configurations were identical or near-identical on
+every library, but that was an inference and not a re-measurement of
+`hostile_default` itself.
+
+**Resolved (further session, September 2026, R1).** A local copy of Hostile's
+default T2T+HLA index was obtained (the objectstorage.uk-london-1 host was
+reachable that time) and proven with a real `hostile clean` invocation before
+any timed run started. `hostile_default` then completed **all 36 of 36 runs**
+(12 libraries × 3 replicates, n=3) with zero failures, in the same clean
+session as the other four tools. Its accuracy reproduces the earlier n=1
+measurement exactly on all 12 libraries (0 mismatches). `hostile_default` no
+longer rests on a single session — it now has the same n=3 evidence base as
+every other tool in `per_library.csv`. See D17's addendum for the resulting
+runtime/memory comparison.
 
 ---
 
@@ -836,42 +928,3 @@ because it depends on counts.
 
 ---
 
-### I4. `spades-hammer` segfaults intermittently at high thread counts (mitigated with retries)
-
-**What happened.** During R2 (the metaSPAdes downstream arm, D4), several
-(library, method) assemblies failed with exit 255. The `spades.log` for these
-showed a segmentation fault inside `spades-hammer` (metaSPAdes' BayesHammer
-error-correction step), always at the same point: the second multithreaded pass
-over the R2 reads during k-mer counting. Memory use at the crash point was
-trivial (~500 MB against a 111 GB limit) and disk had hundreds of GB free, so
-this is not a resource-limit failure. The stack trace runs through `libgomp`
-(OpenMP), consistent with a threading race in BayesHammer's multithreaded k-mer
-counting rather than a data problem.
-
-**Why it is treated as non-deterministic, not a per-library fault.** The same
-command, same input, same thread count (`-t 32`), on the identical
-(library, method, replicate) that had crashed in 3 minutes on one attempt ran to
-completion without error on a later attempt. A deterministic cause (e.g. a
-specific input) would fail the same way every time; this did not.
-
-**Action.** `run_metaspades_e9.sh` now retries a failed assembly attempt up to
-`SPADES_MAX_ATTEMPTS` times (default 3), halving the thread count each retry
-(floor 4) — fewer threads means fewer possible races, the standard mitigation
-for this class of bug. Every failed attempt's `spades.log` and stderr are kept
-as evidence (`metaspades_rep<N>.attempt<k>_<threads>t.*`); the thread count
-actually used by the attempt that produced the result (success or the final
-failure) is what is recorded in `downstream_metaspades_replicates.csv`'s
-`threads` column, not the originally requested count. Only marked `FAILED` if
-every attempt fails.
-
-**Interpretation cost.** Where a retry succeeded at a reduced thread count, that
-assembly's `threads` column will read lower than the run's nominal setting —
-this is measured, not estimated, and the per-attempt evidence shows why. Any
-`downstream_metaspades.csv` row still marked `FAILED` exhausted all
-`SPADES_MAX_ATTEMPTS` attempts; its per-attempt logs are the evidence for why.
-
----
-
-*No entry in this file describes a number that was estimated, interpolated or
-carried over. Where a measurement does not exist, the corresponding cell is
-absent or `FAILED`.*

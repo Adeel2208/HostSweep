@@ -1,0 +1,19 @@
+{
+  "tool": "kneaddata",
+  "tier": "profiling",
+  "truth_r1": "/home/molien/hostsweep/bench/synthetic/SYN-IND-01_R1.fastq.gz",
+  "cleaned_files": [
+    "/home/molien/hostsweep/out/results/SYN-IND-01/kneaddata_run1.work/SYN-IND-01_R1_kneaddata_paired_1.fastq",
+    "/home/molien/hostsweep/out/results/SYN-IND-01/kneaddata_run1.work/SYN-IND-01_R1_kneaddata_paired_2.fastq"
+  ],
+  "human_total": 20000,
+  "background_total": 1980000,
+  "true_positives_human_removed": 19991,
+  "false_negatives_human_retained": 9,
+  "true_negatives_background_retained": 1971551,
+  "false_positives_background_removed": 8449,
+  "sensitivity": 99.955,
+  "false_positive_rate": 0.4267,
+  "background_retention": 99.5733,
+  "residual_human_fraction": 0.000456
+}

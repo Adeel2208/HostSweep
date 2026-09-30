@@ -1,0 +1,23 @@
+	Command being timed: "megahit -1 /home/molien/hostsweep/out/e9_cleaned/ERR15898346/hostsweep_R1.fastq.gz -2 /home/molien/hostsweep/out/e9_cleaned/ERR15898346/hostsweep_R2.fastq.gz -t 12 -m 0.5 --min-contig-len 200 -o /home/molien/hostsweep/out/downstream_results/ERR15898346/hostsweep/megahit"
+	User time (seconds): 737.79
+	System time (seconds): 8.59
+	Percent of CPU this job got: 956%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:18.05
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 813188
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 1929536
+	Voluntary context switches: 57215
+	Involuntary context switches: 1813
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 1318080
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

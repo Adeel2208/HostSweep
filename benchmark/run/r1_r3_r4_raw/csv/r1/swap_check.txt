@@ -1,0 +1,4 @@
+runs recorded: 180
+runs with a .swap record: 180
+runs showing ANY swap activity (system-wide pswpin/pswpout during the run, or a non-zero 'Swaps:' in the time record): 0
+NOTE: the system-wide counters also move if some OTHER process on the machine swapped during a run; they are evidence, not proof of cause.

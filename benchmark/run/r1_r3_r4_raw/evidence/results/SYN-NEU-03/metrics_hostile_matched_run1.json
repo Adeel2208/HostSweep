@@ -1,0 +1,19 @@
+{
+  "tool": "hostile_matched",
+  "tier": "profiling",
+  "truth_r1": "/home/molien/hostsweep/bench/synthetic/SYN-NEU-03_R1.fastq.gz",
+  "cleaned_files": [
+    "/home/molien/hostsweep/out/results/SYN-NEU-03/hostile_matched_run1.work/SYN-NEU-03_R1.clean_1.fastq.gz",
+    "/home/molien/hostsweep/out/results/SYN-NEU-03/hostile_matched_run1.work/SYN-NEU-03_R2.clean_2.fastq.gz"
+  ],
+  "human_total": 400000,
+  "background_total": 1600000,
+  "true_positives_human_removed": 399505,
+  "false_negatives_human_retained": 495,
+  "true_negatives_background_retained": 1600000,
+  "false_positives_background_removed": 0,
+  "sensitivity": 99.8762,
+  "false_positive_rate": 0.0,
+  "background_retention": 100.0,
+  "residual_human_fraction": 0.030928
+}

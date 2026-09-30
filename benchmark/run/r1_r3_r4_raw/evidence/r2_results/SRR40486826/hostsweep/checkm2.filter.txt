@@ -1,0 +1,1 @@
+contigs_total=180205 bp_total=117212287 min_contig=1000 contigs_scored=19531 bp_scored=58867304

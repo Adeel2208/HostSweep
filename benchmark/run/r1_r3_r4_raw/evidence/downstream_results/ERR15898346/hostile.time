@@ -1,0 +1,23 @@
+	Command being timed: "hostile clean --fastq1 /home/molien/hostsweep/e4_fastq/ERR15898346_1.fastq.gz --fastq2 /home/molien/hostsweep/e4_fastq/ERR15898346_2.fastq.gz --aligner bowtie2 --index /home/molien/hostsweep/miniforge3/envs/hostsweep/share/hostsweep/databases/standard/human_bt2 --threads 12 --output /home/molien/hostsweep/out/downstream_results/ERR15898346/hostile.work"
+	User time (seconds): 313.69
+	System time (seconds): 30.85
+	Percent of CPU this job got: 1254%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:27.47
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 3457704
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 36426
+	Voluntary context switches: 805577
+	Involuntary context switches: 162
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 809984
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

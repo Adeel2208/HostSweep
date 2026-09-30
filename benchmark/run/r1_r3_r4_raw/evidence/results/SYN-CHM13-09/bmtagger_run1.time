@@ -1,0 +1,23 @@
+	Command being timed: "bmtagger.sh -b /home/molien/hostsweep/bmtagger_index/human.bitmask -x /home/molien/hostsweep/bmtagger_index/human.srprism -d /home/molien/hostsweep/bmtagger_index/human.seqdb -q 1 -1 /home/molien/hostsweep/out/results/SYN-CHM13-09/bmtagger_run1.work/r1.fastq -2 /home/molien/hostsweep/out/results/SYN-CHM13-09/bmtagger_run1.work/r2.fastq -o /home/molien/hostsweep/out/results/SYN-CHM13-09/bmtagger_run1.work/out -T /home/molien/hostsweep/out/results/SYN-CHM13-09/bmtagger_run1.work/tmp -X"
+	User time (seconds): 324.45
+	System time (seconds): 19.67
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:44.41
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 8391796
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 3550935
+	Voluntary context switches: 185
+	Involuntary context switches: 2273
+	Swaps: 0
+	File system inputs: 41096
+	File system outputs: 3111824
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

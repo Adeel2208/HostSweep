@@ -1,0 +1,12 @@
+library,condition,method,completeness_pct,contamination_pct
+ERR15898346,real,hostile,100.0,6.35
+ERR15898346,real,hostsweep,99.99,6.4
+ERR15898346,real,kneaddata,100.0,1.17
+SRR31641567,real,hostile,100.0,89.43
+SRR31641567,real,hostsweep,100.0,86.11
+SRR31641567,real,kneaddata,100.0,79.18
+SRR40486826,real,hostile,99.91,118.13
+SRR40486826,real,hostsweep,99.96,118.14
+SRR40486826,real,kneaddata,99.95,119.25
+SYN-NEU-03,synthetic,hostile,100.0,114.6
+SYN-NEU-03,synthetic,hostsweep,100.0,114.6

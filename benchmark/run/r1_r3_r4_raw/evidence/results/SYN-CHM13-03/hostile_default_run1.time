@@ -1,0 +1,24 @@
+Command exited with non-zero status 1
+	Command being timed: "hostile clean --fastq1 /home/molien/hostsweep/bench/synthetic/SYN-CHM13-03_R1.fastq.gz --fastq2 /home/molien/hostsweep/bench/synthetic/SYN-CHM13-03_R2.fastq.gz --threads 12 --output /home/molien/hostsweep/out/results/SYN-CHM13-03/hostile_default_run1.work"
+	User time (seconds): 3.24
+	System time (seconds): 1.32
+	Percent of CPU this job got: 0%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:06:05
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 42404
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 7
+	Minor (reclaiming a frame) page faults: 10670
+	Voluntary context switches: 28681
+	Involuntary context switches: 9
+	Swaps: 0
+	File system inputs: 712
+	File system outputs: 223944
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 1

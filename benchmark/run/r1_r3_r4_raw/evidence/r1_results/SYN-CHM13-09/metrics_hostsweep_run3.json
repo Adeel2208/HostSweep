@@ -1,0 +1,18 @@
+{
+  "tool": "hostsweep",
+  "tier": "profiling",
+  "truth_r1": "/home/molien/hostsweep/out/r1_syn/SYN-CHM13-09_R1.fastq.gz",
+  "cleaned_files": [
+    "/home/molien/hostsweep/out/r1_results/SYN-CHM13-09/hostsweep_run3.work/cleaned/SYN-CHM13-09_PROFILING.fastq.gz"
+  ],
+  "human_total": 200000,
+  "background_total": 1800000,
+  "true_positives_human_removed": 200000,
+  "false_negatives_human_retained": 0,
+  "true_negatives_background_retained": 1799760,
+  "false_positives_background_removed": 240,
+  "sensitivity": 100.0,
+  "false_positive_rate": 0.0133,
+  "background_retention": 99.9867,
+  "residual_human_fraction": 0.0
+}

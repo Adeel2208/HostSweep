@@ -1,0 +1,23 @@
+	Command being timed: "hostsweep -1 /home/molien/hostsweep/out/r1_syn/SYN-CHM13-03_R1.fastq.gz -2 /home/molien/hostsweep/out/r1_syn/SYN-CHM13-03_R2.fastq.gz -n SYN-CHM13-03 -o /home/molien/hostsweep/out/r1_results/SYN-CHM13-03/hostsweep_run3.work -i standard -t 8"
+	User time (seconds): 816.15
+	System time (seconds): 56.82
+	Percent of CPU this job got: 245%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:55.21
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 11905720
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 6574376
+	Voluntary context switches: 893321
+	Involuntary context switches: 1155
+	Swaps: 0
+	File system inputs: 24
+	File system outputs: 10485904
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

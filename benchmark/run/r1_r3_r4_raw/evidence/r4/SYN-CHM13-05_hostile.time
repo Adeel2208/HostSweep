@@ -1,0 +1,23 @@
+	Command being timed: "kraken2 --db /home/molien/hostsweep/k2_standard_full --threads 32 --confidence 0.1 --minimum-hit-groups 3 --report /home/molien/hostsweep/out/r4/SYN-CHM13-05_hostile.k2.report --output /dev/null /home/molien/hostsweep/out/r4/.SYN-CHM13-05_hostile.se.fastq.gz"
+	User time (seconds): 86.19
+	System time (seconds): 82.47
+	Percent of CPU this job got: 189%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:28.81
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 92562084
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1702
+	Minor (reclaiming a frame) page faults: 23185523
+	Voluntary context switches: 37275
+	Involuntary context switches: 283
+	Swaps: 0
+	File system inputs: 181996440
+	File system outputs: 192
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

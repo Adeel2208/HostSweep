@@ -1,0 +1,19 @@
+{
+  "tool": "bmtagger",
+  "tier": "profiling",
+  "truth_r1": "/home/molien/hostsweep/bench/synthetic/SYN-NEU-02_R1.fastq.gz",
+  "cleaned_files": [
+    "/home/molien/hostsweep/out/results/SYN-NEU-02/bmtagger_run1.work/out_1.fastq",
+    "/home/molien/hostsweep/out/results/SYN-NEU-02/bmtagger_run1.work/out_2.fastq"
+  ],
+  "human_total": 200000,
+  "background_total": 1800000,
+  "true_positives_human_removed": 199915,
+  "false_negatives_human_retained": 85,
+  "true_negatives_background_retained": 1799998,
+  "false_positives_background_removed": 2,
+  "sensitivity": 99.9575,
+  "false_positive_rate": 0.0001,
+  "background_retention": 99.9999,
+  "residual_human_fraction": 0.004722
+}

@@ -1,0 +1,23 @@
+	Command being timed: "metaspades.py -1 /home/molien/hostsweep/out/e9_cleaned/ERR15898346/hostsweep_R1.fastq.gz -2 /home/molien/hostsweep/out/e9_cleaned/ERR15898346/hostsweep_R2.fastq.gz -t 32 -m 111 -o /home/molien/hostsweep/out/r2_results/ERR15898346/hostsweep/metaspades_rep1"
+	User time (seconds): 6959.98
+	System time (seconds): 242.49
+	Percent of CPU this job got: 2164%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 5:32.77
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 11816304
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 12681118
+	Voluntary context switches: 25146031
+	Involuntary context switches: 3392
+	Swaps: 0
+	File system inputs: 901536
+	File system outputs: 11752640
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

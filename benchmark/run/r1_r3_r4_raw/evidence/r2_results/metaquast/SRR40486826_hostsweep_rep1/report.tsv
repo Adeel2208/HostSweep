@@ -1,0 +1,23 @@
+Assembly	contigs
+# contigs (>= 0 bp)	180205
+# contigs (>= 1000 bp)	19531
+# contigs (>= 5000 bp)	1819
+# contigs (>= 10000 bp)	776
+# contigs (>= 25000 bp)	211
+# contigs (>= 50000 bp)	55
+Total length (>= 0 bp)	117212287
+Total length (>= 1000 bp)	58867304
+Total length (>= 5000 bp)	26308307
+Total length (>= 10000 bp)	19165426
+Total length (>= 25000 bp)	10637995
+Total length (>= 50000 bp)	5167640
+# contigs	19531
+Largest contig	441877
+Total length	58867304
+GC (%)	45.89
+N50	3966
+N90	1252
+auN	20868.2
+L50	2528
+L90	14255
+# N's per 100 kbp	0.00
