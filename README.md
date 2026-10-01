@@ -24,6 +24,10 @@ as sufficient on its own to discharge a legal, ethical, or data-protection
 obligation. Decisions about data sharing remain the responsibility of the data
 custodian and their governance framework.
 
+Any alignment to a finite reference, including a pangenome, can only detect human reads that
+resemble that reference. Reads carrying rare, private or population-specific variation are the
+ones most likely to escape detection. This is an intrinsic limit of reference-based host removal.
+
 ---
 
 ## Key features
@@ -42,9 +46,27 @@ custodian and their governance framework.
 Measured benchmark results for the revised manuscript are in
 [`benchmark/run/RESULTS.md`](benchmark/run/RESULTS.md), with every departure from the
 specified protocol logged in [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md).
-They include results that do not favour HostSweep (for example, Hostile and BMTagger
-have lower false positive rates on the synthetic panel); read the deviations file
-before quoting any figure.
+They include results that do not favour HostSweep; read the deviations file before quoting
+any figure.
+
+Summary of the synthetic benchmark (12 libraries, 3 runs per tool, 8 threads; mean across
+libraries; full per-library tables and the exact definitions are in `RESULTS.md`):
+
+| tool | sensitivity, matched arm (n = 9) | sensitivity, mismatch arm (n = 3) | microbial reads removed (FPR) | runtime, min per 2 M pairs | peak memory, GB |
+|---|---|---|---|---|---|
+| HostSweep | 100.0000 % | 99.9698 % | 0.0142 % | 5.68 | 11.39 |
+| KneadData | 100.0000 % | 99.9692 % | 0.4255 % | 1.39 | 5.04 |
+| BMTagger | 99.9999 % | 99.9456 % | 0.0002 % | 5.93 (1 thread) | 8.00 |
+| Hostile (default) | 99.9998 % | 99.8665 % | 0.0000 % | 0.43 | 3.50 |
+| Hostile (matched index) | 99.9998 % | 99.8646 % | 0.0000 % | 0.42 | 3.50 |
+
+How to read this: on the matched arm every tool is at ceiling and the arm is circular for
+HostSweep, so it cannot rank tools. On the mismatch arm HostSweep and KneadData are
+indistinguishable on sensitivity, and both are ahead of BMTagger and Hostile. Hostile and
+BMTagger are more specific, Hostile and KneadData are faster, and HostSweep uses the most memory.
+FPR counts every microbial read missing from a tool's output, so it includes each tool's own
+preprocessing (HostSweep: fastp; KneadData: Trimmomatic; Hostile: none). DeconSeq could not be
+installed from bioconda and was not benchmarked.
 
 ---
 
@@ -53,7 +75,7 @@ before quoting any figure.
 | Resource | Minimum | Recommended |
 |----------|---------|-------------|
 | OS | Linux (Ubuntu 20.04+) or macOS | — |
-| RAM | 8 GB | 16 GB+ |
+| RAM | 16 GB (measured peak 11.4–12.2 GB) | 32 GB+ |
 | Storage | 50 GB free | 100 GB+ |
 | CPU cores | 4 | 8+ |
 | Python | 3.9+ | 3.10+ |
@@ -158,15 +180,16 @@ hostsweep -1 R1.fq.gz -2 R2.fq.gz -n sample -o out/ --keep-intermediates
 | `-v / --verbose` | Debug-level logging | off |
 | `--keep-intermediates` | Don't delete temp files | off |
 
-`--gdpr-minlen` is retained as a hidden, deprecated alias for
-`--stringent-minlen` so existing scripts keep working; it prints a deprecation
-warning and will be removed in a future release.
-
 ### Environment variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `HOSTSWEEP_BBDUK_MEM` | JVM heap passed to BBDuk as `-Xmx` | `8g` |
+
+HostSweep's peak memory is set largely by the minimap2 index of the 3.1 Gb reference
+(11.3–11.5 GB on 2 M-pair libraries, 11.3–12.2 GB on the real-library panel). On a machine with
+less memory it may page heavily or fail; runtime measured under such conditions is not meaningful
+(deviation D17).
 
 Lower `HOSTSWEEP_BBDUK_MEM` on constrained machines (e.g. `export HOSTSWEEP_BBDUK_MEM=2g`) if BBDuk fails to start.
 
@@ -185,6 +208,13 @@ All final outputs are in `<output_dir>/cleaned/`:
 
 The three tiers are nested: the high-stringency set is a subset of the
 profiling set, which derives from the assembly-grade reads.
+
+**Output 1 (assembly tier) has passed the minimap2 pass only, not the Bowtie2 pass.** In the
+benchmark, minimap2 alone left about 0.09 % of simulated human reads (matched arm), whereas the
+dual pass left none; Bowtie2 alone was almost as sensitive as the dual pass. If the lowest
+residual human content matters more than paired-end structure, use the profiling tier. The
+entropy and length thresholds of the high-stringency tier are empirical technical parameters,
+not values derived from any privacy or re-identification model.
 
 **QC & statistics:**
 
@@ -238,17 +268,21 @@ INPUT: Illumina Paired-end FASTQ (R1 + R2)
 
 ### Why dual-pass?
 
-The two passes exploit complementary algorithmic strengths:
+The two passes use different alignment strategies:
 
-- **minimap2 (Pass 1):** fast minimizer-based seeding detects the large
-  majority of host reads and preserves paired-end structure.
-- **Bowtie2 (Pass 2):** sensitive local alignment with dynamic programming
-  recovers divergent, partially aligning, and polymorphic or low-complexity
-  reads that minimizer seeding misses.
+- **minimap2 (Pass 1):** fast minimizer-based seeding that preserves paired-end structure and
+  yields the paired-end assembly-tier output.
+- **Bowtie2 (Pass 2):** sensitive local alignment with dynamic programming, applied to the
+  single-end reads that survive Pass 1.
 
-The size of the second pass's contribution has been measured on the synthetic panel;
-see section 3b of [`benchmark/run/RESULTS.md`](benchmark/run/RESULTS.md). Runtime is
-not reported as a comparison, for the reasons given in deviation D17.
+What the ablation measured (12 synthetic libraries, `benchmark/run/RESULTS.md` section 3b):
+minimap2 alone missed about 0.09 % of human reads on the matched arm (mean sensitivity
+99.906 %); Bowtie2 alone missed about 0.0001 %; the dual pass missed none. On the mismatch arm
+the mean sensitivities were 99.887 % (minimap2 only), 99.966 % (Bowtie2 only) and 99.970 % (dual).
+So most of the sensitivity comes from the Bowtie2 pass, and adding minimap2 to Bowtie2 gives a
+small gain on the mismatch arm. The dual pass also removed more microbial reads (FPR 0.0142 %)
+than Bowtie2 alone (0.0056 %). Ablation runtimes were collected under a memory ceiling and are
+not reported (deviation D17).
 
 ---
 
@@ -308,10 +342,14 @@ command: see [`benchmark/REMAINING.md`](benchmark/REMAINING.md).
 
 **Real SRA libraries (30)** — verified against SRA metadata, see [`benchmark/run/accessions_verified.csv`](benchmark/run/accessions_verified.csv) and [`benchmark/run/DEVIATIONS.md`](benchmark/run/DEVIATIONS.md). There is no per-read truth set for real libraries, so no accuracy figures are reported for them.
 
-**Synthetic controlled-truth libraries (12)** built from ART-simulated human
-reads from T2T-CHM13v2.0 over CAMI II-style microbial backgrounds, at exact
-spike-in fractions of 0.1%, 0.5%, 1%, 5%, 10%, 20% and 40%, plus libraries
-covering non-European haplotype diversity from 1000 Genomes.
+**Synthetic controlled-truth libraries (12)** of 2 M read pairs each, built from a
+ten-genome bacterial community ([`benchmark/genomes.tsv`](benchmark/genomes.tsv)) and
+ART-simulated human reads (profile `HS25`, 150 bp, seeds 42–53; human fractions 0.1–40 %).
+Nine libraries use human reads simulated from T2T-CHM13v2.0, the same sequence HostSweep
+screens against (*matched reference*, and therefore circular for HostSweep); three use reads
+simulated from independent HPRC year-1 assemblies (HG00438, HG00733, NA19240;
+*reference mismatch*). The truth label is each read's simulated origin, an operational
+label from the simulation. The two arms are always reported separately.
 
 Measured benchmark results for the revised manuscript are in
 [`benchmark/run/RESULTS.md`](benchmark/run/RESULTS.md), with every departure from the

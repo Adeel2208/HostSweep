@@ -1,7 +1,7 @@
 # HostSweep benchmark — complete measured results
 
 **Manuscript:** BIOADV-2026-394, *Bioinformatics Advances*, major revision
-**Generated:** 2026-09-11 · **Updated:** 2026-09-30 (clean five-tool timing run, full-Standard Kraken2, CheckM2 on metaSPAdes) — 
+**Generated:** 2026-09-11 · **Updated:** 2026-10-01 (clean five-tool timing run, full-Standard Kraken2, CheckM2 on metaSPAdes; HostSweep runtime corrected to the value recomputed from `run_details.csv`; arithmetic and unit corrections listed in the notes below)
 **Repository:** https://github.com/Adeel2208/HostSweep
 
 # 1. Status of each experiment
@@ -188,33 +188,59 @@ in `SYN-IND-01`, `SYN-NEU-02` and `SYN-NEU-03` (of 20,000, 200,000 and
 both Hostile configurations and below KneadData and HostSweep on all three
 mismatch libraries.
 
-### Per-library false positive rate
+### Per-library false positive rate (percent)
+
+All values are percentages of microbial reads removed. HostSweep values are the per-run values of section 2 (all three runs identical). An earlier version of this table listed the HostSweep column as 0.0001/0.0002, which was a fraction rounded to four decimals, not a percentage; that was an error and is corrected here.
 
 | library | hostsweep | hostile_default | hostile_matched | kneaddata | bmtagger |
 |---|---|---|---|---|---|
-| SYN-CHM13-01 | 0.0001 | **0.0** | **0.0** | 0.4258 | 0.0002 |
-| SYN-CHM13-02 | 0.0001 | **0.0** | **0.0** | 0.4276 | 0.0003 |
-| SYN-CHM13-03 | 0.0001 | **0.0** | **0.0** | 0.4293 | 0.0002 |
-| SYN-CHM13-04 | 0.0001 | **0.0** | **0.0** | 0.4221 | 0.0002 |
-| SYN-CHM13-05 | 0.0001 | **0.0** | **0.0** | 0.4292 | 0.0002 |
-| SYN-CHM13-06 | 0.0001 | **0.0** | **0.0** | 0.4246 | 0.0003 |
-| SYN-CHM13-07 | 0.0001 | **0.0** | **0.0** | 0.4239 | 0.0002 |
-| SYN-CHM13-08 | 0.0002 | **0.0** | **0.0** | 0.4251 | 0.0002 |
-| SYN-CHM13-09 | 0.0001 | **0.0** | **0.0** | 0.4216 | 0.0002 |
-| SYN-IND-01 (mismatch) | 0.0001 | **0.0** | **0.0** | 0.4267 | 0.0002 |
-| SYN-NEU-02 (mismatch) | 0.0002 | **0.0** | **0.0** | 0.4233 | 0.0001 |
-| SYN-NEU-03 (mismatch) | 0.0002 | **0.0** | **0.0** | 0.4304 | 0.0002 |
+| SYN-CHM13-01 | 0.0142 | **0.0** | **0.0** | 0.4258 | 0.0002 |
+| SYN-CHM13-02 | 0.0147 | **0.0** | **0.0** | 0.4276 | 0.0003 |
+| SYN-CHM13-03 | 0.0146 | **0.0** | **0.0** | 0.4293 | 0.0002 |
+| SYN-CHM13-04 | 0.0144 | **0.0** | **0.0** | 0.4221 | 0.0002 |
+| SYN-CHM13-05 | 0.0137 | **0.0** | **0.0** | 0.4292 | 0.0002 |
+| SYN-CHM13-06 | 0.0141 | **0.0** | **0.0** | 0.4246 | 0.0003 |
+| SYN-CHM13-07 | 0.0144 | **0.0** | **0.0** | 0.4239 | 0.0002 |
+| SYN-CHM13-08 | 0.0143 | **0.0** | **0.0** | 0.4251 | 0.0002 |
+| SYN-CHM13-09 | 0.0133 | **0.0** | **0.0** | 0.4216 | 0.0002 |
+| SYN-IND-01 (mismatch) | 0.0148 | **0.0** | **0.0** | 0.4267 | 0.0002 |
+| SYN-NEU-02 (mismatch) | 0.0142 | **0.0** | **0.0** | 0.4233 | 0.0001 |
+| SYN-NEU-03 (mismatch) | 0.0150 | **0.0** | **0.0** | 0.4304 | 0.0002 |
 
 
-> | tool | runtime mean (range) | peak memory mean (range) |
-> |---|---|---|
-> | hostile_matched | 0.42 min (0.36–0.48) | 3.50 GB (3.48–3.57) |
-> | hostile_default | 0.43 min (0.37–0.52) | 3.50 GB (2.96–3.63) |
-> | kneaddata | 1.39 min (0.91–2.71) | 5.04 GB (4.67–6.10) |
-> | hostsweep |2.68 min (1.51–3.00), verified value is 5.68 min (4.51–6.00) | 11.39 GB (11.33–11.47), unaffected |
-> | bmtagger | 5.93 min (4.96–6.45) | 8.00 GB (8.00–8.00, fixed by its
-> 4^18-bit bitmask) |
->
+### Runtime and peak memory — clean single session (R1)
+
+n = 36 runs per tool (12 libraries × 3 runs), 2 M read pairs per library, `/usr/bin/time -v`,
+zero swap activity in 180 of 180 runs. Recomputed from `r1_r3_r4_raw/csv/r1/run_details.csv`
+(`wall_clock_s`, `peak_rss_gb`) and identical to `timing_summary.csv`.
+Machine: AMD EPYC 9554, 125 GiB RAM, 8 threads per run (`machine.txt`). BMTagger is
+single-threaded (99 % CPU in every record) although the harness passed 8.
+
+| tool | runtime mean (range), min | peak memory mean (range), GB |
+|---|---|---|
+| hostile_matched | 0.42 (0.36–0.48) | 3.50 (3.48–3.57) |
+| hostile_default | 0.43 (0.37–0.52) | 3.50 (2.96–3.63) |
+| kneaddata | 1.39 (0.91–2.71) | 5.04 (4.67–6.10) |
+| hostsweep | **5.68 (4.51–6.00)** | 11.39 (11.33–11.47) |
+| bmtagger | 5.93 (4.96–6.45) | 8.00 (8.00–8.00, fixed by its 4^18-bit bitmask) |
+
+> **Correction (2026-10-01).** Earlier revisions of this file and of `DEVIATIONS.md` (D17
+> addendum) listed HostSweep as "2.68 min (1.51–3.00)". That value is not supported by
+> `run_details.csv` or `timing_summary.csv`, which give a mean of 5.683 min (range
+> 4.507–6.002). The 5.68 min figure is the measured one.
+
+### Reading notes for section 2b
+
+- **FPR is an operational quantity**: the percentage of true microbial reads that are absent
+  from a tool's output. It therefore includes any loss from a tool's own preprocessing and is not
+  purely a host-alignment false positive. HostSweep runs fastp, KneadData runs Trimmomatic and
+  Hostile applies no trimming; no common preprocessing stage was added. The FPR was not
+  decomposed into alignment and preprocessing components.
+- HostSweep was scored on its single-end profiling-tier output; comparators were scored on their
+  paired output, per read pair.
+- Accuracy values were identical across the three runs of every (library, tool) pair
+  (maximum spread across runs: 0.0 in both sensitivity and FPR), so variability in the summary
+  table is across libraries, not across runs.
 
 ## 3. E7 — threshold sweep
 
@@ -379,6 +405,8 @@ isolates the alignment passes rather than comparing different output tiers:
 > they used the known ten-genome reference set via `-r`, identical for all
 > three methods, and MetaQUAST downloaded nothing for them.
 
+**Inputs to the downstream arm.** HostSweep contributes its paired-end assembly-tier output (Output 1, `_ASSEMBLY_R1/R2`), which has passed minimap2 but **not** the Bowtie2 pass; KneadData contributes `paired_1/paired_2` and Hostile `clean_1/clean_2`. All three arms are paired-end (`collect_cleaned.sh`). The HostSweep residual-human counts below therefore describe its first-pass output and are expected to track minimap2-only sensitivity (section 3b). Outputs 2 and 3 were not classified.
+
 **18 of 18 (library, method) pairs, complete.** Six libraries — three synthetic
 spanning the host range including the mismatch arm, three real from different
 categories and BioProjects — each cleaned by three methods and assembled
@@ -464,14 +492,14 @@ set, identical for all three methods:
 | SYN-CHM13-05 (10 % host) | 2.76 | 2.82 | **6.88** |
 | SYN-NEU-03 (20 % host, mismatch) | 3.63 | 3.66 | **8.09** |
 
-**KneadData produces 1.7–2.9x more misassemblies per assembled Mb than either
-other method on all three synthetic libraries**, at comparable genome fraction.
+**KneadData produces 1.7–2.5x more misassemblies per assembled Mb than either
+other method on all three synthetic libraries** (ratios 1.69, 2.49 and 2.23 against HostSweep; 1.74, 2.44 and 2.21 against Hostile), at comparable genome fraction.
 This is the defensible form of the result: three libraries, one reference set,
 no confound. It is a smaller claim than the withdrawn real-library figure, and
 it is the one that holds.
 
 **HostSweep and Hostile are near-indistinguishable throughout.** On the
-synthetic libraries their misassembly rates differ by at most 0.06 per Mb. On
+synthetic libraries their misassembly rates differ by at most 0.08 per Mb (0.08, 0.06 and 0.03), which is within MEGAHIT's run-to-run variation. On
 the real respiratory library — using reference-free metrics only — their N50 is
 identical to the base pair (255,614) and assembled Mb differs by 0.2 kb. This is
 the same pattern E5 found upstream: the Bowtie2 pass is doing the work, and
@@ -558,9 +586,9 @@ corrected here rather than repeated.
 | SRR31641567 (blood) | 224 | **45** | fewer, 5.0x |
 
 This is the sharper version of the trade-off already visible in section 3c's
-assembly numbers: **KneadData's more aggressive removal leaves less residual
-host sequence and more misassembled, lower-N50 microbial sequence, on the same
-libraries, every time it was measured.** HostSweep and Hostile trade the
+assembly numbers: **KneadData leaves less residual
+host sequence and more misassembled, lower-N50 assemblies, on the same
+libraries, every time it was measured.** The cause is not isolated: KneadData also applies Trimmomatic and the other methods do not, so the assembly difference cannot be attributed to host removal alone. HostSweep and Hostile trade the
 reverse way — cleaner assemblies, and human reads that occasionally survive.
 Neither the assembly numbers nor the residual-human numbers support ranking
 one tool above the other in the abstract; they support describing where each
@@ -613,8 +641,7 @@ goes from 5,987 to 38,129 (6.4x). Full ratios are in D5's addendum in
 
 **With the capping removed, HostSweep beats Hostile on residual human content
 on 5 of 6 libraries**, not the near-even split Standard-8 showed — the one
-exception (`SYN-CHM13-05`) still favours Hostile, by the same ~15.6x margin
-Standard-8 already showed. The gut library, where Standard-8 showed a modest
+exception (`SYN-CHM13-05`) still favours Hostile, by 15.6x (344 vs 22; 13.9x under Standard-8, 139 vs 10). The gut library, where Standard-8 showed a modest
 20.6x HostSweep advantage, is far larger under the full database: **332x
 fewer residual human reads than Hostile (109 vs 36,226)**. `SYN-NEU-03`
 (mismatch) and `ERR15898346` (respiratory) flip from an effective tie under
@@ -665,10 +692,11 @@ claim between cleaning methods.**
 database too — fewer residual human reads than HostSweep on all 6 libraries,
 none tied** (Standard-8 showed one tie, `ERR15898346`, which resolves to
 HostSweep 4 vs KneadData 2 under the full database — still fewer, just not
-zero on either side). The magnitude ranges from 2x (`ERR15898346`) to 6.5x
-(`SRR31641567`). This does not change the trade-off already established
-elsewhere in this document: KneadData's more aggressive removal costs it
-assembly quality (section 3c) and specificity (section 2b).
+zero on either side). Where KneadData's count is non-zero the ratio ranges from 2x (`ERR15898346`) to 6.5x
+(`SRR31641567`); on `SYN-CHM13-01` and `SYN-CHM13-05` KneadData leaves none. This does not change the trade-off already established
+elsewhere in this document: KneadData's lower residual human counts coincide with
+lower assembly quality (section 3c) and lower specificity (section 2b); the causal split between host removal and
+its built-in trimming was not measured.
 
 ---
 
@@ -874,7 +902,7 @@ alignment was 10.523 GB.
 | Python | 3.11.16 |
 | fastp | 1.3.6 |
 | minimap2 | 2.31-r1302 |
-| bowtie2 | 2.5.x |
+| bowtie2 | 2.5.5 (`environment.yml`) |
 | samtools | 1.24 |
 | BBTools (BBDuk) | 40.02 |
 | ART | 2.5.8 (Q Version, June 2016) |
@@ -884,10 +912,12 @@ alignment was 10.523 GB.
 | MEGAHIT | 1.2.9 |
 | QUAST / MetaQUAST | 5.3.0 |
 | Kraken2 | 2.17.1 |
-| Kraken2 database | Standard-8, build `20250402` |
+| Kraken2 databases | Standard-8, build `20250402`; Standard (86 GB), build `20250402` (`db_build_date` column of `kraken2_human_standard.csv`) |
 | sra-tools | 3.4.1 |
 
 Full 118-package resolution in `conda_explicit.txt`.
+
+**Clean timing session (R1):** AMD EPYC 9554 (64 cores, 128 threads visible), 125 GiB RAM, 32 GiB swap (unused), 8 threads per run.
 
 **E1–E3, E5, E7, and the first 17 of 18 E9 pairs** ran at an 11 GB RAM ceiling
 (single 16 GiB DIMM, 15.64 GiB visible to the OS), 32 GB swap, WSL2 Ubuntu, 8
@@ -911,7 +941,7 @@ statistics only (section 3c).
 
 ## 8. Deviations that must appear in Methods
 
-Full text with interpretation costs in `DEVIATIONS.md` (21 deviations plus four
+Full text with interpretation costs in `DEVIATIONS.md` (22 deviations plus four
 integrity incidents). The ones that change how a number should be read:
 
 ### D1 — Background coverage 200×, not 50×
@@ -966,6 +996,8 @@ built on these numbers would rank whichever tool ran with a warm page cache.
 - Both need re-measuring on unconstrained hardware. The scripts are idempotent
   and would reproduce there.
 
+**Addendum: resolved for the five benchmarked tools.** The clean single-session run (section 2b, R1) measured all five tools under one fixed thread count with zero swap in 180 runs and supersedes this restriction for them. The runtime columns of the E3 and E5 tables (measured under the 11 GB ceiling) remain unusable and are not cited.
+
 
 ## Files
 
@@ -974,6 +1006,7 @@ built on these numbers would rank whichever tool ran with a warm page cache.
 | `per_library.csv` | 180 | Sensitivity, FPR, runtime, peak memory — all 5 tools, n=3 each, one clean same-thread-count session (R1) |
 | `per_library_constrained.csv` | 84 | The earlier, cross-session table (hostsweep n=3, each comparator n=1) this superseded; kept for reference |
 | `timing_summary.csv` | 5 | Per-tool runtime/memory means, ranges, across-run vs across-library spread, swap-activity count — from R1 |
+| `r1_r3_r4_raw/csv/r1/run_details.csv` | 180 | One row per timed run: wall-clock seconds, peak RSS, swap counters, exit status, sensitivity, FPR. Source of every runtime/memory figure in section 2b |
 | `checkm2_metaspades.csv` | 11 | CheckM2 completeness/contamination on the metaSPAdes downstream arm (D6); 7 of 18 pairs absent (I4) |
 | `kraken2_human_standard.csv` | 18 | Residual human reads, full Standard database — same 18 pairs as `kraken2_human.csv`, no capping (closes D5's floor) |
 | `synthetic_manifest.csv` | 12 | Realised fractions, seeds, source accessions |
@@ -983,7 +1016,7 @@ built on these numbers would rank whichever tool ran with a warm page cache.
 | `verification_log.txt` | — | Per-category study counts, exact queries, UID counts |
 | `genomes_verified.tsv` | 10 | Background community, verified at NCBI |
 | `human_sources_provenance.json` | 3 | Mismatch-arm assembly provenance and composition |
-| `DEVIATIONS.md` | 25 | 21 deviations + 4 integrity incidents |
+| `DEVIATIONS.md` | 26 | 22 deviations + 4 integrity incidents |
 | `STATUS.md` | — | What ran, what failed, what was skipped |
 | `downstream.csv` | 18 | N50, misassemblies, assembled Mb ≥1 kb, per method |
 | `kraken2_human.csv` | 18 | Residual human reads per method (floors, D5); `reads_total` and `pct_human` corrected in I3 |
@@ -994,4 +1027,3 @@ built on these numbers would rank whichever tool ran with a warm page cache.
 | `bmtagger_run_raw/` | — | The further session's unfiltered delivery: BMTagger metrics/time/stderr for all 12 libraries, the `hostile_default` FAILED records (D21 at the time), its E9 repeat CSVs, `MANIFEST.txt`, logs and tool-version records — primary source for D20 and the E9 repeat in section 3c |
 | `followup_run_raw/` | — | The later session's complete raw delivery: a README, a full run log, the KneadData heap shim, a cell-by-cell diff against the original run, and its full unfiltered CSV output — kept as the primary source for D18's numbers |
 | `r1_r3_r4_raw/` | — | The clean-timing-run session's unfiltered delivery: 180 runs' `.time`/`.swap`/metrics evidence (R1), CheckM2's per-assembly evidence (R3), Kraken2's per-classification `.time` and reports (R4), `machine.txt`, `swap_check.txt`, `run_details.csv` — primary source for D5's addendum, D6's addendum, D17's addendum, D21's resolution and this update throughout |
-

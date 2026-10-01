@@ -1,7 +1,8 @@
 # Deviations from reviewer- and editor-specified methods
 
 **Manuscript:** BIOADV-2026-394 (Bioinformatics Advances, major revision)
-**Maintained:** from 2026-09-06, updated whenever a departure occurs.
+**Maintained:** from 2026-09-06, updated whenever a departure occurs. Last revised 2026-10-01.
+**Contents:** 22 deviations (D1–D22) and 4 integrity incidents (I1–I4).
 **Purpose:** this file accompanies the response letter. Each entry states what
 was specified, what was done, why, and what it costs in interpretation.
 
@@ -150,7 +151,7 @@ cover the same 18 pairs).
 
 ---
 
-### D6. CheckM2 dropped, re-attempted where more RAM is available, still no result
+### D6. CheckM2 dropped originally; later run on the metaSPAdes assemblies (11 of 18 pairs)
 
 **Specified.** "Add CheckM2 completeness/contamination if you can run it; if
 not, say so explicitly."
@@ -195,9 +196,8 @@ was a transient network error on that machine's link, not a CheckM2 or memory
 limit. `run_checkm2.sh` and `install_comparators.sh` were then changed to use
 longer conda timeouts (60 s connect, 120 s read, 5 retries) and to retry
 environment creation (5 attempts) and the ~1.7 GB database download (3
-attempts) — commit `8cf930c` — and a second attempt was started. **As of this
-entry no CheckM2 completeness or contamination statistic exists.** If the
-second attempt also fails, the D6 dropping stands.
+attempts) — commit `8cf930c` — and a second attempt was started. **At the time of this entry no CheckM2 statistic existed; the second attempt below
+supersedes it.**
 
 **Outcome of the second attempt (further session, September 2026): it ran.**
 The conda-timeout retries fixed the earlier install failure, and
@@ -317,8 +317,15 @@ n=36 runs per tool:
 | hostile_matched | 0.42 min (0.36–0.48) | 3.50 GB (3.48–3.57) |
 | hostile_default | 0.43 min (0.37–0.52) | 3.50 GB (2.96–3.63) |
 | kneaddata | 1.39 min (0.91–2.71) | 5.04 GB (4.67–6.10) |
-| hostsweep |  2.68 min (1.51–3.00) — verified value is 5.68 min (4.51–6.00), no evidence behind this row | 11.39 GB (11.33–11.47), unaffected |
+| hostsweep | 5.68 min (4.51–6.00) | 11.39 GB (11.33–11.47) |
 | bmtagger | 5.93 min (4.96–6.45) | 8.00 GB (8.00–8.00) |
+
+The HostSweep runtime was recomputed from `r1_r3_r4_raw/csv/r1/run_details.csv` (36 runs,
+`wall_clock_s`); it equals `timing_summary.csv` (mean 5.683 min, range 4.507–6.002).
+**Correction (2026-10-01):** an earlier revision of this table listed HostSweep as
+"2.68 min (1.51–3.00)". That value is not supported by either file and is withdrawn.
+Machine: AMD EPYC 9554, 125 GiB RAM, 32 GiB swap (unused), 8 threads per run
+(`machine.txt`). BMTagger is single-threaded (99 % CPU) although the harness passed 8.
 
 ### D18. Comparator benchmark, E4 and the last E9 pair completed in a later benchmark run
 
@@ -377,7 +384,7 @@ independent re-run (kept alongside this file as evidence):
 **This asymmetry is itself a result, not just a bookkeeping problem: KneadData's
 assemblies reproduce far less well across independent runs than HostSweep's or
 Hostile's.** It is consistent with, and adds weight to, the misassembly-rate
-finding in section 3c (KneadData produces 1.7–2.9x more misassemblies per Mb) —
+finding in section 3c (KneadData produces 1.7–2.5x more misassemblies per Mb) —
 an assembly downstream of noisier cleaning is less stable, not just worse on
 average. `downstream.csv` keeps the **original run's** values as canonical for
 all rows measured in both (first-recorded, and already the basis of the E9
@@ -407,6 +414,33 @@ real libraries E9 needs (`SRR40486826`, `ERR15898346`, `SRR31641567`), not the
 established as reproducible across independent runs by the check above, and
 combining it is the point of running the check at all. Runtime, memory and
 exact assembly statistics are not, for the reasons given.
+
+---
+
+### D22. Comparators were not given a common preprocessing stage, and HostSweep was scored on single-end output
+
+**Specified.** Reviewer and editor requests: equivalent preprocessing, thread counts, input data and
+resource measurement across tools; avoid comparing paired-end with single-end outputs without
+control.
+
+**Done.** Identical input FASTQs, one fixed thread count (8; BMTagger is single-threaded) and one
+resource-measurement procedure for every tool. **Preprocessing was not equalised.** Each tool was run
+as it is normally invoked (`run_e3.sh`): HostSweep applies fastp (quality, adapters, complexity,
+minimum length 50 bp); KneadData applies Trimmomatic with default settings; Hostile and BMTagger
+apply no trimming (Hostile's output retains every read that does not align). Accuracy was scored per
+read pair against the truth labels by the same `compute_metrics.py`; HostSweep was scored on its
+single-end profiling-tier output and the comparators on their paired output.
+
+**Why.** A common preprocessing stage would have changed the tools from their standard use and was
+not part of the run; the consequence was not noticed until the results were reviewed.
+
+**Interpretation cost.** The false positive rate counts every microbial read absent from a tool's
+output, so it includes losses from that tool's own preprocessing and is not a pure host-alignment
+false positive. In particular KneadData's 0.43 % and HostSweep's 0.014 % are not decomposed into
+preprocessing and alignment components, and Hostile's 0.00 % reflects, in part, the absence of any
+trimming. Downstream assembly differences between methods (section 3c) cannot be attributed to host
+removal alone for the same reason. The comparison is between tools as invoked, not between host-removal
+algorithms. Resolving this needs a rerun with a shared preprocessing stage ahead of every tool.
 
 ---
 
@@ -557,6 +591,12 @@ T2T-CHM13v2.0 index every other method uses). Both use `--output`.
 removed in Hostile 2.0.0 and the command would not have run at all. Hostile
 defaults to Bowtie2 for paired short reads; minimap2 is its long-read path.
 
+**Configuration actually run** (`benchmark/scripts/run_e3.sh`): `hostile clean --fastq1 R1 --fastq2 R2
+--threads 8 --output wd` (default) and the same command with `--aligner bowtie2 --index $BT2_INDEX`
+(matched). KneadData: `kneaddata --input1 R1 --input2 R2 --reference-db $BT2_INDEX --threads 8
+--bypass-trf --remove-intermediate-output`, i.e. the same T2T-CHM13v2.0 Bowtie2 index, default
+Trimmomatic settings and TRF bypassed.
+
 **Interpretation cost.** Corrects a misconfiguration that would have
 understated the comparator. `hostile --version` is asserted to be 2.x before
 any comparator run; a 1.x resolution invalidates the comparison and is treated
@@ -662,7 +702,8 @@ BMTagger rows were timed in that further session; the other comparator rows in
 the three tools re-run together are in `bmtagger_run_raw/csv/per_library.csv`
 (BMTagger 4.9–6.4 min, KneadData 0.8–2.0, Hostile 0.24–0.31). Against the
 earlier session's timings for the same tools and libraries these differ by
-1.9–4.8x, so no runtime column should be built across the two.
+1.9–4.8x, so no runtime column should be built across the two. The valid five-tool runtime and
+memory comparison is the single-session R1 run (D17 addendum).
 
 **DeconSeq — dropped, per the original instruction.** Not on bioconda; the
 project's own install path is a manual download plus a hand-edited
@@ -853,10 +894,11 @@ any real library, so the rule no longer rests on a comment.
 
 **What survives.** The synthetic arm was unaffected — it used the known
 ten-genome set via `-r`, identical across methods, and MetaQUAST downloaded
-nothing. There, KneadData still produces 1.7–2.9x more misassemblies per
-assembled Mb than HostSweep or Hostile. The reference-free real-library
-metrics also point the same way: KneadData gives the lowest N50 on both real
-libraries where it ran. The finding holds; it is smaller than first stated.
+nothing. There, KneadData still produces 1.7–2.5x more misassemblies per
+assembled Mb than HostSweep or Hostile (the earlier "2.9x" was an arithmetic
+error; the ratios are 1.69, 2.49 and 2.23 against HostSweep). The reference-free
+real-library metrics also point the same way: KneadData gives the lowest N50 on
+all three real libraries (when this entry was first written it had run on two). The finding holds; it is smaller than first stated.
 
 **How it was caught.** The script's own comment claimed the reference-based
 columns would be "empty for reference-free runs". They were populated. The
@@ -928,3 +970,32 @@ because it depends on counts.
 
 ---
 
+---
+
+### I4. metaSPAdes `spades-hammer` failures: 7 of 18 pairs have no metaSPAdes assembly (detected, unresolved)
+
+**What happened.** In the exploratory metaSPAdes downstream arm (`run_metaspades_e9.sh`, R2), the
+BayesHammer error-correction step (`spades-hammer`) failed intermittently at high thread counts, in
+two ways. The identical command on the identical read pair produced both, so the failure is not
+deterministic. (a) A segmentation fault inside libgomp/OpenMP during the second multithreaded k-mer
+counting pass, occurring anywhere from about 3 minutes to about 13 hours into a run. (b) A run that
+produced no crash and no progress for more than 20 hours, a hang and not a slow success. Memory use
+at the point of failure was far below the `-m` limit in every case observed, which rules out a
+resource-limit crash as the cause.
+
+**Mitigation attempted.** Each (library, method, replicate) was given up to three attempts, halving
+the thread count after each failure (floor 4), and each attempt was wrapped in a three-hour
+wall-clock limit so that a hang is force-killed and counted as a failed attempt. Child processes that
+survived the kill were removed. A pair is marked FAILED only if every attempt fails or times out.
+The stderr and `spades.log` of every failed attempt are kept as evidence.
+
+**Outcome.** The cause was not found and the problem was not resolved within the time budget of the
+benchmark. **11 of 18 (library, method) pairs produced a metaSPAdes assembly; 7 did not.** The 7
+failed pairs are recorded as FAILED rows in the metaSPAdes CSVs and have no CheckM2 row, because there
+is no assembly to score; they are absent, not estimated.
+
+**Interpretation cost.** The metaSPAdes arm is exploratory and does not replace the MEGAHIT arm that
+carries the main downstream comparison (D4). CheckM2 results (D6) exist only for the 11 pairs that
+assembled, and the failures are not random with respect to the comparison of interest if they
+cluster on particular libraries or methods; no analysis of that was done. The failure is in
+metaSPAdes, not in any cleaning method.
