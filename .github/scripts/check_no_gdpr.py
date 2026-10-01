@@ -2,9 +2,10 @@
 """Fail if GDPR terminology reappears on a user-facing surface.
 
 The journal requires the term to be absent from code, CLI, output filenames
-and documentation. One deliberate exception remains: the hidden, deprecated
-``--gdpr-minlen`` CLI alias in cli.py, kept so existing scripts keep working.
-It is suppressed from ``--help`` output.
+and documentation. The hidden, deprecated ``--gdpr-minlen`` CLI alias that
+previously existed for backward compatibility has been removed entirely, so
+this check no longer carries any exemption -- any mention of the term outside
+a test asserting its absence is a failure.
 
 Run from the repository root:  python .github/scripts/check_no_gdpr.py
 """
@@ -13,12 +14,6 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-
-# (path, set of allowed line numbers) -- allowances are deliberate and narrow.
-ALLOWED_SUBSTRINGS = (
-    "--gdpr-minlen",              # deprecated alias definition + warning
-    "gdpr-minlen is deprecated",
-)
 
 SEARCH_PATHS = ["hostsweep", "benchmark", "tests", "README.md"]
 
@@ -37,8 +32,6 @@ for rel in SEARCH_PATHS:
             continue
         for lineno, line in enumerate(text.splitlines(), start=1):
             if "gdpr" not in line.lower():
-                continue
-            if any(allowed in line for allowed in ALLOWED_SUBSTRINGS):
                 continue
             # tests assert on the absence of the term, so they may name it.
             if path.name.startswith("test_"):
