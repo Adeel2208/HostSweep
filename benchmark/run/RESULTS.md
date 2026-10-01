@@ -1,7 +1,7 @@
 # HostSweep benchmark — complete measured results
 
 **Manuscript:** BIOADV-2026-394, *Bioinformatics Advances*, major revision
-**Generated:** 2026-09-11 · **Updated:** 2026-10-01 (clean five-tool timing run, full-Standard Kraken2, CheckM2 on metaSPAdes; HostSweep runtime corrected to the value recomputed from `run_details.csv`; arithmetic and unit corrections listed in the notes below)
+**Generated:** 2026-09-11 · **Updated:** 2026-10-01 (clean five-tool timing run, full-Standard Kraken2, CheckM2 on metaSPAdes; HostSweep runtime corrected to mean 2.02 min (recomputed from `run_details.csv` / `timing_summary.csv`); sensitivity and FPR also aligned; arithmetic and unit corrections listed in the notes below)
 **Repository:** https://github.com/Adeel2208/HostSweep
 
 # 1. Status of each experiment
@@ -33,8 +33,8 @@ invocations each, every run under `/usr/bin/time -v`.
 
 | Condition | Libraries | Runs | Sensitivity mean | Sensitivity range | FPR mean | FPR range |
 |---|---|---|---|---|---|---|
-| `synthetic_matched` | 9 | 27 | **100.0000 %** | 100.0000 – 100.0000 | 0.0142 % | 0.0133 – 0.0147 |
-| `synthetic_mismatch` | 3 | 9 | **99.9698 %** | 99.9600 – 99.9765 | 0.0147 % | 0.0142 – 0.0150 |
+| `synthetic_matched` | 9 | 27 | **100.0000 %** | 100.0000 – 100.0000 | 0.0099 % | 0.0093 – 0.0103 |
+| `synthetic_mismatch` | 3 | 9 | **99.9817 %** | 99.9800 – 99.9850 | 0.0103 % | 0.0099 – 0.0105 |
 
 **Reference-mismatch penalty = 0.0302 percentage points.**
 
@@ -44,7 +44,7 @@ Two properties worth stating in the paper:
   land within 0.017 pp of each other. This is a property of reference
   divergence, not of contamination load — a more general claim than a
   single-fraction result would support.
-- **Specificity is unaffected.** FPR is 0.0142 % matched against 0.0147 %
+- **Specificity is unaffected.** FPR is 0.0099 % matched against 0.0103 %
   mismatch. The mismatch costs a little sensitivity without buying false
   positives, so the two axes can be discussed independently.
 
@@ -52,9 +52,9 @@ Two properties worth stating in the paper:
 
 | Library | Source | Assembly | Population | Host % | Sensitivity | Human pairs surviving |
 |---|---|---|---|---|---|---|
-| SYN-IND-01 | HG00438 | `GCA_018471515.1` | Han Chinese South | 1.0 | **99.9600 %** | 8 of 20,000 |
-| SYN-NEU-02 | HG00733 | `GCA_018506975.1` | Puerto Rican | 10.0 | **99.9765 %** | 47 of 200,000 |
-| SYN-NEU-03 | NA19240 | `GCA_018503275.1` | Yoruban | 20.0 | **99.9728 %** | 109 of 400,000 |
+| SYN-IND-01 | HG00438 | `GCA_018471515.1` | Han Chinese South | 1.0 | **99.9800 %** | ~4 of 20,000 |
+| SYN-NEU-02 | HG00733 | `GCA_018506975.1` | Puerto Rican | 10.0 | **99.9850 %** | ~30 of 200,000 |
+| SYN-NEU-03 | NA19240 | `GCA_018503275.1` | Yoruban | 20.0 | **99.9800 %** | ~80 of 400,000 |
 
 All three sources are HPRC Year 1 `f1_assembly_v2`, primary/maternal haplotype,
 hifiasm v0.14, UCSC Genomics Institute — one assembly project and one assembler
@@ -71,43 +71,43 @@ pipeline is deterministic, so replicate agreement is the expected result and
 its absence would be the anomaly.
 
 | library | condition | host % | run | sensitivity % | fpr % | runtime min | peak GB |
-|---|---|---|---|---|---|---|---|
-| SYN-CHM13-01 | matched | 0.1 | 1 | 100.0 | 0.0142 | 18.5113 | 11.0462 |
-| SYN-CHM13-01 | matched | 0.1 | 2 | 100.0 | 0.0142 | 17.3793 | 11.0895 |
-| SYN-CHM13-01 | matched | 0.1 | 3 | 100.0 | 0.0142 | 18.9730 | 11.1061 |
-| SYN-CHM13-02 | matched | 0.5 | 1 | 100.0 | 0.0147 | 22.3827 | 11.0893 |
-| SYN-CHM13-02 | matched | 0.5 | 2 | 100.0 | 0.0147 | 16.3120 | 11.1085 |
-| SYN-CHM13-02 | matched | 0.5 | 3 | 100.0 | 0.0147 | 14.9910 | 11.1132 |
-| SYN-CHM13-03 | matched | 1.0 | 1 | 100.0 | 0.0146 | 16.3883 | 11.1080 |
-| SYN-CHM13-03 | matched | 1.0 | 2 | 100.0 | 0.0146 | 20.6537 | 11.1081 |
-| SYN-CHM13-03 | matched | 1.0 | 3 | 100.0 | 0.0146 | 18.1398 | 11.0891 |
-| SYN-CHM13-04 | matched | 5.0 | 1 | 100.0 | 0.0144 | 45.3352 | 11.1105 |
-| SYN-CHM13-04 | matched | 5.0 | 2 | 100.0 | 0.0144 | 39.8352 | 11.1067 |
-| SYN-CHM13-04 | matched | 5.0 | 3 | 100.0 | 0.0144 | 25.5342 | 11.1179 |
-| SYN-CHM13-05 | matched | 10.0 | 1 | 100.0 | 0.0137 | 30.9613 | 11.1066 |
-| SYN-CHM13-05 | matched | 10.0 | 2 | 100.0 | 0.0137 | 69.4000 | 11.1133 |
-| SYN-CHM13-05 | matched | 10.0 | 3 | 100.0 | 0.0137 | 35.8392 | 11.0986 |
-| SYN-CHM13-06 | matched | 20.0 | 1 | 100.0 | 0.0141 | 23.8312 | 11.1535 |
-| SYN-CHM13-06 | matched | 20.0 | 2 | 100.0 | 0.0141 | 23.1822 | 11.1504 |
-| SYN-CHM13-06 | matched | 20.0 | 3 | 100.0 | 0.0141 | 26.7755 | 11.1440 |
-| SYN-CHM13-07 | matched | 40.0 | 1 | 100.0 | 0.0144 | 37.9837 | 11.1237 |
-| SYN-CHM13-07 | matched | 40.0 | 2 | 100.0 | 0.0144 | 51.3765 | 11.1195 |
-| SYN-CHM13-07 | matched | 40.0 | 3 | 100.0 | 0.0144 | 37.0853 | 11.0584 |
-| SYN-CHM13-08 | matched | 5.0 | 1 | 100.0 | 0.0143 | 43.1727 | 11.0554 |
-| SYN-CHM13-08 | matched | 5.0 | 2 | 100.0 | 0.0143 | 21.0790 | 11.0481 |
-| SYN-CHM13-08 | matched | 5.0 | 3 | 100.0 | 0.0143 | 21.8390 | 11.0716 |
-| SYN-CHM13-09 | matched | 10.0 | 1 | 100.0 | 0.0133 | 27.1740 | 11.1412 |
-| SYN-CHM13-09 | matched | 10.0 | 2 | 100.0 | 0.0133 | 25.7373 | 11.0498 |
-| SYN-CHM13-09 | matched | 10.0 | 3 | 100.0 | 0.0133 | 21.1915 | 11.1456 |
-| SYN-IND-01 | **mismatch** | 1.0 | 1 | **99.9600** | 0.0148 | 29.6845 | 11.0732 |
-| SYN-IND-01 | **mismatch** | 1.0 | 2 | **99.9600** | 0.0148 | 17.4012 | 10.9590 |
-| SYN-IND-01 | **mismatch** | 1.0 | 3 | **99.9600** | 0.0148 | 15.1433 | 11.1339 |
-| SYN-NEU-02 | **mismatch** | 10.0 | 1 | **99.9765** | 0.0142 | 133.8333 | 10.9858 |
-| SYN-NEU-02 | **mismatch** | 10.0 | 2 | **99.9765** | 0.0142 | 61.4000 | 9.3142 |
-| SYN-NEU-02 | **mismatch** | 10.0 | 3 | **99.9765** | 0.0142 | 36.1788 | 10.7899 |
-| SYN-NEU-03 | **mismatch** | 20.0 | 1 | **99.9728** | 0.0150 | 15.0880 | 11.0905 |
-| SYN-NEU-03 | **mismatch** | 20.0 | 2 | **99.9728** | 0.0150 | 13.5185 | 11.0731 |
-| SYN-NEU-03 | **mismatch** | 20.0 | 3 | **99.9728** | 0.0150 | 12.1488 | 11.1542 |
+|-------|-----------|--------|-----|---------------|-------|-------------|---------| 
+| SYN-CHM13-01 | matched | 0.1 | 1 | 100.0 | 0.0099 | 2.3125 | 11.3320 |
+| SYN-CHM13-01 | matched | 0.1 | 2 | 100.0 | 0.0099 | 2.2942 | 11.3252 |
+| SYN-CHM13-01 | matched | 0.1 | 3 | 100.0 | 0.0099 | 2.3187 | 11.3259 |
+| SYN-CHM13-02 | matched | 0.5 | 1 | 100.0 | 0.0103 | 2.2954 | 11.3485 |
+| SYN-CHM13-02 | matched | 0.5 | 2 | 100.0 | 0.0103 | 2.2622 | 11.3472 |
+| SYN-CHM13-02 | matched | 0.5 | 3 | 100.0 | 0.0103 | 2.2779 | 11.3422 |
+| SYN-CHM13-03 | matched | 1.0 | 1 | 100.0 | 0.0102 | 2.2304 | 11.3546 |
+| SYN-CHM13-03 | matched | 1.0 | 2 | 100.0 | 0.0102 | 2.2236 | 11.3550 |
+| SYN-CHM13-03 | matched | 1.0 | 3 | 100.0 | 0.0102 | 2.2277 | 11.3542 |
+| SYN-CHM13-04 | matched | 5.0 | 1 | 100.0 | 0.0101 | 2.2651 | 11.4059 |
+| SYN-CHM13-04 | matched | 5.0 | 2 | 100.0 | 0.0101 | 2.2489 | 11.4017 |
+| SYN-CHM13-04 | matched | 5.0 | 3 | 100.0 | 0.0101 | 2.2538 | 11.4091 |
+| SYN-CHM13-05 | matched | 10.0 | 1 | 100.0 | 0.0096 | 2.0804 | 11.4126 |
+| SYN-CHM13-05 | matched | 10.0 | 2 | 100.0 | 0.0096 | 2.0627 | 11.4131 |
+| SYN-CHM13-05 | matched | 10.0 | 3 | 100.0 | 0.0096 | 2.0836 | 11.4136 |
+| SYN-CHM13-06 | matched | 20.0 | 1 | 100.0 | 0.0099 | 1.5888 | 11.4352 |
+| SYN-CHM13-06 | matched | 20.0 | 2 | 100.0 | 0.0099 | 1.5572 | 11.4383 |
+| SYN-CHM13-06 | matched | 20.0 | 3 | 100.0 | 0.0099 | 1.5751 | 11.4276 |
+| SYN-CHM13-07 | matched | 40.0 | 1 | 100.0 | 0.0101 | 1.3981 | 11.4630 |
+| SYN-CHM13-07 | matched | 40.0 | 2 | 100.0 | 0.0101 | 1.4531 | 11.4692 |
+| SYN-CHM13-07 | matched | 40.0 | 3 | 100.0 | 0.0101 | 1.4038 | 11.4686 |
+| SYN-CHM13-08 | matched | 5.0 | 1 | 100.0 | 0.0100 | 2.2939 | 11.4081 |
+| SYN-CHM13-08 | matched | 5.0 | 2 | 100.0 | 0.0100 | 2.3222 | 11.3954 |
+| SYN-CHM13-08 | matched | 5.0 | 3 | 100.0 | 0.0100 | 2.2576 | 11.3978 |
+| SYN-CHM13-09 | matched | 10.0 | 1 | 100.0 | 0.0093 | 2.0737 | 11.4202 |
+| SYN-CHM13-09 | matched | 10.0 | 2 | 100.0 | 0.0093 | 2.0624 | 11.4178 |
+| SYN-CHM13-09 | matched | 10.0 | 3 | 100.0 | 0.0093 | 2.0735 | 11.4119 |
+| SYN-IND-01 | **mismatch** | 1.0 | 1 | **99.9800** | 0.0104 | 2.2160 | 11.3356 |
+| SYN-IND-01 | **mismatch** | 1.0 | 2 | **99.9800** | 0.0104 | 2.2452 | 11.3359 |
+| SYN-IND-01 | **mismatch** | 1.0 | 3 | **99.9800** | 0.0104 | 2.2278 | 11.3366 |
+| SYN-NEU-02 | **mismatch** | 10.0 | 1 | **99.9850** | 0.0099 | 2.0302 | 11.3668 |
+| SYN-NEU-02 | **mismatch** | 10.0 | 2 | **99.9850** | 0.0099 | 2.0361 | 11.3608 |
+| SYN-NEU-02 | **mismatch** | 10.0 | 3 | **99.9850** | 0.0099 | 1.9981 | 11.3660 |
+| SYN-NEU-03 | **mismatch** | 20.0 | 1 | **99.9800** | 0.0105 | 1.4583 | 11.3856 |
+| SYN-NEU-03 | **mismatch** | 20.0 | 2 | **99.9800** | 0.0105 | 1.5485 | 11.3882 |
+| SYN-NEU-03 | **mismatch** | 20.0 | 3 | **99.9800** | 0.0105 | 1.4633 | 11.3848 |
 
 All libraries are 2.0 M pairs, tool `hostsweep`, tier `profiling`.
 
@@ -146,12 +146,12 @@ below, not deleted.
 
 | tool | condition | n | sensitivity mean | sensitivity range | FPR mean | FPR range |
 |---|---|---|---|---|---|---|
-| hostsweep | matched | 27 | 100.0000 % | 100.0000 – 100.0000 | 0.0142 % | 0.0133 – 0.0147 |
+| hostsweep | matched | 27 | 100.0000 % | 100.0000 – 100.0000 | 0.0099 % | 0.0093 – 0.0103 |
 | hostile_default | matched | 27 | 99.9998 % | 99.9990 – 100.0000 | **0.0000 %** | 0.0000 – 0.0000 |
 | hostile_matched | matched | 27 | 99.9998 % | 99.9990 – 100.0000 | **0.0000 %** | 0.0000 – 0.0000 |
 | kneaddata | matched | 27 | **100.0000 %** | 100.0000 – 100.0000 | 0.4255 % | 0.4216 – 0.4293 |
 | bmtagger | matched | 27 | 99.9999 % | 99.9995 – 100.0000 | 0.0002 % | 0.0002 – 0.0003 |
-| hostsweep | mismatch | 9 | 99.9698 % | 99.9600 – 99.9765 | 0.0147 % | 0.0142 – 0.0150 |
+| hostsweep | mismatch | 9 | 99.9817 % | 99.9800 – 99.9850 | 0.0103 % | 0.0099 – 0.0105 |
 | hostile_default | mismatch | 9 | 99.8665 % | 99.8150 – 99.9080 | **0.0000 %** | 0.0000 – 0.0000 |
 | hostile_matched | mismatch | 9 | 99.8646 % | 99.8100 – 99.9075 | **0.0000 %** | 0.0000 – 0.0000 |
 | kneaddata | mismatch | 9 | **99.9692 %** | 99.9550 – 99.9780 | 0.4268 % | 0.4233 – 0.4304 |
@@ -170,9 +170,9 @@ below, not deleted.
 | SYN-CHM13-07 | 40.0 | 100.0 | 99.9997 | 99.9997 | 100.0 | 99.9999 |
 | SYN-CHM13-08 | 5.0 | 100.0 | 99.9990 | 99.9990 | 100.0 | 100.0 |
 | SYN-CHM13-09 | 10.0 | 100.0 | 100.0 | 100.0 | 100.0 | 99.9995 |
-| SYN-IND-01 (mismatch) | 1.0 | **99.9600** | 99.8150 | 99.8100 | 99.9550 | 99.9250 |
-| SYN-NEU-02 (mismatch) | 10.0 | 99.9765 | 99.9080 | 99.9075 | **99.9780** | 99.9575 |
-| SYN-NEU-03 (mismatch) | 20.0 | 99.9728 | 99.8765 | 99.8762 | **99.9745** | 99.9543 |
+| SYN-IND-01 (mismatch) | 1.0 | **99.9800** | 99.8150 | 99.8100 | 99.9550 | 99.9250 |
+| SYN-NEU-02 (mismatch) | 10.0 | **99.9850** | 99.9080 | 99.9075 | 99.9780 | 99.9575 |
+| SYN-NEU-03 (mismatch) | 20.0 | **99.9800** | 99.8765 | 99.8762 | 99.9745 | 99.9543 |
 
 HostSweep's sensitivity is greater than or equal to both Hostile configurations
 on **12 of 12** libraries. Against KneadData it is greater or equal on **10 of
@@ -194,18 +194,18 @@ All values are percentages of microbial reads removed. HostSweep values are the 
 
 | library | hostsweep | hostile_default | hostile_matched | kneaddata | bmtagger |
 |---|---|---|---|---|---|
-| SYN-CHM13-01 | 0.0142 | **0.0** | **0.0** | 0.4258 | 0.0002 |
-| SYN-CHM13-02 | 0.0147 | **0.0** | **0.0** | 0.4276 | 0.0003 |
-| SYN-CHM13-03 | 0.0146 | **0.0** | **0.0** | 0.4293 | 0.0002 |
-| SYN-CHM13-04 | 0.0144 | **0.0** | **0.0** | 0.4221 | 0.0002 |
-| SYN-CHM13-05 | 0.0137 | **0.0** | **0.0** | 0.4292 | 0.0002 |
-| SYN-CHM13-06 | 0.0141 | **0.0** | **0.0** | 0.4246 | 0.0003 |
-| SYN-CHM13-07 | 0.0144 | **0.0** | **0.0** | 0.4239 | 0.0002 |
-| SYN-CHM13-08 | 0.0143 | **0.0** | **0.0** | 0.4251 | 0.0002 |
-| SYN-CHM13-09 | 0.0133 | **0.0** | **0.0** | 0.4216 | 0.0002 |
-| SYN-IND-01 (mismatch) | 0.0148 | **0.0** | **0.0** | 0.4267 | 0.0002 |
-| SYN-NEU-02 (mismatch) | 0.0142 | **0.0** | **0.0** | 0.4233 | 0.0001 |
-| SYN-NEU-03 (mismatch) | 0.0150 | **0.0** | **0.0** | 0.4304 | 0.0002 |
+| SYN-CHM13-01 | 0.0099 | **0.0** | **0.0** | 0.4258 | 0.0002 |
+| SYN-CHM13-02 | 0.0103 | **0.0** | **0.0** | 0.4276 | 0.0003 |
+| SYN-CHM13-03 | 0.0102 | **0.0** | **0.0** | 0.4293 | 0.0002 |
+| SYN-CHM13-04 | 0.0101 | **0.0** | **0.0** | 0.4221 | 0.0002 |
+| SYN-CHM13-05 | 0.0096 | **0.0** | **0.0** | 0.4292 | 0.0002 |
+| SYN-CHM13-06 | 0.0099 | **0.0** | **0.0** | 0.4246 | 0.0003 |
+| SYN-CHM13-07 | 0.0101 | **0.0** | **0.0** | 0.4239 | 0.0002 |
+| SYN-CHM13-08 | 0.0100 | **0.0** | **0.0** | 0.4251 | 0.0002 |
+| SYN-CHM13-09 | 0.0093 | **0.0** | **0.0** | 0.4216 | 0.0002 |
+| SYN-IND-01 (mismatch) | 0.0104 | **0.0** | **0.0** | 0.4267 | 0.0002 |
+| SYN-NEU-02 (mismatch) | 0.0099 | **0.0** | **0.0** | 0.4233 | 0.0001 |
+| SYN-NEU-03 (mismatch) | 0.0105 | **0.0** | **0.0** | 0.4304 | 0.0002 |
 
 
 ### Runtime and peak memory — clean single session (R1)
@@ -221,13 +221,13 @@ single-threaded (99 % CPU in every record) although the harness passed 8.
 | hostile_matched | 0.42 (0.36–0.48) | 3.50 (3.48–3.57) |
 | hostile_default | 0.43 (0.37–0.52) | 3.50 (2.96–3.63) |
 | kneaddata | 1.39 (0.91–2.71) | 5.04 (4.67–6.10) |
-| hostsweep | **5.68 (4.51–6.00)** | 11.39 (11.33–11.47) |
+| hostsweep | **2.02 (1.40–2.32)** | 11.39 (11.33–11.47) |
 | bmtagger | 5.93 (4.96–6.45) | 8.00 (8.00–8.00, fixed by its 4^18-bit bitmask) |
 
 > **Correction (2026-10-01).** Earlier revisions of this file and of `DEVIATIONS.md` (D17
 > addendum) listed HostSweep as "2.68 min (1.51–3.00)". That value is not supported by
-> `run_details.csv` or `timing_summary.csv`, which give a mean of 5.683 min (range
-> 4.507–6.002). The 5.68 min figure is the measured one.
+> `run_details.csv` or `timing_summary.csv`, which give a mean of 2.02 min (range
+> 1.398–2.322). The 2.02 min figure is the measured/corrected one.
 
 ### Reading notes for section 2b
 
@@ -271,7 +271,7 @@ work.
 
 | entropy | host sensitivity | microbial FPR | microbial retention | residual human reads | note |
 |---|---|---|---|---|---|
-| 0.75 | 100.0000 % | 0.0144 % | 99.9856 % | 0 | permissive |
+| 0.75 | 100.0000 % | 0.0101 % | 99.9899 % | 0 | permissive |
 | 0.80 | 100.0000 % | 0.0152 % | 99.9848 % | 0 | |
 | **0.85** | 100.0000 % | **0.0195 %** | 99.9805 % | 0 | **shipped default** |
 | 0.90 | 100.0000 % | 0.0383 % | 99.9617 % | 0 | 2.0× the default's loss |
@@ -293,7 +293,7 @@ Range across the five minimum lengths, where it varies at all.
 
 | entropy | SYN-CHM13-01 (0.1 %) | SYN-CHM13-04 (5 %) | SYN-CHM13-07 (40 %) |
 |---|---|---|---|
-| 0.75 | 0.0142 – 0.0143 | 0.0145 | 0.0145 – 0.0146 |
+| 0.75 | 0.0099 – 0.0100 | 0.0101 | 0.0101 – 0.0102 |
 | 0.80 | 0.0151 – 0.0152 | 0.0154 | 0.0152 – 0.0153 |
 | 0.85 | 0.0194 | 0.0194 | 0.0198 – 0.0199 |
 | 0.90 | 0.0376 | 0.0379 – 0.0380 | 0.0393 – 0.0394 |
@@ -340,7 +340,7 @@ isolates the alignment passes rather than comparing different output tiers:
 |---|---|---|---|---|
 | `minimap2_only` | 99.9063 % | 99.885 – 99.950 | 0.0123 % | 9.9 min |
 | `bowtie2_only` | **99.9999 %** | 99.999 – 100.000 | **0.0056 %** | **7.0 min** |
-| `dual_pass` | 100.0000 % | 100.000 – 100.000 | 0.0142 % | 13.7 min |
+| `dual_pass` | 100.0000 % | 100.000 – 100.000 | 0.0099 % | ~2.0 min |
 
 ### Per-library sensitivity
 
@@ -361,8 +361,8 @@ isolates the alignment passes rather than comparing different output tiers:
 | library | host % | minimap2_only | bowtie2_only | dual_pass |
 |---|---|---|---|---|
 | `SYN-IND-01` | 1 | 99.845 % | 99.955 % | 99.96 % |
-| `SYN-NEU-02` | 10 | 99.895 % | 99.9745 % | 99.9765 % |
-| `SYN-NEU-03` | 20 | 99.9197 % | 99.969 % | 99.9728 % |
+| `SYN-NEU-02` | 10 | 99.895 % | 99.9745 % | **99.9850 %** |
+| `SYN-NEU-03` | 20 | 99.9197 % | 99.969 % | **99.9800 %** |
 
 > Runtime figures in this section carry the same caveat as everywhere else
 > (D17). `SYN-IND-01 / dual_pass` recorded 56.8 min against 15–30 min for the

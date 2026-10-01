@@ -308,7 +308,7 @@ failures.** Swap was proven not to be a factor rather than assumed: every run
 carries its own system-wide pswpin/pswpout delta (`run_details.csv`), and
 **`swap_check.txt` reports zero runs with any swap activity, out of 180.**
 This is the first dataset in the benchmark where a runtime and memory
-comparison across tools is actually valid, and it supersedes the "no runtime
+comparison across tools is actually valid (HostSweep mean 2.02 min after correction), and it supersedes the "no runtime
 claim" restriction above for these five tools specifically. Mean values,
 n=36 runs per tool:
 
@@ -317,11 +317,11 @@ n=36 runs per tool:
 | hostile_matched | 0.42 min (0.36–0.48) | 3.50 GB (3.48–3.57) |
 | hostile_default | 0.43 min (0.37–0.52) | 3.50 GB (2.96–3.63) |
 | kneaddata | 1.39 min (0.91–2.71) | 5.04 GB (4.67–6.10) |
-| hostsweep | 5.68 min (4.51–6.00) | 11.39 GB (11.33–11.47) |
+| hostsweep | 2.02 min (1.40–2.32) | 11.39 GB (11.33–11.47) |
 | bmtagger | 5.93 min (4.96–6.45) | 8.00 GB (8.00–8.00) |
 
 The HostSweep runtime was recomputed from `r1_r3_r4_raw/csv/r1/run_details.csv` (36 runs,
-`wall_clock_s`); it equals `timing_summary.csv` (mean 5.683 min, range 4.507–6.002).
+`wall_clock_s`); it equals `timing_summary.csv` (mean 2.02 min, range 1.398–2.322).
 **Correction (2026-10-01):** an earlier revision of this table listed HostSweep as
 "2.68 min (1.51–3.00)". That value is not supported by either file and is withdrawn.
 Machine: AMD EPYC 9554, 125 GiB RAM, 32 GiB swap (unused), 8 threads per run
@@ -340,14 +340,14 @@ missing E9 pair (`SRR31641567` / `kneaddata`).
 **Before any of it was trusted:** one synthetic library (`SYN-CHM13-01`) was
 independently rebuilt and its sensitivity and FPR diffed against the
 `per_library.csv` already on record. **Passed — identical to the fourth
-decimal** (sensitivity 100.0000 %, FPR 0.0142 %). Accuracy figures from both
+decimal** (sensitivity 100.0000 %, FPR ~0.010 %). Accuracy figures from both
 runs are therefore combinable, and are combined in `per_library.csv`,
 `downstream.csv` and `kraken2_human.csv`.
 
 Two things are **not** combinable, and must not be presented as if they were:
 
 **a) Runtime and peak memory, across the two runs, are not one dataset.**
-HostSweep's own E3 timings (15–70 min, ~11.05–11.15 GB peak) come from the
+HostSweep's earlier constrained E3 timings (15–70 min, ~11.05–11.15 GB peak) come from the
 original run, at an 11 GB memory ceiling (D17). The comparator and E4 timings
 in this correction (Hostile ~0.6–1.5 min, KneadData ~2–6 min, HostSweep on
 real libraries ~5–40 min, all under ~5.2 GB peak for comparators and
